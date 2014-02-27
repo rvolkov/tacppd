@@ -1,0 +1,101 @@
+#
+# Copyright 1999,2000,2001 by
+#	Roman Volkov (rv@kht.ru) & Oleg Zolotaryov (oleg@kht.ru)
+#
+
+SHELL = /bin/sh
+VPATH = @srcdir@
+
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+infodir = $(prefix)/info
+libdir = $(prefix)/lib/gnudl
+mandir = $(prefix)/man/man1
+
+CXX = @CXX@
+FLAGS = @CXXFLAGS@ @CFLAGS@
+LDFLAGS = @LDFLAGS@
+OSLIBS = @LIBS@
+OS = @OS@
+
+MOS = @MOS@
+MDB = @MDB@
+MLIBS = @MLIBS@
+MLDFLAGS = @MLDFLAGS@
+MCFLAGS = @CXXFLAGS@ @MCFLAGS@ -DMODULE
+
+PGSQL_LIB = @PGSQL_LIB@
+MYSQL_LIB = @MYSQL_LIB@
+MSQL_LIB = @MSQL_LIB@
+#ORA_VER = @ORA_VER@
+OCI_LIB = @OCI_LIB@
+OCCI_LIB = @OCCI_LIB@
+
+CPPFLAGS = -I../include -I../../include $(MDB) $(MCFLAGS) $(OS) $(MOS)
+
+###########################################################
+# End of customisable section of Makefile
+###########################################################
+
+SRCS =	\
+	none.cc \
+	pgsql.cc \
+	mysql.cc \
+	msql.cc \
+	occi.cc \
+	oci.cc \
+	uodbc.cc \
+	xml-db.cc
+
+OBJS = $(SRCS:.cc=.o)
+
+#TARGETS = $(SRCS:.cc=)
+TARGETS = none pgsql mysql msql oci occi uodbc xml-db
+
+all: $(OBJS) $(TARGETS)
+
+#	@for i in $(TARGETS); do		\
+#	( $(CXX) -o $$i.so $$i.o $(MLDFLAGS) $(MLIBS) ) ;	\
+#	done
+
+none:
+	$(CXX) $(MLDFLAGS) -o none.so none.o $(MLIBS)
+
+pgsql:
+	$(CXX) $(MLDFLAGS) -o pgsql.so pgsql.o $(PGSQL_LIB) $(MLIBS)
+
+mysql:
+	$(CXX) $(MLDFLAGS) -o mysql.so mysql.o $(MYSQL_LIB) $(MLIBS)
+
+msql:
+	$(CXX) $(MLDFLAGS) -o msql.so msql.o $(MSQL_LIB) $(MLIBS)
+
+occi:
+	$(CXX) $(MLDFLAGS) -o occi.so occi.o $(OCCI_LIB) $(MLIBS)
+
+oci:
+	$(CXX) $(MLDFLAGS) -o oci.so oci.o $(OCI_LIB) $(MLIBS)
+
+uodbc:
+	$(CXX) $(MLDFLAGS) -o uodbc.so uodbc.o $(UODBC_LIB) $(MLIBS)
+
+xml-db:
+	$(CXX) $(MLDFLAGS) -o xml-db.so xml-db.o $(MLIBS)
+
+distclean: clean
+
+clean:
+	-rm -f *.o *.so *.BAK *.bak
+
+#install:
+#	cp tac_plus /usr/local/bin
+#	cp tac_plus.1 /usr/man/manl/tac_plus.l
+
+depend:
+	makedepend $(CFLAGS) $(SRCS)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

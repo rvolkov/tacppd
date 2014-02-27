@@ -1,0 +1,202 @@
+==================
+INSTALLATION GUIDE
+==================
+
+NOTE: installation from binary packages while no a perfect way -
+a proper process of maintaining binary packages uncomplete
+
+So recommended way - compile from the sources 
+
+
+Check and install third-party libraries if you do not have it
+-------------------------------------------------------------
+
+net-snmp library from http://www.net-snmp.org
+(very often already installed, search some of
+libsnmp.a,libsnmp.so,libnetsnmp.a,libnetsnmp.so files)
+I recommend compile it as shared library (--enable-shared)
+
+Expat xml parser library from http://expat.sourceforge.net
+(already installed on most modern systems)
+
+Also you need libdes library. Usually it installed on most systems.
+Libdes is now shipped with SSLeay. Primary ftp site
+ftp://ftp.psy.uq.oz.au/pub/Crypto/SSL/SSLeay-x.x.x.tar.gz
+Also libdes you can get from ftp://ftp.psy.uq.oz.au/pub/Crypto/DES
+
+I have reports about problems with Perl 5.005_03, so test your
+Perl with 'perl --version' and set something newer. Or don't use
+key --with-perl and don't wait for web-control system work.
+
+for Solaris you must to have libstdc++ installed, for compile from sources
+see a set of packages from http:://sunfreeware.com
+You will need in ucd-snmp, expat, g++
+Also sometimes you will need in dynamic linker configuration,
+use 'crle' utility with caution. Commonly you will need add directory where
+libstdc++.so situated with command like
+crle -l /usr/lib:/usr/local/lib
+also very often you will need in add PostgreSQL's shared lib into
+Solaris shared libs paths, so this command can be used as
+crle -l /usr/lib:/usr/local/lib:/usr/local/pgsql/lib
+crle running only from root account
+
+
+Compile/Install from sources
+----------------------------
+
+Run
+./configure --help | more
+for configuration information
+
+	--prefix=/set/install/path
+
+	--with-pgsql
+	--with-pgsql-prefix=[/usr/local/pgsql]
+	
+	--with-mysql
+	--with-mysql-prefix=[/usr/local]
+	
+	--with-msql
+	--with-msql-prefix=[/usr/local/msql3]
+
+	--with-snmp-prefix=/to/your/net-snmp/home
+	--with-snmp-shared   use shared ucd/net-snmp library
+
+	--with-perl        enable Perl calls support in http server
+
+edit Build.sh for configure with needed arguments:
+./configure --with-pgsql --with-pgsql-prefix=/var/pgsql
+
+on Solaris8 you can have problems with it, if you have, try
+to run "autoconf" into "config" subdirectory (you should install
+autoconf, m4, gawk, make, gcc and may be some other packages from
+http://sunfreeware.com of from Sun Freeware collection) and retry
+"configure" step with key --with-sunfreeware
+
+to compile whole project, do
+./Build.sh
+FreeBSD users must use gmake, so edit Build.sh and change make to gmake
+
+If you use NET-SNMP 5.0 than you can have errors during compilation
+with several words about md5.h file, i think that net-snmp package
+don't copy this file during 'make install', you can get net-snmp sources
+and copy file from your net-snmp source directory
+/include/net-snmp/library/md5.h to place, where installed net-snmp includes
+were placed - some like /usr/local/net-snmp/library
+Also looking like that this problem was fixed with latest versions.
+
+for make gcc 3.1 happy i have include <sstream> insted <strstream>
+and do some steps in autoconf, but i have reports about problems with it.
+If you have this problem, review file src/global.h for it
+
+for recompile database modules, do
+make dbmodules  (or gmake dbmodules)
+
+for recompile snmp modules
+make snmpmodules  (or gmake snmpmodules)
+
+to install package, do
+make install  (or gmake install)
+
+make install will not rewrite existed tacppd.conf file - it rewrites
+"tacppd.conf.ex" also it create "tacppd_start.sh.ex"
+Be careful - config file sintax can be changed during development process!
+for first-time installation you should rename "tacpp.conf.ex" to
+"tacpp.conf" and do customizations. Also you should set up start
+script "tacppd_start.sh": after install you will find
+"tacppd_start.sh.ex" for example.
+Remember, that you can't use port numbers in listeners configuration
+under 1024 if you run tacppd not from root user (this is
+recommended - run tacppd from special created user)
+
+Be sure that you have installed access to shared libraries, 
+for example, to PostgreSQL libraries. For Linux you should have
+something like string '/usr/local/pgsql/lib' into your
+/etc/ld.so.conf file (do not forget run 'ldconfig')
+
+I have reports from Solaris about errors during linking.
+There are 2 types of errors:
+1. it cand find crypto functions like DES_key_sched and so on in
+libnetsnmp.so library
+It mean, that libnetsnmp linked with libcrypto.a librery from
+OpenSSL package.
+You should run configure with key --with-sunfreeware
+
+2. it shows errors about something wrong with Lists, String and some other C++
+methods implementation. I see it on gcc 3.4.0 installed on Solaris 9.
+The reason was in libstdc++. It uses for linking /usr/local/lib/libstdc++.so
+This file is symbolic link to library, and it was linked to old version - 
+libstdc++ vers 5, but gcc 3.4.0 comes with libstdc++ vers 6. So you need
+to reestablish symbolic link of libstdc++.so to libstdc++.so.6
+
+
+If you have error like that:
+g++: Internal compiler error: program cc1plus got fatal signal 9
+than this is problems with optimizer with TacDb.cc file (it looks
+like too complicated, but i didn't see such error on newer g++ versions),
+so copy g++ call string for this file and remove -O2 key, compile it
+separately and run make or gmake again
+
+
+Install from binary package
+(this part is expired, no binary packages while)
+---------------------------
+
+1. get binary build from ftp or http for appropriate platform
+http://tacppd.org
+
+latest build from nightly builds:
+ tacppd-linux-x86-BUILDDATE.tgz
+ tacppd-linux-x86-tatic-BUILDDATE.tgz
+ tacppd-fbsd-x86-BUILDDATE.tgz
+ tacppd-fbsd-x86-static-BUILDDATE.tgz
+ tacppd-solaris-SPARC-BUILDDATE.tgz
+ tacppd-solaris-SPARC-static-BUILDDATE.tgz
+
+where BUILDDATE - this is build date in YYYYMMDD form
+
+latest release build:
+ tacppd-linux-x86-VERSION.tgz
+ tacppd-linux-x86-static-VERSION.tgz
+ tacppd-fbsd-x86-VERSION.tgz
+ tacppd-fbsd-x86-static-VERSION.tgz
+ tacppd-solaris-SPARC-VERSION.tgz
+ tacppd-solaris-SPARC-static-VERSION.tgz
+
+where VERSION - build version in form 0.0.0
+
+word "static" means, that binaries statically linked with
+Net-Snmp and Expat libraries. For use program with dynamic Net-Snmp library
+you should get Net-Snmp from it's homepage http://www.net-snmp.org
+(I should say thanks to this great project) and install it (read throught
+it's documentation, you must compile it and install as shared library,
+the static library - this is default settings for net-snmp).
+And use tacppd package without "static" word.
+Expat by default install static and shared library both.
+
+2. untar/ungzip it
+if you use GNU tar, then:
+tar xvzf tacppd-linux-x86-0.0.1.tgz
+
+if you use system without GNU tar package, rename tacppd package
+to have standard .tar.gz extension
+mv tacppd-solaris-SPARC-0.0.1.tgz tacppd-solaris-SPARC-0.0.1.tar.gz
+and do gunzip and tar:
+gunzip tacppd-solaris-SPARC-0.0.1.tar.gz
+tar xvpf tacppd-solaris-SPARC-0.0.1.tar
+
+--------------------------------------------
+
+on Fedora Core 4 (and may be on other Fedoras) it can't find libpq during configure process.
+I have to investigate it, but the first and very quick workaround:
+ln -s /usr/lib/libpq.so.4 /usr/lib/libpq.so
+
+--------------------------------------------
+
+On FC4 you have to install net-snmp-devel package
+yum install net-snmp-devel
+
+if you use postgresql, than you have to install postgresql-devel packega
+yum install postgresql-devel
+
+--------------------------------------------

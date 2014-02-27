@@ -1,0 +1,71 @@
+#
+# Copyright 1999,2000,2001 by
+#	Roman Volkov (rv@kht.ru) & Oleg Zolotaryov (oleg@kht.ru)
+#
+
+SHELL = /bin/sh
+VPATH = @srcdir@
+
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+infodir = $(prefix)/info
+libdir = $(prefix)/lib/gnudl
+mandir = $(prefix)/man/man1
+
+CXX = @CXX@
+FLAGS = @CXXFLAGS@ @CFLAGS@
+LDFLAGS = @LDFLAGS@
+OSLIBS = @LIBS@
+OS = @OS@
+
+MOS = @MOS@
+MDB = @MDB@
+MLIBS = @MLIBS@
+MLDFLAGS = @MLDFLAGS@
+MCFLAGS = @CXXFLAGS@ @MCFLAGS@ -DMODULE
+
+CPPFLAGS = -I../include -I../../include $(MDB) $(MCFLAGS) $(OS) $(MOS)
+
+###########################################################
+# End of customisable section of Makefile
+###########################################################
+
+SRCS =	\
+	none.cc \
+	sc-per-time.cc
+
+OBJS = $(SRCS:.cc=.o)
+
+#TARGETS = $(SRCS:.cc=)
+TARGETS = none sc-per-time
+
+all: $(OBJS) $(TARGETS)
+
+#	@for i in $(TARGETS); do		\
+#	( $(CXX) -o $$i.so $$i.o $(MLDFLAGS) $(MLIBS) ) ;	\
+#	done
+
+none:
+	$(CXX) $(MLDFLAGS) -o none.so none.o $(MLIBS)
+
+sc-per-time:
+	$(CXX) $(MLDFLAGS) -o sc-per-time.so sc-per-time.o $(MLIBS)
+
+
+distclean: clean
+
+clean:
+	-rm -f *.o *.so *.BAK *.bak
+
+#install:
+#	cp tac_plus /usr/local/bin
+#	cp tac_plus.1 /usr/man/manl/tac_plus.l
+
+depend:
+	makedepend $(CFLAGS) $(SRCS)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

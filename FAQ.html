@@ -1,0 +1,127 @@
+<HTML>
+<PRE>
+
+Q. What is tacppd?
+A. tacppd - this is an open source software development project of
+   AAA server dedicated to providing a robust, full-featured,
+	 commercial-quality, industry platform for the Service Providers.
+	 AAA server - this is server
+   for remoute authenticate, authorize and account users on
+   several types of network devices. I am working with
+   Cisco devices, but i think, that some other devices can
+   use tacppd too.
+
+Q. What does it mean: tacppd? And why?
+A. Tacppd - this is Tacacs Plus Plus Daemon
+   I use this name, because it developed with C++.
+   And it should be next step of tacacs+ protocol server implementation.
+
+Q. Can tacppd works without root privileges?
+A. Yes. You can start it from any user, but in this case you
+   should use tcp/udp ports with numbers higher 1024.
+   Also carefully check directories owners and it's rights.
+
+Q. Can I use non-sql data source for store user information?
+A. You need in appropriate database module. Tacppd doesn't
+   use SQL queries, it uses internal structures and database module create
+   SQL request from that information. But database module can
+   use any data source.
+	 If you don't have sql engine, you can use tacppd default database
+	 source - xml-db module - it use text xml file for store data.
+   For real use better to use SQL engine, we working mostly with PostgreSQL
+
+Q. Can tacppd handle RADIUS requests?
+A. No. But i wish to do it in future.
+
+Q. Does tacppd support Oracle database?
+A. Currently not. But in plans we will have it.
+
+Q. I create config file, edit start script, it runs, but do not go in
+   backgroung, and do not write any error or log
+A. Looks like that you database module do not have access to shared
+   database library. Write path to database lib (like /usr/local/pgsql/lib)
+	 to your /etc/ld.so.conf file (for Linux), run 'ldconfig' and try again.
+
+Q. How tacppd control availability of VoIP sessions
+A. SNMP polling does not work for VoIP - and drop users via snmp not work too
+   Instead use 'aaa update periodic' for tracking session activity
+   and Cisco's IVR/TCL for this sessions control. See HowTo documents
+	 for example of use tacppd for VoIP.
+
+Q. During compiling file TacDb.cc doesn't compile and gcc dies
+A. This is some optimyser problem with this file, so it require
+   a lot of memory (gcc 3.x), or edit Makefile, remove -O2 keys
+   and compile again. If you have enough memory, than you will not have
+   this problem. Be ready, that with -O2 key this file will compile
+   long time (several minutes on P4)
+
+Q. I have some error after I do make install:
+
+/usr/bin/ginstall: cannot stat `tacppd': No such file or directory
+/usr/bin/ginstall: cannot stat `NOTES': No such file or directory
+/usr/bin/ginstall: cannot stat `snmp/cisco-asy.so': No such file or directory
+/usr/bin/ginstall: cannot stat `snmp/cisco-e1.so': No such file or directory
+/usr/bin/ginstall: cannot stat `snmp/cisco-trf.so': No such file or directory
+
+Also I adding some links
+ln -s libnetsnmp.so libsnmp-0.4.2.1.so
+ln -s /usr/lib/libcrypto.so /usr/lib/libcrypto.so.0.9.6
+
+and  
+
+/usr/src/tacppd/tacppd
+Did not find  'InterfaceIndexOrZero' in module IF-MIB  
+(/usr/local/share/snmp/mibs/HOST-RESOURCES-MIB.txt)
+tacppd: Version: 0.0.7pre2 for Linux
+tacppd: Copyright (c) 2000-2003 by Roman Volkov (http://tacppd.org/~rv)
+tacppd: compiled 2003/06/11 12:15:40 +1100 by admin
+tacppd: tacppd comes with ABSOLUTELY NO WARRANTY; this is free
+software and you are welcome to redistribute it under certain conditions.
+Community support and latest versions available via http://tacppd.org.
+Segmantation fault
+
+A. The libnetsnmp.so commonly linked to NET-SNMP lib version 5.
+The version 4 of this library usually linked to libsnmp.so.
+And it should have link to libsnmp.so if installed. Better to
+try compile tacppd from sources, and get latest release
+0.0.7pre4 from sourceforge. It has several critical fixes and
+should correctly work with snmp library versions
+
+Q. Support tacppd the new protocol for the wireless client auth like LEAP???
+A. No. I do not have WLAN devices here and do not have experience in it.
+If you with to have it into tacppd -  
+please help, you can write some examples or something else and  
+be a tester. I can try add it to tacppd in this case.
+
+Q. Help... I have the program installed, I got it to write
+the tables to my database, and now, I don't know how to
+create the configurations using the program CLI.
+A. The initial configuration you can do by use text editor end
+edit etc/tacpp.conf file. Also you can use such method later,
+but all changes will be applyed in tacppd restart. For
+interactive way of configuration you can use CLI. If you have
+created tables, when you can have access to tacppd CLI. Use
+command "config" to go to configuration section. Use command
+"show" for view current configuration. You can directly type
+configuration commands in this mode. For example, if you wish
+to do device 10.1.1.1 active, you can use next commands:
+"device 10.1.1.1" to go to device configuration mode, and than
+"no shutdown". The interface looks like Cisco CLI. For exit
+from device configuration use "exit". Type "write" for store
+configuration. You can use "?" for get help about available
+commands.
+
+Q. I'm getting a 'segmentation fault' error while a
+authentication request from a Cisco router.
+A. Looks like problems with database system. Did you create
+database via CLI? In CLI telnet connection in "database" mode
+command "create". Does it was successful? I will try add more
+inormation in debug... Also add in tacpp.conf some additional
+debug facilities: "facility tacacs" "facility database" and see
+results in debug file.
+
+Q. Do you guys plan to integrate this with an LDAP directory at some point?
+A. Yes. But later.
+
+</PRE>
+</HTML>

@@ -1,0 +1,13 @@
+# tci system configuration
+
+# host where tacppd tci working
+$tci_host="127.0.0.1";
+
+# tci system tcp port
+$tci_port=11001;
+
+# tacppd tci system login
+$tci_login="tci system login";
+
+# tacppd tci system password
+$tci_pwd="tci system password";

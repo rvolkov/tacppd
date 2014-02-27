@@ -1,0 +1,340 @@
+=======================================================================
+
+User list (cpmUserID)
+.1.3.6.1.4.1.9.10.19.1.4.3.1.4
+
+Modem slot for this (0 ... 1) for AS5300 (cpmModemSlot)
+1.3.6.1.4.1.9.10.19.1.4.3.1.7
+
+Modem port list for this (1 - 60 for AS5300) (cpmModemPort)
+1.3.6.1.4.1.9.10.19.1.4.3.1.8
+
+Entry Slot (cpmEntrySlot)
+.1.3.6.1.4.1.9.10.19.1.4.3.1.10
+
+Entry Port (cpmEntryPort)
+.1.3.6.1.4.1.9.10.19.1.4.3.1.11
+
+Entry Channel (cpmEntryChannel)
+.1.3.6.1.4.1.9.10.19.1.4.3.1.12
+
+=======================================================================
+
+CISCO-DIAL-CONTROL.MIB
+----------------------
+
+User list from NEW Cisco MIB (preferable, because can monitor ISDN)
+.1.3.6.1.4.1.9.10.19.1.3.1.1.3
+
+Port number list from NEW Cisco MIB (not show isdn ports)
+.1.3.6.1.4.1.9.10.19.1.3.1.1.7
+or
+.1.3.6.1.4.1.9.10.19.1.3.1.1.14
+(show only number)
+
+From phone numbers list
+.1.3.6.1.4.1.9.10.19.1.3.1.1.12
+
+=======================================================================
+
+User list from OLD Cisco MIB (show only async connections, no ISDN)
+.1.3.6.1.4.1.9.2.9.2.1.18
+
+Port list from standard SNMP MIB
+.1.3.6.1.2.1.2.2.1.2
+
+Clear port
+.1.3.6.1.4.1.9.2.9.10.0 i <tty port number>
+
+========================================================================
+From CISCO-DIAL-CONTROL-MIB-V1SMI.my
+
+-------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.25.1.4.3.1.7
+cCallHistoryLogicalIfIndex
+
+      "This is the ifIndex value of the logical interface through
+       which this call was made. For ISDN media, this would be
+	the ifIndex of the B channel which was used for this call."
+
+cCallHistoryLogicalIfIndex OBJECT-TYPE
+    SYNTAX InterfaceIndex
+    --    Rsyntax Integer32
+    ACCESS read-only
+    STATUS mandatory
+-------------------------------------------------------------------------
+
+=========================================================================
+
+From CISCO-ISDN-MIB-V1SMI.my
+
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.26.1.1.1.1.3
+demandNbrLogIf OBJECT-TYPE
+    SYNTAX Integer32(1..2147483647)
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+	"ifIndex value of virtual interface associated with the neighbor.
+	This interface maintains a queue of messages holding for the neighbor
+	awaiting call completion, and all statistics."
+
+-------------------------------------------------------------------------
+
+=========================================================================
+
+From CISCO-MODEM-MGMT-MIB-V1SMI.my
+
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.47.1.1.1
+cmSystemInstalledModem OBJECT-TYPE
+    SYNTAX Gauge32
+    --  Units
+    --    modems
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The actual number of modems that are currently installed
+    within this system."
+    ::= { cmSystemInfo 1 }
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.47.1.1.2
+cmSystemConfiguredGroup OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The actual number of modem groups that are currently
+    configured within this system.  Maximum value for this
+    object is cmSystemInstalledModem."
+    ::= { cmSystemInfo 2 }
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.47.1.1.7
+cmSystemModemsAvailable OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of modems in the system that are onHook.
+    That is, they are ready to accept a call."
+    ::= { cmSystemInfo 7 }
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.47.1.3.1.1.1
+cmInterface OBJECT-TYPE
+    SYNTAX InterfaceIndex
+    --    Rsyntax Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The interface that this modem is connected."
+    ::= { cmLineStatusEntry 1 }
+--------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.9.47.1.3.2.1.4
+cmShutdown OBJECT-TYPE
+    SYNTAX TruthValue
+    --    Rsyntax INTEGER {
+    --        true(1),
+    --        false(2)
+    --        }
+    ACCESS read-write
+    STATUS mandatory
+    DESCRIPTION
+    "This object is used to put modem out of service, i.e. modem
+     cannot make calls or answer calls. This is a hard busyout
+     command to bring the modem out of service immediately without
+     waiting for the call to be ended normally.  After modem is
+     shutdown, the following commands can be applied to those
+     modems - reset, bad modem, download modem firmware, etc.
+     
+     The value of true(1) indicates the hard busyout has been
+     issued to the modem.  The value of false(2) indicates the
+     modem has not been hard busyout."
+    DEFVAL { false }
+    ::= { cmLineConfigEntry 4 }
+---------------------------------------------------------------------------
+
+===========================================================================
+
+From CISCO-POP-MGMT-MIB-V1SMI.my
+
+---------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.1.1.1.5
+cpmDS0CallType OBJECT-TYPE
+    SYNTAX INTEGER {
+    idle(1),
+    unknown(2),
+    analog(3),
+    digital(4),
+    v110(5),
+    v120(6)
+    }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The type of the current call carried by this DS0.
+    idle     - This DS0 is currently idle.
+    unknown  - The data type of the call currently
+   occupying this DS0 is not one of the
+    types listed here.
+    analog   - The data type of the call currently
+   occupying this DS0 is analog, i.e. a
+    modem call.
+    digital  - The data type of the call currently
+   occupying this DS0 is digital.
+   v110     - The call currently occupying this
+    DS0 is a V110 call.
+    v120     - The call currently occupying this
+   DS0 is a V120 call."
+   ::= { cpmDS0UsageEntry 5 }
+-----------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.1.1.1.13
+cpmAssociatedInterface OBJECT-TYPE
+    SYNTAX InterfaceIndexOrZero
+    --    Rsyntax Integer32(0..2147483647)
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "This is the value of ifIndex when the specific channel
+    has an active call with a corresponding interface in the
+    ifTable.  For example, a digital ISDN call has a value
+    pointing to the B-Channel entry in the ifTable.  A
+    modem call over ISDN or CT1/CE1 has a value pointing
+    to the async interface of the modem assigned to this
+    call.  If the channel is idle, this value is 0."
+    ::= { cpmDS0UsageEntry 13 }
+------------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.3.1.1.3
+cpmActiveUserID OBJECT-TYPE
+    SYNTAX DisplayString(SIZE(0..255))
+    --    Rsyntax OCTET STRING(SIZE(0..255))
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The User login ID or zero length string if unavailable."
+    ::= { cpmActiveCallSummaryEntry 3 }
+-----------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.3.1.1.5
+cpmActiveCallType OBJECT-TYPE
+    SYNTAX INTEGER {
+	unknown(1),
+	analog(2),
+	digital(3),
+	v110(4),
+        v120(5)
+    }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The call type:
+    unknown  - None of the following
+    analog   - Modem call
+    digital  - Digital call
+    v110     - V110 Call
+    v120     - V120 Call"
+    ::= { cpmActiveCallSummaryEntry 5 }
+-----------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.3.1.1.7
+cpmActiveModemPort OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "Identification of modem resource allocated to call.
+     This is the value of cmPortIndex from CISCO-MODEM-MGMT-MIB.
+     This value along with cpmActiveModemSlot uniquely identifies
+     a modem.  Value is -1 if call does not utilize a modem."
+    ::= { cpmActiveCallSummaryEntry 7 }
+----------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.3.1.1.10
+cpmActiveEntryPort OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The logical port for the DS1 line that the user connected on."
+    ::= { cpmActiveCallSummaryEntry 10 }
+--------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.3.1.1.14
+cpmActiveTTYNumber OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The TTY number associated with this call.  This
+    information comes from the IOS 'show line' command."
+    ::= { cpmActiveCallSummaryEntry 14 }
+---------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.4
+cpmUserID OBJECT-TYPE
+    SYNTAX DisplayString(SIZE(0..255))
+    --    Rsyntax OCTET STRING(SIZE(0..255))
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The User login ID or zero length string if unavailable.
+    This object comes directly from IOS."
+    ::= { cpmCallHistorySummaryEntry 4 }
+-----------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.6
+cpmCallType OBJECT-TYPE
+    SYNTAX INTEGER {
+        unknown(1),
+	analog(2),
+        digital(3),
+	v110(4),
+	v120(5)
+    }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The call type:
+    unknown  - None of the following
+    analog   - Modem call
+    digital  - Digital call
+    v110     - V110 Call
+    v120     - V120 Call"
+    ::= { cpmCallHistorySummaryEntry 6 }
+--------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.7
+cpmModemSlot OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "Identification of modem resource allocated to call.
+    This is the value of cmSlotIndex from CISCO-MODEM-MGMT-MIB.
+    This value along with cpmModemPort uniquely identifies a modem.
+    Value is -1 if call does not utilize a modem."
+    ::= { cpmCallHistorySummaryEntry 7 }
+--------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.8
+cpmModemPort OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "Identification of modem resource allocated to call.
+    This is the value of cmPortIndex from CISCO-MODEM-MGMT-MIB.
+    This value along with cpmModemSlot uniquely identifies a modem.
+    Value is -1 if call does not utilize a modem."
+    ::= { cpmCallHistorySummaryEntry 8 }
+---------------------------------------------------------------------
+//# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.11
+//cpmEntryPort OBJECT-TYPE
+//    SYNTAX Integer32
+//    ACCESS read-only
+//    STATUS mandatory
+//    DESCRIPTION
+//    "The logical port for the DS1 line that the user connected on."
+//    ::= { cpmCallHistorySummaryEntry 11 }
+-----------------------------------------------------------------------
+# OID: 1.3.6.1.4.1.9.10.19.1.4.3.1.15
+cpmTTYNumber OBJECT-TYPE 
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The TTY number associated with this call.  This
+    information comes from the IOS 'show line' command."
+    ::= { cpmCallHistorySummaryEntry 15 }
+------------------------------------------------------------------------

@@ -1,0 +1,233 @@
+<?xml version='1.0'?>
+<!-- 
+Tacppd database description by LSK.
+
+When and Caution.
+=================
+(When)	We need XML database description, when we want  to use
+	DATA from already existing source,  it may be SLQ VIEW
+	in some database and in near future may be LDAP source
+	
+	We need them, when we want to read data directly from
+	tacppd db structure and want to know smth about this
+	structure. For example from billing code.
+	
+	The last case when, you do not like table names like
+	                  tacpp_v1_usr
+	&-)
+	
+(Caution)There is a version attribute in ATTLIST descriptor
+	and hardcoded version in taccpd, while startup 	it 
+	intent to use descriptor with the same version, and
+	tacppd cannot verify description other then from 
+	this  field. You must think twice while changing this
+	description.
+	
+
+-->
+
+<!DOCTYPE database_description [
+
+<!ELEMENT	database (descriptor*)>    
+<!ELEMENT	descriptor (collocation*)>
+<!ATTLIST	descriptor
+    version ID #REQUIRED
+    >
+
+<!-- Ohh you could call this table not collocation but they could 
+be not real TABLE but VIEW or smth else, so  ...  -->
+
+<!ELEMENT	collocation (attribute*)>
+<!ATTLIST	collocation
+    name CDATA	#REQUIRED
+    id	CDATA	#REQUIRED
+    remark CDATA	#REQUIRED
+    >
+<!ATTLIST	attribute
+    name ID	#REQUIRED
+    remark CDATA	#REQUIRED
+    default CDATA ''
+    type   CDATA  #REQUIRED
+    len   CDATA  #REQUIRED
+    index (none|index|unique) 'none'
+    >
+<!ENTITY DB_NAS_LEN              '64'>
+<!ENTITY DESCRIPTION_LEN         '50'>
+<!ENTITY SNMP_MODULE_LEN         '100'>
+<!ENTITY SNMP_COMMUNITY_LEN      '30'>
+<!ENTITY TACACS_KEY_LEN          '50'>
+<!ENTITY LOGINSTRING_LEN         '32'>
+<!ENTITY PWDSTRING_LEN           '32'>
+<!ENTITY DEV_TYPE_LEN            '32'>
+<!ENTITY DB_USERNAME_LEN     '32'>
+<!ENTITY DB_AUTHSRC_LEN      '5'>
+<!ENTITY DB_PASSWORD_LEN     '50'>
+<!ENTITY DB_ID_LEN           '16'>
+<!ENTITY MAX_AVP             '100'>
+<!ENTITY MAX_ACC             '32'>
+<!ENTITY MAX_BILRES          '32'>
+<!ENTITY AVP_SERVICE_LEN   '15'>
+<!ENTITY AVP_PROTOCOL_LEN  '15'>
+<!ENTITY AVP_VALUE_LEN     '128'>
+<!ENTITY DB_H323_ORIGIN_LEN  '15'>
+<!ENTITY DB_H323_TYPE_LEN    '15'>
+<!ENTITY FROM_PHONE_LEN    '64'>
+<!ENTITY FROM_NAS_LEN      '64'>
+<!ENTITY FROM_PORT_LEN     '64'>
+<!ENTITY FROM_TIME_LEN     '64'>
+<!ENTITY CMD_AVP_LEN   '50'>
+
+
+
+
+<!ENTITY T_UNIQUE  'unique'>
+<!ENTITY T_INDEX   'index'>
+<!ENTITY T_DATE_TYPE 'date'>
+<!ENTITY T_STR_TYPE 'string'>
+<!ENTITY T_INT_TYPE 'string'>
+
+<!ENTITY T_DEV       'tacpp_v1_dev'>        <!--// network devices table   -->
+<!ENTITY T_USR       'tacpp_v1_usr'>        <!--// user/passwords table  -->
+<!ENTITY T_ACC       'tacpp_v1_acc'>        <!--// access control  -->
+<!ENTITY T_AVP       'tacpp_v1_avp'>        <!--// authorization  -->
+<!ENTITY T_CMD       'tacpp_v1_cmd'>        <!--// command authoriz  -->
+<!ENTITY T_ADD       'tacpp_v1_add'>        <!--// additional user data  -->
+<!ENTITY T_LOG       'tacpp_v1_log'>        <!--// log inform  -->
+<!ENTITY T_TRF       'tacpp_v1_trf'>        <!--// intf traffic info  -->
+<!ENTITY T_NF        'tacpp_v1_nf'>         <!--// netflow traffic info  -->
+<!ENTITY T_BIL       'tacpp_v1_res'>        <!--// resource group  -->
+<!ENTITY T_BILRES    'tacpp_v1_resdata'>    <!--// resource group resources -->
+
+<!ENTITY T_DEV_ID      'DEvice'>
+<!ENTITY T_USR_ID      'USer'>
+<!ENTITY T_ACC_ID      'ACcess'>
+<!ENTITY T_AVP_ID      'AVp'>
+<!ENTITY T_CMD_ID      'COmmand'>
+<!ENTITY T_ADD_ID      'ADd'>
+<!ENTITY T_LOG_ID      'LOg'>
+<!ENTITY T_TRF_ID      'TRFInt'>
+<!ENTITY T_BIL_ID      'BILLIng'>
+<!ENTITY T_BILRES_ID   'BILLRes'>
+
+<!ENTITY AVP_SERVICE_LEN   '15'>
+<!ENTITY AVP_PROTOCOL_LEN  '15'>
+<!ENTITY AVP_VALUE_LEN     '128'>
+
+<!ENTITY TDB_DEV         'device'>
+<!ENTITY TDB_TYPE        'devtype'>
+<!ENTITY TDB_DESCR       'description'>
+<!ENTITY TDB_TACKEY      'tacacskey'>
+<!ENTITY TDB_COMMUN      'community'>
+<!ENTITY TDB_SNMPPOL     'snmppolling'>
+<!ENTITY TDB_ICMPPOL     'icmppolling'>
+<!ENTITY TDB_INTFCOUNT   'inttrfcount'>
+<!ENTITY TDB_POLLDELAY   'polldelay'>
+<!ENTITY TDB_DEFAUTHOR   'defauthorization'>
+<!ENTITY TDB_SNMPMOD     'snmpmodule'>
+<!ENTITY TDB_SHUT        'shutdowned'>
+<!ENTITY TDB_LOGINS      'loginreq'>
+<!ENTITY TDB_PASSWDS     'passwdreq'>
+
+<!ENTITY TDB_LUP         'dupdate'>
+<!ENTITY TDB_USR         'username'>
+<!ENTITY TDB_PWD         'password'>
+<!ENTITY TDB_OPEN        'dopen'>
+<!ENTITY TDB_CLOSE       'dclose'>
+<!ENTITY TDB_AVPID       'avpid'>
+<!ENTITY TDB_ACCID       'accid'>
+<!ENTITY TDB_BILID       'bilid'>
+<!ENTITY TDB_ADDID       'addid'>
+<!ENTITY TDB_MAXS        'maxsess'>
+
+<!ENTITY TDB_UID         'unid'>
+
+<!ENTITY TDB_AUTHSRC     'authsrc'>
+<!ENTITY TDB_ENABLE      'enable'>
+
+<!ENTITY TDB_PHONE       'phone'>
+<!ENTITY TDB_NAS         'nas'>
+<!ENTITY TDB_IP          'ipaddres'>
+<!ENTITY TDB_PORT        'port'>
+<!ENTITY TDB_TIME        'time'>
+
+<!ENTITY TDB_SERVICE     'service'>
+<!ENTITY TDB_PROTOCOL    'protocol'>
+<!ENTITY TDB_AVP         'avp'>
+
+<!ENTITY TDB_CMDPERM     'cmdperm'>
+<!ENTITY TDB_CMDDENY     'cmddeny'>
+<!ENTITY TDB_ARGPERM     'argperm'>
+<!ENTITY TDB_ARGDENY     'argdeny'>
+
+<!ENTITY TDB_BILMODID    'bilmodid'>
+<!ENTITY TDB_ATTRIBUTE   'attribute'>
+<!ENTITY TDB_VALUE       'value'>
+
+]>
+
+<DATABASE>
+<DESCRIPTOR version = '1.0'>
+  <!--  users table -->
+  <collocation name= '&T_USR;' id='&T_USR_ID;' remark='user information'>
+  <attribute name='&TDB_LUP;' remark='last update time' type='&T_DATE_TYPE;'/>
+  <attribute name='&TDB_USR;' remark='user name'   type='&T_STR_TYPE;'  len='&DB_USERNAME_LEN;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_PWD;' remark='password'   type='&T_STR_TYPE;'  len='&DB_PASSWORD_LEN;' />
+  <attribute name='&TDB_OPEN;' remark='open date' default='0' type='&T_DATE_TYPE;' />
+  <attribute name='&TDB_CLOSE;' remark='close date' default='0' type='&T_DATE_TYPE;' />
+  <attribute name='&TDB_AVPID;' remark='authorization group'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_ACCID;' remark='access group'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_BILID;' remark='resource group'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_ADDID;' remark='additional data group'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_MAXS;' remark='max sessions' default='1' type='&T_INT_TYPE;' />
+  </collocation>
+  <!--  additional user data group -->
+  <collocation name='&T_ADD;' id='&T_ADD_ID;' remark='additional user data'>
+  <attribute name='&TDB_ADDID;' remark='additional data group'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_AUTHSRC;' remark='authentication source' default='db' type='&T_STR_TYPE;'  len='&DB_AUTHSRC_LEN;' />
+  <attribute name='&TDB_ENABLE;' remark='enable access password'   type='&T_STR_TYPE;'  len='&DB_PASSWORD_LEN;' />
+  </collocation>
+
+  <!--  user access rights group -->
+  <collocation name='&T_ACC;' id='&T_ACC_ID;' remark='user access rights'>
+  <attribute name='&TDB_UID;' remark='unique id'   type='&T_INT_TYPE;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_ACCID;' remark='access group name'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_PHONE;' remark='access by phone'   type='&T_STR_TYPE;'  len='&FROM_PHONE_LEN;' />
+  <attribute name='&TDB_NAS;' remark='from specifyed NAS'   type='&T_STR_TYPE;'  len='&FROM_NAS_LEN;' />
+  <attribute name='&TDB_PORT;' remark='from specifyed port'   type='&T_STR_TYPE;'  len='&FROM_PORT_LEN;' />
+  <attribute name='&TDB_TIME;' remark='restricted access time'   type='&T_STR_TYPE;'  len='&FROM_TIME_LEN;' />
+  </collocation>
+
+  <!--  authorization group -->
+  <collocation name='&T_AVP;' id='&T_AVP_ID;' remark='authorization'>
+  <attribute name='&TDB_UID;' remark='unique id'   type='&T_INT_TYPE;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_AVPID;' remark='author group id'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_SERVICE;' remark='service'   type='&T_STR_TYPE;'  len='&AVP_SERVICE_LEN;' />
+  <attribute name='&TDB_PROTOCOL;' remark='protocol'   type='&T_STR_TYPE;'  len='&AVP_PROTOCOL_LEN;' />
+  <attribute name='&TDB_AVP;' remark='attribute=value pair'   type='&T_STR_TYPE;'  len='&AVP_VALUE_LEN;' />
+  </collocation>
+
+  <!--  command authorization group -->
+  <collocation name='&T_CMD;' id='&T_CMD_ID;' remark='per-command authorization'>
+  <attribute name='&TDB_UID;' remark='unique id'   type='&T_INT_TYPE;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_AVPID;' remark='author group id'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;' />
+  <attribute name='&TDB_CMDPERM;' remark='permitted commands'   type='&T_STR_TYPE;'  len='&CMD_AVP_LEN;' />
+  <attribute name='&TDB_CMDDENY;' remark='denied commands'   type='&T_STR_TYPE;'  len='&CMD_AVP_LEN;' />
+  <attribute name='&TDB_ARGPERM;' remark='permitted arguments'   type='&T_STR_TYPE;'  len='&CMD_AVP_LEN;' />
+  <attribute name='&TDB_ARGDENY;' remark='denied arguments'   type='&T_STR_TYPE;'  len='&CMD_AVP_LEN;' />
+  </collocation>
+
+  <!--  resource group -->
+  <collocation  name='&T_BIL;' id='&T_BIL_ID;' remark='resource group'>
+  <attribute name='&TDB_BILID;' remark='resource group id'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;'  index='&T_UNIQUE;'/>
+  <attribute name='&TDB_BILMODID;' remark='resource module number'   type='&T_INT_TYPE;' />
+  </collocation>
+
+  <!--  resource group resources -->
+  <collocation name='&T_BILRES;' id='&T_BILRES_ID;' remark='resource system resources'>
+  <attribute name='&TDB_BILID;' remark='resource group id'   type='&T_STR_TYPE;'  len='&DB_ID_LEN;'  index='&T_INDEX;'/>
+  <attribute name='&TDB_ATTRIBUTE;' remark='attribute name'   type='&T_STR_TYPE;'  len='32'/>
+  <attribute name='&TDB_VALUE;' remark='attribute value'   type='&T_STR_TYPE;'  len='32'/>
+  </collocation>
+  
+ </DESCRIPTOR>
+</DATABASE>

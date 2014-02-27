@@ -1,0 +1,782 @@
+%% LyX 1.4.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+%% A simple dot to overcome graphicx limitations
+\newcommand{\lyxdot}{.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxcode}
+{\begin{list}{}{
+\setlength{\rightmargin}{\leftmargin}
+\setlength{\listparindent}{0pt}% needed for AMS classes
+\raggedright
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\normalfont\ttfamily}%
+ \item[]}
+{\end{list}}
+
+\usepackage{babel}
+\makeatother
+\begin{document}
+
+\title{TACPPD Developer Guide}
+
+\maketitle
+\begin{lyxcode}
+~~~~~~~~~~~~~~~~~~~~~~~~~\includegraphics[bb = 0 0 200 100, draft, type=eps]{tacppd.org.jpg}
+\end{lyxcode}
+
+\author{(c) Copyright in 2001-2006 by}
+
+
+\author{Roman Volkov and Brett Maxfield}
+
+
+\section{Contacts}
+
+See tacppd home site http://tacppd.org. For comments, issues and feature
+requests you can use phorum or mailing list on tacppd project page
+at SourceForge (http://sourceforge.net/projects/tacppd). For other
+information you can contact directly with Roman Volkov, rv@tacppd.org.
+For some extra information and services, commercial support and commercial
+developing contact with http://tacppd.com.
+
+
+\section{COPYRIGHT info}
+
+The tacppd (tacacs++ server daemon) software is Copyright (C) 1998-2005
+by Roman Volkov and tacppd team. You may use, distribute and copy
+the tacppd software under the terms of GNU General Public License
+version 2. See COPYING file in tacppd distribution for text of GNU
+GPL. You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA. This
+product includes software developed by Eric Young. This product includes
+software developed by Alec Peterson. It uses RSA Data Security, Inc.
+MD5 Message-Digest Algorithm. Also some copyright information for
+other parts available inside source code (NET-SNMP library code).
+
+
+\section{SUPPORT info}
+
+This product has community support, available via http://tacppd.org
+resources: mailing list, phorum, bugtracking and feature requests
+system from SourceForge's tacppd page (http://sourceforge.net/progects/tacppd).
+You should know, that support will be provided only when community
+people will have free time and possibilities to do it, so please,
+don't require a lot. For information about commercial support visit
+http://tacppd.com, but you should know, that support will not be provided
+under any circumstances for this program by tacppd.com, it's employees,
+volunteers or directors, unless a commercial support agreement and/or
+explicit prior written consent has been given.
+
+
+\section{Introduction}
+
+Tacppd APIs, internal structures, programming style, project goals
+and methods.
+
+
+\section{Writing documentation}
+
+For documentation writing we use \LyX{} (http://www.lyx.org). The
+\LyX{} files are the source for both TEX and HTML. If you wish to
+contribute toward the documentation, please do not edit changes directly
+in the .lyx file but send your changes to me for merging. It is much
+easier if you create a separate .lyx file for your documentation,
+and for one of the maintainers can then merge it into the documentation.
+
+On a daily basis i will generate TEX and HTML files. The new HTML
+documents will be available on the web site shortly after. For program
+code examples please use the {}``\LyX{}-code'' style.
+
+
+\section{Developing environment}
+
+We are currently using KDevelop. The KDevelop project file available
+in distribution. The main platform - Linux.
+
+
+\section{Programming style}
+
+The main goal is to improve readability of code and thereby the understanding,
+maintainability and general quality of the code. It is impossible
+to cover all the specific cases as a general guide and the programmer
+should be flexible and consoder that other people have to decypher
+the code they write.
+
+
+\subsection{C++}
+
+
+\subsubsection{Comments}
+
+
+\subsubsection{Naming conventions}
+
+\begin{itemize}
+\item Names representing types must be in mixed case, starting with upper
+case.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+Line,~SavingsAccount
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community.
+\end{description}
+\begin{itemize}
+\item Variable names must be in mixed case starting with lower case.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+line,~savingsAccount
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community.
+\end{description}
+\begin{itemize}
+\item Named constants (including enumeration values) must be all uppercase
+using underscore to separate words.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+MAX\_ITERATIONS,~COLOR\_RED,~PI
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community
+\end{description}
+\begin{itemize}
+\item Names representing methods or functions must be verbs and written
+in mixed case starting with lower case.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+getName(),~computeTotalWidth()
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community.
+\end{description}
+\begin{itemize}
+\item Names representing namespaces should be all lowercase.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+analyzer,~iomanager,~mainwindow
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community.
+\end{description}
+\begin{itemize}
+\item Names representing template types should be a single uppercase letter.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+template<class~T>~...~template<class~C,~class~D>~...~
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Common practice in the C++ development community.
+\end{description}
+\begin{itemize}
+\item All names should be written in english.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+fileName;~//~NOT:~filNavn~
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] English is the prefered language for international development.
+\end{description}
+\begin{itemize}
+\item Abbreviations and acronyms must not be uppercase when used as name
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+exportHtmlSource();~//~NOT:~exportHTMLSource();
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] When the name is connected to another, the readbility
+is seriously reduced; the word following the abbreviation does not
+stand out as it should.
+\end{description}
+\begin{itemize}
+\item Global variables should always be referred to using the :: operator.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+::mainWindow.open(),~::applicationContext.getName()
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] For doing global variables separated from other.
+\end{description}
+\begin{itemize}
+\item Private class variables should have underscore suffix.
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+class~SomeClass~\{
+
+~private:~
+
+~~int~length\_;
+
+~public:
+
+\};
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] This is important because class variables are considered
+to have higher significance than method variables, and should be treated
+with special care by the programmer.
+\end{description}
+\begin{itemize}
+\item Variables with a large scope should have long names, variables with
+a small scope can have short names
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+i,~j,~k,~::objectForAllProject;
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] Scratch variables used for temporary storage or indices
+are best kept short
+\end{description}
+\begin{itemize}
+\item The name of the object is implicit, and should be avoided in a method
+name. 
+\end{itemize}
+\begin{description}
+\item [{Example:}]~
+\end{description}
+\begin{lyxcode}
+line.getLength();~//~NOT:~line.getLineLength();
+\end{lyxcode}
+\begin{description}
+\item [{Reason:}] The latter seems natural in the class declaration, but
+proves superfluous in use, as shown in the example. 
+\end{description}
+
+\subsubsection{TABs and spaces}
+
+Special characters like TAB and page break must be avoided. (These
+characters are bound to cause problem for editors, printers, terminal
+emulators or debuggers when used in a multi-programmer, multi-platform
+environment.)
+
+
+\subsubsection{Include files and include statements}
+
+\begin{itemize}
+\item Header files must include a construction that prevents multiple inclusion.
+The convention is an all uppercase construction of the file name with
+\_ seperator and the h suffix with \_\_ before and after.
+\end{itemize}
+\begin{description}
+\item [{Example:}] for file CoreBundle.h
+\end{description}
+\begin{lyxcode}
+\#ifndef~\_\_CORE\_BUNDLE\_H\_\_
+
+\#define~\_\_CORE\_BUNDLE\_H\_\_
+
+~...
+
+<code>
+
+~...
+
+\#endif~//\_\_CORE\_BUNDLE\_H\_\_
+\end{lyxcode}
+\begin{itemize}
+\item Include statements must be located at the top of a file only.
+\end{itemize}
+
+\subsubsection{use spaces in type definitions}
+
+Use only one space in type definition:
+
+\begin{lyxcode}
+int~intValue;
+
+char~charValue;
+
+int~intVal1,intVal2;
+\end{lyxcode}
+Use one space before {}``{*}'' in pointer definition:
+
+\begin{lyxcode}
+char~{*}strType;
+
+int~{*}aaa;
+
+void
+
+methodName(int~a,char~{*}aaa,int~{*}bbb)~\{\}
+\end{lyxcode}
+
+\subsubsection{if() rule}
+
+The space after last {}``)'' before {}``\{'', spaces around condition,
+no space after {}``if'':
+
+\begin{lyxcode}
+if(aaa~>~bbb)~\{
+
+~~~...
+
+~~<code>
+
+~~~...
+
+\}
+\end{lyxcode}
+If use united conditions (with {}``\&\&'' and/or {}``\textbar{}\textbar{}''),
+than no spaces around condition:
+
+\begin{lyxcode}
+if(aaa>bbb~\&\&~ccc<ddd)~\{
+
+~~~...
+
+~~<code>
+
+~~~...
+
+\}
+\end{lyxcode}
+
+\subsubsection{switch/case}
+
+No space before first {}``('', one space after {}``)'' before
+{}``\{'', {}``case'' moved for one space, code moved usually -
+2 spaces. Comments about {}``case'' in one line with it.
+
+\begin{lyxcode}
+switch(statement)~\{
+
+~case~1:~~//~case~comment
+
+~~~~...
+
+~~~<code>
+
+~~~~...
+
+~~~break;
+
+~case~2:~~//~case~comment
+
+~~~~...
+
+~~~<code>
+
+~~~~...
+
+~~~break;
+
+~default:~~//~default~comment
+
+~~~~...
+
+~~~<code>
+
+~~~~...
+
+~~~break;
+
+\}
+\end{lyxcode}
+
+\subsubsection{method}
+
+Method return value in separate line, no space after method name before
+{}``('', no space after {}``,'' in method arguments, space after
+{}``)'' and before {}``\{'', {}``\{'' in one line with method
+name and arguments:
+
+\begin{lyxcode}
+void
+
+CoreClass::methodX(int~input,char~{*}str)~\{
+
+~~~...
+
+~~<code>
+
+~~~...
+
+\}
+\end{lyxcode}
+
+\section{TACPPD operation}
+
+The intent of tacppd operation is - use some OO model for provide
+universal access to TCP/UDP server, database engine, configuration
+engine, logging engine.
+
+
+\section{Internals}
+
+
+\section{Data structures}
+
+As core of the project we use Core{*} obgects. It has all tacppd configuration
+inside.
+
+
+\section{Logging/Debug system}
+
+In main.cc during tacppd start you can see creation of next object:
+logTermSystem, logSyslogSystem, logSystem.
+
+
+\subsection{log/debug facilities}
+
+There are several log/debug facilities available (the latest list
+you can see in sources Debug.cc/Debug.h):
+
+\begin{lyxcode}
+//~Debug~Facilities~1-250
+
+\#define~LOG\_TACACS~~~~~1~~~~~~~~~~~~~~~//~tacacs+~protocol~events
+
+\#define~LOG\_BILLING~~~~2~~~~~~~~~~~~~~~//~billing~subsytem
+
+\#define~LOG\_AAA~~~~~~~~3~~~~~~~~~~~~~~~//~AAA
+
+\#define~LOG\_DB~~~~~~~~~4~~~~~~~~~~~~~~~//~database~system~activity
+
+\#define~LOG\_SNMP~~~~~~~5~~~~~~~~~~~~~~~//~snmp~system~activity
+
+\#define~LOG\_NETFLOW~~~~6~~~~~~~~~~~~~~~//~netflow~collector
+
+\#define~LOG\_SERVER~~~~~7~~~~~~~~~~~~~~~//~tcp/udp~server
+
+\#define~LOG\_CC~~~~~~~~~8~~~~~~~~~~~~~~~//~cryptocard
+
+\#define~LOG\_POOL~~~~~~~9~~~~~~~~~~~~~~~//~address~pool~system
+
+\#define~LOG\_TRACK~~~~~~10~~~~~~~~~~~~~~//~user~track~system
+
+\#define~LOG\_HTTP~~~~~~~11~~~~~~~~~~~~~~//~http~interface
+
+\#define~LOG\_TIP~~~~~~~~12~~~~~~~~~~~~~~//~bundle~protocol
+
+\#define~LOG\_TEP~~~~~~~~13~~~~~~~~~~~~~~//~external~protocol
+\end{lyxcode}
+Also there are several internal facilities for output to logfiles
+(defined in Logging.h file):
+
+\begin{lyxcode}
+//~log~critical~error~messages
+
+\#define~LOG\_ERROR~~~~~~~~~~~~~~~~~0
+
+//~log~NetFlow
+
+\#define~LOG\_NETFLOWLOG~~~~~~~~~~~~252
+
+//~log~events
+
+\#define~LOG\_EVENT~~~~~~~~~~~~~~~~~253
+
+//~log~informational
+
+\#define~LOG\_INFORM~~~~~~~~~~~~~~~~254
+
+//~log~logging~information~to~other~file
+
+\#define~LOG\_LOGGING~~~~~~~~~~~~~~~255
+\end{lyxcode}
+
+\subsection{logTermSystem}
+
+During new terminal session creation, you should register socket descriptor
+of this session with this system by use call:
+
+\begin{lyxcode}
+::logTermSystem->add(<socket~handler>);
+\end{lyxcode}
+It means, that logging system will have information for output to
+terminal. Also when you close terminal session, do not forget call:
+
+\begin{lyxcode}
+::logTermSystem->del(<socket~handler>);
+\end{lyxcode}
+This system periodic checks list of messages and if any created entry
+require present facility, than it send this string to socket. To require
+any facility you can use call:
+
+\begin{lyxcode}
+::logTermSystem->add\_debug\_fc(<socket~handler>,<facility~number>);
+\end{lyxcode}
+For close output of special facility use:
+
+\begin{lyxcode}
+::logTermSystem->del\_debug\_fc(<socket~handler>,<facility~number>);
+\end{lyxcode}
+
+\section{Database API}
+
+The database system API was created for provide possible universal
+access to any database engine of data file. It has loadable modules-drivers,
+which should provide low-level access. All database structures uses
+tacppd point of view. It means, that we have some fixed set of types
+which can be not supported by database engine, but database support
+module must accept this types and convert it and data to database
+appropriate form. 
+
+
+\subsection{Database version 1}
+
+The version 1 of tacppd database currently only version.
+
+
+\subsubsection{users data}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_usr
+\end{description}
+\begin{lyxcode}
+user~name~(username)~-~string
+
+password~(password)~-~string
+
+open~date~(dopen)~-~datatime
+
+close~date~(dclose)~-~datatime
+
+authorization~group~(avpid)~-~string
+
+access~group~(accid)~-~string
+
+resource~group~(bilid)~-~string
+
+additional~data~group~(addid)~-~string
+
+max~sessions~(maxsess)~-~integer
+\end{lyxcode}
+This is information for authentication. Store username, password,
+open/close date and time, several groups membership (access group,
+authorization group, additional user data group), maximum allowed
+sessions. If database key not equal word {}``none'', than field
+password crypted. It crypted with use md5 and than stored in base64.
+
+EXAMPLE:
+
+- lets create user {}``ppprv'' with password {}``test'', authorization
+group {}``ppp-1'', access group {}``ppp-acc'', no resource group
+and maximum 1 session available.
+
+\begin{lyxcode}
+username=ppprv
+
+password=test
+
+avpid=ppp-1
+
+accid=ppp-acc
+
+bilid=
+
+maxsess=1
+\end{lyxcode}
+
+\subsubsection{additions to users data}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_add
+\end{description}
+\begin{lyxcode}
+additional~data~group
+
+authentication~source
+
+enable~access~password
+\end{lyxcode}
+
+\subsubsection{user access rights}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_acc
+\end{description}
+\begin{lyxcode}
+access~group~name~(accid)
+
+access~by~phone
+
+from~specifyed~NAS
+
+from~specifyed~port
+
+restricted~access~time
+
+
+\end{lyxcode}
+
+\subsubsection{authorization information}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_avp
+\end{description}
+\begin{lyxcode}
+author~group~id
+
+service
+
+protocol
+
+attribute=vlue~pair
+\end{lyxcode}
+
+\subsubsection{per-command access authorization}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_cmd
+\end{description}
+\begin{lyxcode}
+author~group~id~(avpid)
+
+permitted~commands
+
+denied~commands
+
+permitted~arguments
+
+denied~arguments
+\end{lyxcode}
+
+\subsubsection{resource module data}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_res
+\end{description}
+
+\subsubsection{resource module resources information}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_resdata
+\end{description}
+
+\subsubsection{resource changes log}
+
+\begin{description}
+\item [{Name:}] tacpp\_v1\_reslog
+\end{description}
+
+\subsection{Database structure definition in tacppd database API}
+
+In files TacDb.cc and TacDb.h++
+
+TacDb.h++: in class TacDb in provate section you can find or add database
+table descriptor as: DbTable {*}table\_name\_var;
+
+TacDb.cc: in constructor you should add: table\_name\_var = new DbTable(\char`\"{}table\_name\char`\"{},\char`\"{}table
+description\char`\"{}); and also add table fields: 
+
+table\_name\_var-\textgreater{}add(\char`\"{}field\_name\char`\"{},\char`\"{}field
+description\char`\"{},FIELD\_TYPE); where FIELD\_TYPE = STR\_TYPE
+- char(), varchar() - string 
+
+for this type you should add field size:
+
+table\_name\_var-\textgreater{}add(\char`\"{}field\_str\char`\"{},\char`\"{}description\char`\"{},STR\_TYPE,32); 
+
+UINT\_TYPE - unsigned int 
+
+INT\_TYPE - ordinary int (remember, usually in SQL databases no signed
+int type, and this will unsigned too)
+
+FLOAT\_TYPE - float
+
+DATE\_TYPE - datetime or similar 
+
+BOOL\_TYPE - boolean
+
+
+\section{Database module}
+
+Database modules system was created for provide acceess to any database
+engine. Any module have to be linked with database library. We have
+untested feature for reload one type database module to other during
+operation, also for change module version or for change database library
+version without tacppd restart.
+
+
+\section{SNMP module}
+
+Snmp modules system was created for provide easy implementation snmp
+operation with any snmp-capable device. We use snmp operation with
+net-snmp library (www.net-snmp.org). The snmp low-level code situated
+inside tacppd core. The modules are only interpret results.
+
+
+\section{Resource module}
+
+This is one method for implement resource control system.
+
+
+\section{XML-RPC}
+
+
+\subsection{XML-RPC server side implementation}
+
+
+\subsection{XML-RPC client side implementation}
+
+
+\subsubsection{C/C++}
+
+
+\subsubsection{Perl}
+
+
+\subsubsection{Java}
+
+
+\section{Debugging}
+
+
+\subsection{memory leaks}
+
+For memory operation debug we will use Valgrind (http://developer.kde.org/\textasciitilde{}sewardj/)
+- an open-source memory debugger for x86-GNU/Linux.
+
+
+\section{Testing}
+
+Some TACACS+ testing tools available with libtacplus library http://sf.net/projects/libtacplus
+in samples directory (tacacs+ client, etc)
+\end{document}

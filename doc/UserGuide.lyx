@@ -1,0 +1,4650 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes true
+\end_header
+
+\begin_body
+
+\begin_layout Title
+TACPPD User Guide
+\end_layout
+
+\begin_layout Author
+\begin_inset Graphics
+	filename tacppd.org.jpg
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+(c) Copyright 2003-2006 by Roman Volkov and contributors
+\end_layout
+
+\begin_layout Standard
+Special thanks to Brett Maxfield.
+\end_layout
+
+\begin_layout Section
+Contacts
+\end_layout
+
+\begin_layout Standard
+See tacppd home site http://tacppd.org.
+ For comments, issues and feature requests you can use tacppd sourceforge
+ resources linked to http://tacppd.org site.
+ For other information you can contact directly with Roman Volkov, rv@tacppd.org.
+ For some extra information and services, commercial support and commercial
+ developing contact with http://tacppd.com.
+\end_layout
+
+\begin_layout Section
+Send us your comments
+\end_layout
+
+\begin_layout Standard
+Tacppd developers welcome your comments and suggestions on the quality and
+ usability of this guide.
+\end_layout
+
+\begin_layout Enumerate
+Have you found any errors?
+\end_layout
+
+\begin_layout Enumerate
+Is the information clear?
+\end_layout
+
+\begin_layout Enumerate
+Do you need more informaton?
+\end_layout
+
+\begin_layout Section
+Preface
+\end_layout
+
+\begin_layout Subsection
+Organization
+\end_layout
+
+\begin_layout Standard
+This guide is organized as follows:
+\end_layout
+
+\begin_layout Subsection
+Related Documentation
+\end_layout
+
+\begin_layout Standard
+Available documentation:
+\end_layout
+
+\begin_layout Enumerate
+TACACS+ protocol.
+\end_layout
+
+\begin_layout Enumerate
+TACPPD programmer guide
+\end_layout
+
+\begin_layout Subsection
+Conventions
+\end_layout
+
+\begin_layout Enumerate
+conventions in text
+\end_layout
+
+\begin_layout Enumerate
+conventions in examples
+\end_layout
+
+\begin_layout Enumerate
+conventions in operating system
+\end_layout
+
+\begin_layout Enumerate
+conventions in Cisco configuration
+\end_layout
+
+\begin_layout Section
+COPYRIGHT info
+\end_layout
+
+\begin_layout Standard
+The tacppd (tacacs++ server daemon) software is Copyright (C) 1998-2005
+ by tacppd team and contributors.
+ For more information visit tacppd home site http://tacppd.org.
+ You may use, distribute and copy the tacppd software under the terms of
+ GNU General Public License version 2.
+ See COPYING file in tacppd distribution for text of GNU GPL.
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ This product includes software developed by Eric Young.
+ This product includes software developed by Alec Peterson.
+ It uses RSA Data Security, Inc.
+ MD5 Message-Digest Algorithm.
+ Also some copyright information for other parts available inside source
+ code (NET-SNMP library code).
+\end_layout
+
+\begin_layout Section
+SUPPORT info
+\end_layout
+
+\begin_layout Standard
+This product has community support, available via http://tacppd.org resources:
+ mailing list, phorum, bugtracking and feature requests system from SourceForge'
+s tacppd page (http://sourceforge.net/progects/tacppd).
+ You should know, that support will be provided only when community people
+ will have free time and possibilities to do it, so please, don't require
+ a lot.
+ For information about commercial support visit http://tacppd.com, but you
+ should know, that support will not be provided under any circumstances
+ for this program by tacppd.com, it's employees, volunteers or directors,
+ unless a commercial support agreement and/or explicit prior written consent
+ has been given.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+This is AAA server (authentication,authorization,accounting) for network
+ devices with extra features.
+ The main goal - full database support + integration with bi lling system.
+ Also we try to do mechanism for real-time user sessions control with the
+ really true information for it (if you have network with some untrusted
+ channels , you can loss accounting packets from network devices).
+ We are using model "all-i n-one" (tacacs+ with telnet server, with http
+ server, with NetFlow collector, with SNMP poller and other) for make it
+ more easy for installation and using, also for possible integration in
+ hardware box with telnet/web control and AAA server functionality .
+ This program is developing on C++.
+ It can be compiled for any *nix system with POSIX threads (I suppose).
+ Currently supported platforms only Linux(x86), FreeBS D(x86), Solaris8/9(SPARC)
+ (I don't have access to other, but if you need in other, conta ct me, may
+ be i'll help).
+ Most information about network devices valid only for Cisco e quipment.
+ For your device, see vendor documentation.
+ Now i am thinking about raise tacppd to some set of API or may be separate
+ libra ries for doing applications with integrated CLI, http, log and debug.
+ Network applications which can be easy integrated to hardware linux-based
+ boxes and use external storage like iSCSI devices.
+ For example, smtp/pop3 server, http server, etc.
+ Now i am working for application-independend core of tacppd, which can
+ be separated from tacacs+ or a ny other application code to separated API
+ or library.
+ Hope, you will help me and some later i'll create several tacppd's code
+ based projects of several network services servers.
+ In more recent plans - raise tacppd to network management/accounting system.
+\end_layout
+
+\begin_layout Subsection
+Abstract
+\end_layout
+
+\begin_layout Standard
+TACACS+ (Terminal Access Control Access Server Plus) provides access control
+ for routers, network access servers and other networked computing devices
+ via one or more cen tralized servers.
+ TACACS+ provides separate authentication, authorization and accounting
+ services.
+ The full describe of TACACS+ protocol you can find at ftp://ftp-eng.cisco.com/pub
+/tacacs/tac-rfc.1.78.txt or http://search.ietf.org/internet-drafts/draft-grant-tacacs
+-02.txt or in /doc directory of this distribution.
+ TACACS+ is used mostly for Cisco devi ces (but I saw it support in 3Com
+ HiPer too, and read about it in Cabletron devices) .
+ RADIUS - this is other similar protocol, which working throught UDP and
+ have way to use vendor specific attributes.
+ RADIUS - more compatible protocol but less functional, may be later we
+ will do R ADIUS support in tacppd.
+\end_layout
+
+\begin_layout Subsection
+Features
+\end_layout
+
+\begin_layout Enumerate
+SQL database support for store user information (together with authorization
+ information, like per-client IP addresses, etc)
+\end_layout
+
+\begin_layout Enumerate
+multiply redudancy databases, can connect to several types of databases
+ if appropriate module available
+\end_layout
+
+\begin_layout Enumerate
+open interface for create own database support modules
+\end_layout
+
+\begin_layout Enumerate
+password field in database encrypted by MD5
+\end_layout
+
+\begin_layout Enumerate
+internal IP address pooling system
+\end_layout
+
+\begin_layout Enumerate
+personal tacacs+ key for each device + access control 
+\end_layout
+
+\begin_layout Enumerate
+reconfiguration and monitoring on-fly via telnet 
+\end_layout
+
+\begin_layout Enumerate
+per-users work time-plan
+\end_layout
+
+\begin_layout Enumerate
+NAS control via SNMP
+\end_layout
+
+\begin_layout Enumerate
+SNMP modules with open interface for easy new devices adding
+\end_layout
+
+\begin_layout Enumerate
+users in database control via telnet command-line interface
+\end_layout
+
+\begin_layout Enumerate
+intergated NetFlow data collector with some aggregating functionality and
+ logging directly to database
+\end_layout
+
+\begin_layout Enumerate
+accounting logging directly to database
+\end_layout
+
+\begin_layout Subsection
+ToDo
+\end_layout
+
+\begin_layout Enumerate
+Universal modular billing system 
+\end_layout
+
+\begin_layout Enumerate
+peer-to-peer roaming 
+\end_layout
+
+\begin_layout Enumerate
+Monitoring and configuration via http 
+\end_layout
+
+\begin_layout Enumerate
+RADIUS support 
+\end_layout
+
+\begin_layout Enumerate
+SNMP agent support 
+\end_layout
+
+\begin_layout Standard
+And much more.
+ Use feature requests in tacppd's SourceForge project page and also write
+ to phorum/mailing lists for expand it.
+\end_layout
+
+\begin_layout Section
+Directories and files
+\end_layout
+
+\begin_layout LyX-Code
+/contrib - contributed products
+\end_layout
+
+\begin_layout LyX-Code
+/etc - config dir 
+\end_layout
+
+\begin_layout LyX-Code
+ tacppd.conf.ex - example configuration file 
+\end_layout
+
+\begin_layout LyX-Code
+/db - database modules 
+\end_layout
+
+\begin_layout LyX-Code
+ pgsql.so - PostgreSQL driver 
+\end_layout
+
+\begin_layout LyX-Code
+ mysql.so - MySQL driver 
+\end_layout
+
+\begin_layout LyX-Code
+ msql.so - miniSQL driver 
+\end_layout
+
+\begin_layout LyX-Code
+ none.so - void device 
+\end_layout
+
+\begin_layout LyX-Code
+/snmp - snmp devices modules 
+\end_layout
+
+\begin_layout LyX-Code
+ cisco.so - Cisco devices support 
+\end_layout
+
+\begin_layout LyX-Code
+ none.so - void device 
+\end_layout
+
+\begin_layout LyX-Code
+/include - include files for database and snmp modules 
+\end_layout
+
+\begin_layout LyX-Code
+/run - pid-file dir 
+\end_layout
+
+\begin_layout LyX-Code
+/log - log-file dir 
+\end_layout
+
+\begin_layout LyX-Code
+/tmp - temporary files directory 
+\end_layout
+
+\begin_layout LyX-Code
+/ext - external programs dir 
+\end_layout
+
+\begin_layout LyX-Code
+/http - http monitor files 
+\end_layout
+
+\begin_layout LyX-Code
+/resrc - resource modules dir 
+\end_layout
+
+\begin_layout LyX-Code
+tacppd_start.sh.example - example daemon start script 
+\end_layout
+
+\begin_layout LyX-Code
+tacppd - tacppd bin file 
+\end_layout
+
+\begin_layout Section
+Source compilation
+\end_layout
+
+\begin_layout Standard
+If you will set from binary distribution, skip this chapter.
+ Fast guide available in file INSTALL inside tacppd distribution.
+ 
+\end_layout
+
+\begin_layout Section
+Installation
+\end_layout
+
+\begin_layout Standard
+1.
+ Get binary build from ftp or http for appropriate platform, consult http://tacp
+pd.org for downloads.
+\end_layout
+
+\begin_layout Standard
+latest build from nightly builds:
+\end_layout
+
+\begin_layout Standard
+tacppd-linux-x86-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-linux-x86-snmpstatic-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-fbsd-x86-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-fbsd-x86-snmpstatic-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-solaris-SPARC-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-solaris-SPARC-snmpstatic-BUILDDATE.tgz
+\end_layout
+
+\begin_layout Standard
+where BUILDDATE - this is build date in YYYYMMDD form
+\end_layout
+
+\begin_layout Standard
+latest release build: 
+\end_layout
+
+\begin_layout Standard
+tacppd-linux-x86-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-linux-x86-snmpstatic-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-fbsd-x86-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-fbsd-x86-snmpstatic-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-solaris-SPARC-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+tacppd-solaris-SPARC-snmpstatic-VERSION.tgz
+\end_layout
+
+\begin_layout Standard
+where VERSION - build version in form 0.0.0
+\end_layout
+
+\begin_layout Standard
+The word "snmpstatic" in the filenames above means that those binaries have
+ been statically linked with the Net-Snmp package.
+ To use the dynamic Net-Snmp library, you should get Net-Snmp from it's
+ homepage at http://www.net-snmp.org and install it.
+ Read through the net-snmp documentation, configure, compile and install
+ the net-snmp shared library using the --enable-shared configure option.
+ 
+\end_layout
+
+\begin_layout Standard
+The default for net-snmp is to only create a static library.
+ When you have compiled the snmp shared library, you can then download and
+ use the tacppd package without the "snmpstatic" word.
+ 
+\end_layout
+
+\begin_layout Subsection
+New install
+\end_layout
+
+\begin_layout Standard
+For first-time install copy file "tacppd_start.sh.orig" to "tacppd_start.sh"
+ and edit it for your directory (read comments in file).
+ For first-time install copy file "etc/tacpp.conf.orig" to "etc/tacpp.conf"
+ and review it (and read "etc/README").
+ Check if you have workable database libraries (database modules require
+ it).
+ For it, check database module which you will use by ldd: 
+\end_layout
+
+\begin_layout Standard
+ldd db/postgresql.so 
+\end_layout
+
+\begin_layout Standard
+ldd db/mysql.so
+\end_layout
+
+\begin_layout Standard
+if you see library libpq.so/libmysqlclient.so inside - all right in other
+ case, check you /etc/ld.so.conf or LD_LIBRARY_PATH for path to appropriate
+ shared library (and your PostgreSQL/MySQL too) 
+\end_layout
+
+\begin_layout Standard
+REMEMBER! you MUST HAVE appropriate PostgreSQL or MySQL libraries (or miniSQL,
+ if you will use this driver), if you plan to use Oracle, than you m ust
+ have Oracle client installed and configured.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Database System
+\end_layout
+
+\begin_layout Standard
+Please, contact your database administrator for database name and database
+ user login/password information.
+\end_layout
+
+\begin_layout Standard
+Edit "etc/tacpp.conf" file for database, REMEMBER database key, if you have
+ lost it, no way to restore user passwords! The crypto algorythm uses 2
+ keys - static - this is this key, and variable key - the user login.
+ If you change username, than you will lost your password! Never use UPDATE
+ request for change username! Please, use tacppd CLI for changes in database
+ tables.
+ For change username, delete this user and add new.
+ If you will use key "none", than no encryption will be done.
+ Use it if you plan to use external database management system, or if this
+ system does not supports tacppd-style encryption.
+ 
+\end_layout
+
+\begin_layout Standard
+Before use, you should create database tables.
+ You MUST use tacppd internal database manipulation manager for it (the
+ database tables format can be changed during development and it should
+ create mostly modern table views).
+ If you already have database tables for tacppd, review ReleaseNotes, CHANGES
+ and this README file for changes.
+ After tacppd starts, you should use CLI (command line interface): in "database"
+ mode you should use command "create" for tables creation (see later for
+ CLI description).
+\end_layout
+
+\begin_layout Standard
+Indexes will be created automatic.
+ See error logs in case of errors.
+\end_layout
+
+\begin_layout Standard
+Now you can add users into database.
+ Tacppd has simple internal user manipulatio n resource (see later for CLI
+ documentation).
+ If you will use own database manipul ation software, remember, that you
+ should encrypt passwords before insert.
+ For example, you can use contributed Perl script in /contrib dir for crypt/decr
+ypt passwords.
+ 
+\end_layout
+
+\begin_layout Standard
+for PostgreSQL (http://www.postgresql.org): contact database administrator
+ to create special user with grants to create, update, insert and select
+ tables and indexes.
+ The next st ep - from database admin user run psql like this: psql -U username
+ database_name and type password on request try to select/create tables
+ for check your rights
+\end_layout
+
+\begin_layout Standard
+for Oracle (http://www.oracle.com): change to oracle user (typically by command
+ "su - oracle") and run: sqlplus username/password@your.oracle.service and
+ test it.
+ We recommend to contact your DB administrator before.
+\end_layout
+
+\begin_layout Standard
+BE CAREFULL!!! The Database table format now in developing and can be changed
+ from build to build with notifications only in CHANGES file!!!
+\end_layout
+
+\begin_layout Standard
+I plan to freeze database formats after first BETA version, but now i highly
+ recommend to use CLI interface for database data management!
+\end_layout
+
+\begin_layout Standard
+From 0.0.5 development i add database version number to name of table, but
+ the version will be frozen only after release.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Before start steps
+\end_layout
+
+\begin_layout Standard
+1.
+ check tacppd/tacppd_start.sh file for right path to tacppd home (read throught
+ it for several options) 
+\end_layout
+
+\begin_layout Standard
+2.
+ edit tacppd/etc/tacpp.conf file (copy it from tacpp.conf.orig) read carefully
+ throught it and throught etc/README file the default admin user have username:
+ admin and password: admin_password please, change database ip and username/pass
+word NOTE: remember database crypto key!!! You will have lost your client
+ passwords if you have lost database key! Otherwise, use "none" key for
+ unencrypted password fields.
+ 
+\end_layout
+
+\begin_layout Standard
+3.
+ check availability of database be sure, that your user created in database
+ and firewalls configuration correct 
+\end_layout
+
+\begin_layout Standard
+4.
+ start tacppd_start.sh script 
+\end_layout
+
+\begin_layout Standard
+5.
+ try to connect to control system by telnet localhost 2222 (or any port
+ you defined in configfile for telnet) you should see username request type
+ admin and type admin_password as password (this is default setting in tacpp.conf.
+orig) Feel free to change default settings.
+\end_layout
+
+\begin_layout Standard
+in CLI (command line interface) you can use ?<CR> for getting help about
+ available commands.
+ [command] ?<CR> - help about command arguments
+\end_layout
+
+\begin_layout Subsection
+Upgrade
+\end_layout
+
+\begin_layout Standard
+Upgrade procedure require stop current tacppd by command 
+\begin_inset Quotes eld
+\end_inset
+
+killall tacppd
+\begin_inset Quotes erd
+\end_inset
+
+, unpack distribution to place of old tacppd (configuration file and shell
+ scripts will not be changed, will be replaced files etc/tacppd.conf.ex and
+ tacppd_start.sh.example), and run tacppd again.
+ Read release notes for critical changes.
+\end_layout
+
+\begin_layout Section
+Configuration
+\end_layout
+
+\begin_layout Standard
+Tacppd configuration stored in file tacppd.conf.
+ Distribution has file etc/tacppd.conf.ex, just copy this file to etc/tacppd.conf.
+ This file you can edit before tacppd start.
+ During tacppd work you have to use command-line interface (CLI) via telnet
+ for tacppd configuration.
+\end_layout
+
+\begin_layout Standard
+the configuration file latest notes can be available in etc/README (see
+ it before you will start create configuration)
+\end_layout
+
+\begin_layout Standard
+tacppd config file - etc/tacpp.conf, with distribution we are provide file
+ etc/tacpp.conf.orig with common examples, you can write own tacpp.conf file
+ before start or customize tacpp.conf.orig (copy tacpp.conf.orig to tacpp.conf
+ before in this case).
+ You can edit this file from editor, but be carefully: edit this file BEFORE
+ starting tacppd - if you will edit it AFTER, than you can simple lost your
+ changes if you will do "write" command from CLI.
+ Remember - you need in manual config file edit only in first-time installation.
+ Or if you will do anything without working tacppd.
+ In other case you should use CLI (command line interface) commands for
+ configuration - the changes will apply after you press <Enter>.
+\end_layout
+
+\begin_layout Standard
+Tacppd like Cisco device has 2 configurations - one running-config, and
+ other - stored config (or startup-config).
+ The startup-config for tacppd - file etc/tacp p.conf, running-config - in
+ memory.
+ You can't reload startup-config during tacppd work, but you can change
+ running-config and copy it to startup-config.
+\end_layout
+
+\begin_layout Standard
+the config file use next things: remark - string, which begins with pund
+ (#) symbol first command should be word "config", last - word "exit"
+\end_layout
+
+\begin_layout Standard
+The configuration file supports all commands which you can use in CLI "config"
+ mode.
+ 
+\end_layout
+
+\begin_layout Standard
+there are several sections available: debug access manager listener pool
+ nas database bundle billing peer 
+\end_layout
+
+\begin_layout Subsection
+debug
+\end_layout
+
+\begin_layout Standard
+Output debug information.
+ Debug information output to file log/debug.log.
+\end_layout
+
+\begin_layout LyX-Code
+! debug
+\end_layout
+
+\begin_layout LyX-Code
+debug file
+\end_layout
+
+\begin_layout LyX-Code
+ facility db
+\end_layout
+
+\begin_layout LyX-Code
+ facility pool
+\end_layout
+
+\begin_layout LyX-Code
+ facility billing
+\end_layout
+
+\begin_layout LyX-Code
+ facility track
+\end_layout
+
+\begin_layout LyX-Code
+ facility tacacs
+\end_layout
+
+\begin_layout LyX-Code
+ facility aaa
+\end_layout
+
+\begin_layout LyX-Code
+ facility snmp
+\end_layout
+
+\begin_layout LyX-Code
+ facility server
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout Standard
+Facilities mean output debug for such operation.
+\end_layout
+
+\begin_layout Standard
+output of debug information file - output to file syslog - output to local
+ syslog <ip addr> - output to external syslog facility - this is type of
+ information which will be outputed to this destination 
+\end_layout
+
+\begin_layout Subsection
+access lists
+\end_layout
+
+\begin_layout Standard
+Access control.
+ Use Regular Expressions syntax.
+ All connections in tacppd controlled via access lists.
+ It used for control TCP and UDP connections, also it control per-user manager
+ access.
+\end_layout
+
+\begin_layout LyX-Code
+! access list
+\end_layout
+
+\begin_layout LyX-Code
+access 1
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^192.168.0
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout LyX-Code
+access 2
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+ deny ^192.168.2.3$
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^192.168.2
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout LyX-Code
+access 3
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^192.168.0
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^172.17.35
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout Standard
+Access list checks from begin to end.
+ If any rule permit something, than no more checks.
+ If any rule deny, no more checking too.
+ If no any match, than it mean deny.
+\end_layout
+
+\begin_layout Standard
+access list - control access to listeners and for users "access 1 permit
+ ^127.0.0" 1 - number of access list (1-32000) ^127.0.0 - regular expression
+ you can use usual regular expressions, like: ^127.0.0.1$ and so on 
+\end_layout
+
+\begin_layout Subsection
+manager user
+\end_layout
+
+\begin_layout Standard
+Administrators.
+ Users for access via telnet or web-interface to tacppd.
+ Also users for access across TCI (tacppd control interface).
+\end_layout
+
+\begin_layout Standard
+tacppd manager user user user_name password 'cleartext password' cpassword
+ 'md5 digest password' type terminal ! terminal or http available acl access_lis
+t_number exit
+\end_layout
+
+\begin_layout Standard
+!NOTE! - during 'write' command password will be stored as md5 digest 
+\end_layout
+
+\begin_layout Subsection
+listener
+\end_layout
+
+\begin_layout Standard
+Tcp/Udp listeners with several sevices.
+\end_layout
+
+\begin_layout Standard
+configuration of several listeners listener port_number ! if you run it
+ not from root, ! then tcp/udp port number can't be less 1024 type <type>
+ ! which server maxconnect 100 ! maximum connection number acl access_list_numbe
+r exit
+\end_layout
+
+\begin_layout Standard
+the listener types available: terminal - telnet for CLI tacacs - tacacs+
+ radius - radius radacct - radius accounting http - http interface netflow
+ - NetFlow collector bundle - for tacppd bundle peer - for roaming peers
+ snmp - snmp agent
+\end_layout
+
+\begin_layout Standard
+!NOTE! - maximum connection number must be reasonable, this is limits in
+ case of burst load.
+ !NOTE! - radius,radacct,bundle,peer,snmp - not implemented while 
+\end_layout
+
+\begin_layout Subsection
+pool
+\end_layout
+
+\begin_layout Standard
+address pool system pool address_pool_number address.from.this.pool the addresses
+ you can write in form like: 192.168.0.1-192.168.0.10 (this is addresses from
+ 1 to 10) or as 192.168.0.2,192.168.0.5 (separate 2 addresses) more complex example:
+ 192.168.0.1-192.168.0.5,192.168.0.7,192.168.0.9-192.168.0.12 
+\end_layout
+
+\begin_layout Subsection
+network device
+\end_layout
+
+\begin_layout Standard
+Network devices which tacppd must control.
+ Usually this is Cisco routers/access servers.
+\end_layout
+
+\begin_layout Standard
+network devices support
+\end_layout
+
+\begin_layout Standard
+nas <ip.addr.of.device> description <your_comment_about_this_device> tacacskey
+ <tacacs_plus_key> radiuskey <radius_key(for future implementation)> snmpcommuni
+ty <your_snmp_community> loginstring <string_for_your_nas> pwdstring <password_i
+nvite_string> defaultauthorization yes|no module cisco.so polldelay 5 trfcounter
+ no shutdown no 
+\end_layout
+
+\begin_layout Subsection
+database
+\end_layout
+
+\begin_layout Standard
+Databases list.
+ Can be several databases.
+ First in list - main database.
+ During work tacppd try to connect to first database and if connect will
+ refused it will conecct to second.
+ And so more.
+ Updates, Inserts and other changes to database will be doing to all databases.
+ There no more things for maintain databases equality.
+ May be it will do by some external tools.
+\end_layout
+
+\begin_layout LyX-Code
+! database  
+\end_layout
+
+\begin_layout LyX-Code
+database tacppddb@192.168.0.9:5432
+\end_layout
+
+\begin_layout LyX-Code
+ cryptokey 'none'
+\end_layout
+
+\begin_layout LyX-Code
+ login tacppd
+\end_layout
+
+\begin_layout LyX-Code
+ password TacppdPwd
+\end_layout
+
+\begin_layout LyX-Code
+ module pgsql.so
+\end_layout
+
+\begin_layout LyX-Code
+ shutdown no
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout Standard
+String 
+\begin_inset Quotes eld
+\end_inset
+
+tacppd@192168.0.9:5432
+\begin_inset Quotes erd
+\end_inset
+
+ means that database server on host 192.168.0.9 on port 5432 use database named
+ 
+\begin_inset Quotes eld
+\end_inset
+
+tacppddb
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Cryptokey used for crypt passwords in database.
+ Key = 
+\begin_inset Quotes eld
+\end_inset
+
+none
+\begin_inset Quotes erd
+\end_inset
+
+ - unencrypted (for debugging).
+ In any case crypted and cleartext passwords in database coded to Base64.
+\end_layout
+
+\begin_layout Standard
+work with database system BE CAREFUL with database cryptokey!!! If you lost
+ key, you lost your database!!! Or use "none" key to disable encryption.
+\end_layout
+
+\begin_layout Standard
+database db_name@db_host:db_port cryptokey <key> login <db_login> password
+ <db_pwd> module <database driver> shutdown no 
+\end_layout
+
+\begin_layout Subsection
+bundle
+\end_layout
+
+\begin_layout Standard
+Information for create tacppd bundle.
+ There are only one bundle possible.
+\end_layout
+
+\begin_layout LyX-Code
+bundle 239.1.1.1:11000
+\end_layout
+
+\begin_layout LyX-Code
+ cryptokey key
+\end_layout
+
+\begin_layout LyX-Code
+ priority 1
+\end_layout
+
+\begin_layout LyX-Code
+ ttl 1
+\end_layout
+
+\begin_layout LyX-Code
+ exit
+\end_layout
+
+\begin_layout Standard
+If you set cryptokey to 
+\begin_inset Quotes eld
+\end_inset
+
+none
+\begin_inset Quotes erd
+\end_inset
+
+ than bundle traffic will be unencrypted (for debug purposes).
+ Ttl value - this is multicast time-to-live in hops.
+ Ttl=1 for multicasts in one LAN, more value - if you have routers between
+ servers in one bundle.
+\end_layout
+
+\begin_layout Standard
+communicate tacppds to bundle
+\end_layout
+
+\begin_layout Standard
+bundle <bundle_ip>:<bundle_port> description <desc> cryptokey <key> ttl
+ <multicast ttl value (usually 1)> 
+\end_layout
+
+\begin_layout Subsection
+billing
+\end_layout
+
+\begin_layout Standard
+billing modules descriptions
+\end_layout
+
+\begin_layout Standard
+billing <number> description <descr> module <module.so> shutdown no 
+\end_layout
+
+\begin_layout Subsection
+peer
+\end_layout
+
+\begin_layout Standard
+Peers to other tacppds for roaming.
+\end_layout
+
+\begin_layout Standard
+roaming peers
+\end_layout
+
+\begin_layout Standard
+peer <ip>:<port> description <descr> cryptokey <key> timeshift <+/- time>
+ mask <regular expr> mask <regular expr>
+\end_layout
+
+\begin_layout Section
+Tacppd CLI - command-line interface
+\end_layout
+
+\begin_layout Standard
+command-line interface available throught telnet.
+ You can configure your server throught CLI, and changes will be immediately
+ available.
+ The next issue - "write" command will crypt cleartext passwords and write
+ current configuration to configuration file "etc/tacpp.conf".
+ When you connect to server via telnet ("telnet ip.addr port" - ip.add - addr
+ of host where tacppd work, port - portnumber in tacpp.conf) after user access
+ verification (default user=admin password=admin_password) you see string:
+ your_hostname#" it means, that you now in CLI.
+ try write "?" and press <ENTER> for help No edit keys available in this
+ version, be carefull! I have tested telnet special codes only for Linux
+ telnet, from Windows's HyperTerm you can have problems.
+ Currently you can see and change configuration and check/drop users on
+ your access servers 
+\end_layout
+
+\begin_layout LyX-Code
+command map: tacpp(hostname)# ? config -----                           
+      debug                                 manager                    
+             listener                                 access           
+                      pool                                 nas         
+                        database                                 bundle
+                                 billing                               
+  peer                                 show                            
+     exit            ! exit from configuration sectio write            
+                               ! write current configuration show -------
+                    ! show                                 users       
+    ! show usertable                                 nas             ! show
+ nas information clear ------                    ! clear information   
+                              user            ! drop user 
+\end_layout
+
+\begin_layout LyX-Code
+                               port            ! drop nas port database
+ ----        ! database configuration section                          
+       create  ! create database tables                                
+ add             ! add entry to database                               
+  del             ! delete entry from database                         
+        show            ! show data                                 modify
+  ! modify entry in database                                 exit      
+      ! exit form database section debug  -----  ! debug mode exit
+\end_layout
+
+\begin_layout Standard
+config - change server configuration you should do "write" command to store
+ your working configuration to startup configuration file (etc/tacpp.conf)
+ (use commands from configuration file documentation upper)
+\end_layout
+
+\begin_layout Standard
+show - show several information currently you can see only currently working
+ users table and network devices under control
+\end_layout
+
+\begin_layout Standard
+clear - clear anything currently you can drop users/ports on network devices
+ 
+\end_layout
+
+\begin_layout Standard
+database - database control mode
+\end_layout
+
+\begin_layout Section
+Tacppd HTTP interface
+\end_layout
+
+\begin_layout Standard
+Tacppd has HTTP interface.
+ In default configuration the http server started on port 8888, and use
+ username/password "webmin/webmin" for access.
+ Try it by http://localhost:8888 check access rights in config before.
+ Tacppd has inbuilt web-server with Perl support.
+\end_layout
+
+\begin_layout Section
+Cisco device configuration
+\end_layout
+
+\begin_layout Standard
+Here only some simple information how to configure Cisco devices to use
+ tacppd.
+ You have to be experiencing Cisco user.
+ If you do not clearly understand what we will do in configuration, read
+ Cisco documentation at http://www.cisco.com.
+\end_layout
+
+\begin_layout Standard
+you should setting up TACACS+ on NAS: aaa new-model aaa group server tacacs+
+ OUR_TACACS server your.server.ip.addr tacacs-server host your.server.ip.addr
+ port server_port key tacacs_key
+\end_layout
+
+\begin_layout Standard
+NOTE: port and key should be same as in tacppd configuration file NOTE2:
+ "aaa group server" command can not be available.
+ Don't care.
+\end_layout
+
+\begin_layout Standard
+-for authentication add: aaa authentication login DIALUP group OUR_TACACS
+\end_layout
+
+\begin_layout Standard
+-for ppp authentication: aaa authentication ppp DIALUP if-needed group OUR_TACAC
+S
+\end_layout
+
+\begin_layout Standard
+-for ppp authorization: aaa authorization network DIALUP group OUR_TACACS
+ 
+\end_layout
+
+\begin_layout Standard
+-for tty commands authorization: aaa authorization exec DIALUP group OUR_TACACS
+\end_layout
+
+\begin_layout Standard
+-for per-command authorization: aaa authorization commands <privilege level
+ 1-15>
+\end_layout
+
+\begin_layout Standard
+-for accounting: aaa accounting suppress null-username aaa accounting update
+ newinfo aaa accounting network DIALUP start-stop group OUR_TACACS
+\end_layout
+
+\begin_layout Standard
+-you can also use accounting periodic updates for extra users list checking:
+ aaa accounting update periodic 1
+\end_layout
+
+\begin_layout Standard
+-and configure this all on interfaces: ppp authentication chap pap DIALUP
+ ppp authorization DIALUP ppp accounting DIALUP 
+\end_layout
+
+\begin_layout Standard
+-and on tty lines: authorization exec DIALUP accounting connection DIALUP
+ login authentication DIALUP
+\end_layout
+
+\begin_layout Standard
+Next thing - set up SNMP: access-list 2 permit host your_server_host snmp-server
+ community your_community_string RW 2 BE CAREFULL - add only your tacppd
+ host into SNMP access-list!
+\end_layout
+
+\begin_layout Subsection
+tacacs+ configuration
+\end_layout
+
+\begin_layout Standard
+First, you should configure tacacs+ servers information.
+ 
+\end_layout
+
+\begin_layout Subsection
+AAA configuration
+\end_layout
+
+\begin_layout Standard
+AAA system.
+\end_layout
+
+\begin_layout Subsection
+SNMP configuration
+\end_layout
+
+\begin_layout Standard
+For use SNMP polling tacppd feature.
+\end_layout
+
+\begin_layout Section
+Database configuration
+\end_layout
+
+\begin_layout Standard
+In any case you have to read vendor documentation and consult with your
+ database administrator.
+ Our information only about some specific things.
+\end_layout
+
+\begin_layout Subsection
+PostgreSQL
+\end_layout
+
+\begin_layout Standard
+Available from http://www.postgresql.org.
+ Has embedded procedural language PL/PGSQL and also functionality of 
+\begin_inset Quotes eld
+\end_inset
+
+big
+\begin_inset Quotes erd
+\end_inset
+
+ system.
+ Currently i use PostgreSQL for tacppd developing/testing and this is most
+ supported database.
+\end_layout
+
+\begin_layout Subsection
+MySQL
+\end_layout
+
+\begin_layout Standard
+Very useful and fast, but with restricted functionality.
+\end_layout
+
+\begin_layout Subsection
+MiniSQL
+\end_layout
+
+\begin_layout Standard
+Very small and restricted.
+\end_layout
+
+\begin_layout Subsection
+Oracle
+\end_layout
+
+\begin_layout Standard
+You have to have Oracle, or if you will using it for developing process
+ you can get it with developer license ftom OTN: http://otn.oracle.com.
+\end_layout
+
+\begin_layout Section
+Information in database
+\end_layout
+
+\begin_layout Standard
+NOTE: database tables name and it's fields can be changed in any time.
+ I plan to freeze changes in it only in first beta-version.
+\end_layout
+
+\begin_layout Standard
+database table descriptions available in TacDb.cc file
+\end_layout
+
+\begin_layout Standard
+For understanding information stored into database, you should be familiar
+ with information, used in tacacs+ and by network devices.
+\end_layout
+
+\begin_layout Subsection
+authentication
+\end_layout
+
+\begin_layout Standard
+check user access rights
+\end_layout
+
+\begin_layout Standard
+TABLES: tacpp_v1_usr - user information 
+\end_layout
+
+\begin_layout Standard
+tacpp_v1_acc - user access rights 
+\end_layout
+
+\begin_layout Standard
+tacpp_v1_add - additional user data
+\end_layout
+
+\begin_layout Subsubsection
+user information
+\end_layout
+
+\begin_layout Standard
+store username, password, open/close date and time, several groups membership
+ (access group, authorization group, additional user data group), maximum
+ allowed sessions
+\end_layout
+
+\begin_layout Standard
+EXAMPLE: User ppprv with pwd test, authorization group ppp-1, access group
+ ppp-1, billing group ppp-1 and maximum 1 session
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="6">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+username
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+password
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+avpid
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+accid
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+bilid
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+maxsess
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ppprv
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+test
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+test
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ppp-1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ppp-1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+user access rights
+\end_layout
+
+\begin_layout Standard
+access group identifier; data in regular expression form about: permitted
+ phones, network devices ip, network devices ports; time brackets
+\end_layout
+
+\begin_layout Standard
+can be multiply entries in one group
+\end_layout
+
+\begin_layout Standard
+- time brackets format if time not set - it means any time time format:
+ 
+\end_layout
+
+\begin_layout LyX-Code
+* * * * *
+\end_layout
+
+\begin_layout LyX-Code
+^ ^ ^ ^ ^
+\end_layout
+
+\begin_layout LyX-Code
+| | | | +- day of week (0 - 6)
+\end_layout
+
+\begin_layout LyX-Code
+| | | +--- month of year (1 - 12)
+\end_layout
+
+\begin_layout LyX-Code
+| | +----- day of month (1 - 31)
+\end_layout
+
+\begin_layout LyX-Code
+| +------- hour of day (0 - 24)
+\end_layout
+
+\begin_layout LyX-Code
++--------- minute of hour (0 - 60) 
+\end_layout
+
+\begin_layout Standard
+examples: 
+\end_layout
+
+\begin_layout Standard
+* * * * 0,6 - access only on Sat and Sun 
+\end_layout
+
+\begin_layout Standard
+* 20-8 * * 0,6 - access only on Sat and Sun from 20 to 8 
+\end_layout
+
+\begin_layout Standard
+10-20,40-50 * * * 1-3,0,6 - more complex example.
+\end_layout
+
+\begin_layout Standard
+Access from phone 322322 from any nas and any port
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="4">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+phone
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+nas
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+port
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+time
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+d+322322
+\backslash
+/d+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+.*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+.*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Access from any phone from nas 192.168.1.5 to any port
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="4">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+phone
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+nas
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+port
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+time
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+.*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+^192.168.1.5$
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+.*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Access from any phone, any nas and from Asy1
+\end_layout
+
+\begin_layout LyX-Code
+phone | nas |   port   | time ------+-----+----------+---------
+\end_layout
+
+\begin_layout LyX-Code
+  .*  |  .* | ^Asy1$   |
+\end_layout
+
+\begin_layout LyX-Code
+--------------------------------- 
+\end_layout
+
+\begin_layout Standard
+Portnames: Asy1 - AsyX for async dial-up connection (not-ISDN) for ISDN
+ portnames start with Se (Se0:10, ...) for example on my AS5300 i see (Asy1
+ - Asy240 and Se0:1-Se7:30,...) 
+\end_layout
+
+\begin_layout Standard
+Access from any phone from nas 192.168.2.10 from Async1 and from any nas from
+ Async3 
+\end_layout
+
+\begin_layout LyX-Code
+phone |        nas     |  port  | time ------+----------------+--------+--------
+-
+\end_layout
+
+\begin_layout LyX-Code
+ .*   | ^192.168.2.10$ | ^Asy1$ |
+\end_layout
+
+\begin_layout LyX-Code
+ .*   |      .*        | ^Asy3$ | ------------------------------------------
+ 
+\end_layout
+
+\begin_layout Standard
+P.S.
+ you should remember, that ports for PPP access can be named as AsyX or
+ as ttyX (if user use chap/pap, then AsyX, if it use access from terminal
+ or manual mode - ttyX)
+\end_layout
+
+\begin_layout Standard
+if you wish create several usernames for several destination phone numbers
+ you can use target masks on phone.
+ for example, i have two modem pools - one on phone 320101, other on 8200,
+ and i use next masks: for 8-200: ^8d+
+\backslash
+/421232
+\backslash
+:d+ for 32-01-01: ^8d+
+\backslash
+/4212320101$
+\end_layout
+
+\begin_layout Standard
+you should know, that if you use analog access server like cisco 2511 or
+ so on, then phone will be "async/"
+\end_layout
+
+\begin_layout Standard
+also you should know the phone, which your NAS get from E1, you can see
+ it on Cisco equipment with command: debug isdn q931 (if you have E1 connection
+ to telephone switch) 
+\end_layout
+
+\begin_layout LyX-Code
+access for voip users from voice gateway
+\end_layout
+
+\begin_layout LyX-Code
+phone |      nas   |      port      | time ------+------------+----------------+
+---------
+\end_layout
+
+\begin_layout LyX-Code
+  .*  | ^10.1.1.1$ | ^FXO.*|^ISDN.* | ----------------------------------------------
+\end_layout
+
+\begin_layout Subsubsection
+user DEFAULT for LL access
+\end_layout
+
+\begin_layout Standard
+you should add user DEFAULT if your NAS doesn't support separate authorization
+ on several ports, if so - no need in this user 
+\end_layout
+
+\begin_layout Subsubsection
+Additional User Data
+\end_layout
+
+\begin_layout Standard
+additional user data group identifier; authentication source identifier
+ (for use other than database source); enable password (this is for network
+ device)
+\end_layout
+
+\begin_layout Standard
+authentication sources: only supported one - "db"
+\end_layout
+
+\begin_layout Standard
+next possibly supported authensource (in future): "ccd" or "ccf" - this
+ is for CryptoCard
+\end_layout
+
+\begin_layout Standard
+CryptoCard for authentication (thanks to Bradley Filmer and Alec Peterson)
+ !NOTE! CryptoCard support will be implemented in future versions
+\end_layout
+
+\begin_layout Standard
+tacppd use file with name "etc/CRYPTOCard" or database table with name "CRYPTOCa
+rdTokens"
+\end_layout
+
+\begin_layout Standard
+*** CryptoCard file ***
+\end_layout
+
+\begin_layout Standard
+cryptocard file looks like 
+\end_layout
+
+\begin_layout LyX-Code
+# This is the CRYPTOCard authentication definition database file.
+\end_layout
+
+\begin_layout LyX-Code
+#
+\end_layout
+
+\begin_layout LyX-Code
+# Comments start with a # sign.
+ # Under the display column:
+\end_layout
+
+\begin_layout LyX-Code
+#       0 implies hexadecimal with no phone display
+\end_layout
+
+\begin_layout LyX-Code
+#       1 implies hexadecimal with phone display
+\end_layout
+
+\begin_layout LyX-Code
+#       2 implies decimal with no phone display
+\end_layout
+
+\begin_layout LyX-Code
+#       3 implies decimal with phone display
+\end_layout
+
+\begin_layout LyX-Code
+#
+\end_layout
+
+\begin_layout LyX-Code
+#User    Key(Encrypted)               Display Challenge
+\end_layout
+
+\begin_layout LyX-Code
+#-----------------------------------------------------------
+\end_layout
+
+\begin_layout LyX-Code
+TokUse  a8b5c09e4ea6b503a65c7716383b67ff71406e5c7ec9a7b5    3  15952106
+\end_layout
+
+\begin_layout LyX-Code
+bbundy  d0b669a9ea7892f4f8a40dedffd12bf34340aee363c8ef1c    2 ajblog  92b19a0cad
+6cc908e3e54e34efcf9802a54e15a2017d5066    2 gbusha  67d5af15d362b92ac30c87f3298a
+ee2d5ecef59beb00723c    2 edst    6d78607d069a2fd3d8767087ba7bc5398be336c9860e03
+8f    2 
+\end_layout
+
+\begin_layout Standard
+*** CryptoCard database ***
+\end_layout
+
+\begin_layout Standard
+in common example standard cryptocard table looks like 
+\end_layout
+
+\begin_layout LyX-Code
+CREATE TABLE CRYPTOCardTokens (
+\end_layout
+
+\begin_layout LyX-Code
+        UserID char(64) NOT NULL,
+\end_layout
+
+\begin_layout LyX-Code
+        DisplayID char(8),
+\end_layout
+
+\begin_layout LyX-Code
+        SerialNumber char(12),
+\end_layout
+
+\begin_layout LyX-Code
+        InitPIN char(8),
+\end_layout
+
+\begin_layout LyX-Code
+        EncryptedKey char(64),
+\end_layout
+
+\begin_layout LyX-Code
+        NextChallenge char(8),
+\end_layout
+
+\begin_layout LyX-Code
+        ProgDate char(16),
+\end_layout
+
+\begin_layout LyX-Code
+        GroupID char(20),
+\end_layout
+
+\begin_layout LyX-Code
+        Options char(24),
+\end_layout
+
+\begin_layout LyX-Code
+        AuthenCount int(11),
+\end_layout
+
+\begin_layout LyX-Code
+        PRIMARY KEY (UserID)
+\end_layout
+
+\begin_layout LyX-Code
+); 
+\end_layout
+
+\begin_layout LyX-Code
+UserID DisplayID SerialNumber InitPIN  EncryptedKey         NextChallenge
+  ProgDate    GroupID   Options  AuthenCount roman  roman     498024979
+      4751   cad3040197b565b4f964bd0d70d64ae8f90299b89 e67c44b   36621554
+     01/15/2002 Admin-Root 110354101     0
+\end_layout
+
+\begin_layout Subsection
+authorization
+\end_layout
+
+\begin_layout Standard
+check user rights after success access for some protocols and some resources
+\end_layout
+
+\begin_layout Standard
+tacpp_v1_avp - authorization information tacpp_v1_cmd - per-command authorizatio
+n
+\end_layout
+
+\begin_layout Subsubsection
+authorization information
+\end_layout
+
+\begin_layout Standard
+authorization group identifier; service; protocol; attribute-value pair
+\end_layout
+
+\begin_layout Standard
+AV-pairs - authorization attributes in Tacacs+ any av-pair consist from
+ two fields: avp name field and avp data field (service=ppp, protocol=ip,
+ etc)
+\end_layout
+
+\begin_layout Standard
+You can use follow av-pairs:
+\end_layout
+
+\begin_layout Standard
+service= slip, ppp, arap, shell, tty-daemon, connection, system, firewall
+\end_layout
+
+\begin_layout Standard
+protocol= lcp, ip, ipx, atalk, vines, lat, xremote, tn3270, telnet, rlogin,
+ pad, vpdn, ftp, http, deccp, osicp, h323, unknown
+\end_layout
+
+\begin_layout Standard
+cmd= shell (exec) command.
+ Must be if service=shell can be cmd=NULL
+\end_layout
+
+\begin_layout Standard
+cmd-arg= argument to shell (exec) command can be multiple
+\end_layout
+
+\begin_layout Standard
+acl= number connection access-list (service=shell cmd=NULL)
+\end_layout
+
+\begin_layout Standard
+inacl= identifier for interface in access-list
+\end_layout
+
+\begin_layout Standard
+outacl= identifier for interface out access-list
+\end_layout
+
+\begin_layout Standard
+zonelist= numeric zonelist value (AppleTalk only)
+\end_layout
+
+\begin_layout Standard
+addr= network address 
+\end_layout
+
+\begin_layout Standard
+addr-pool= identifier of address-pool
+\end_layout
+
+\begin_layout Standard
+routing= boolean (is routing information on interface) permit/deny send
+ routing updates throught this interface
+\end_layout
+
+\begin_layout Standard
+route= route for this interface <dst_addr> <mask> [<routing_addr>]
+\end_layout
+
+\begin_layout Standard
+timeout= timer for connection (minutes), 0 - no timeout
+\end_layout
+
+\begin_layout Standard
+idletime= idle-timeout for connection (minutes)
+\end_layout
+
+\begin_layout Standard
+autocmd= auto-command to run (service=shell cmd=NULL)
+\end_layout
+
+\begin_layout Standard
+noescape= boolean (service=shell cmd=NULL) 
+\end_layout
+
+\begin_layout Standard
+nohangup= boolean (service=shell cmd=NULL)
+\end_layout
+
+\begin_layout Standard
+priv_lvl= privilege level
+\end_layout
+
+\begin_layout Standard
+remote_user= remoute userid (TAC_PLUS_AUTHEN_METH_RCMD)
+\end_layout
+
+\begin_layout Standard
+remote_host= remote host (TAC_PLUS_AUTHEN_METH_RCMD)
+\end_layout
+
+\begin_layout Standard
+callback-dialstring= NULL or dialstring, NULL - for request from user
+\end_layout
+
+\begin_layout Standard
+callback-line= line for callback
+\end_layout
+
+\begin_layout Standard
+callback-rotary= rotary
+\end_layout
+
+\begin_layout Standard
+nocallback-verify= do not require authentication after callback 
+\end_layout
+
+\begin_layout Standard
+SOME EXTERNAL AVPAIRS (NOT IN RFC, BUT WITH CISCO SUPPORT) - very-very useful....
+ inacl#<n> setup multiline access-list (<n>-row number) inacl#1=permit ip
+ any any inacl#2=deny igrp ...
+\end_layout
+
+\begin_layout Standard
+outacl#<n>
+\end_layout
+
+\begin_layout Standard
+route#<n> multiline route entries
+\end_layout
+
+\begin_layout Standard
+rte-ftr-in#<n> input access list definition for routing updates on interface
+ rte-ftr-in#0=router igrp 60 rte-ftr-in#1=permit 0.0.3.4 255.255.0.0 rte-ftr-in#2=deny
+ any
+\end_layout
+
+\begin_layout Standard
+rte-ftr-out#<n> output acl for routing update
+\end_layout
+
+\begin_layout Standard
+sap#<n> static saps
+\end_layout
+
+\begin_layout Standard
+route#<n> route table 
+\end_layout
+
+\begin_layout Standard
+sap-fltr-in#<n> input sap filter list sap-fltr-out#<n> output sap filter
+ list
+\end_layout
+
+\begin_layout Standard
+pool-def#<n> address pool definition pool-def#1=DIALUP 10.1.1.1 10.1.1.100 pool-def#2=
+INTERNAL 192.168.0.1 192.168.0.100
+\end_layout
+
+\begin_layout Standard
+VoIP AVP: h323-billing-model=0/1 (credit/postpaid or debit/prepaid) h323-credit-
+time= h323-credit-amount=
+\end_layout
+
+\begin_layout Standard
+as i understand RFC, you can add your own av-pairs if client understand
+ it (be careful, sometimes it can be wrong for some clients), we don't do
+ any control for av-pairs in database - be carefull! 
+\end_layout
+
+\begin_layout Subsubsection
+tacppd authorization data modifyers
+\end_layout
+
+\begin_layout Standard
+for better AV handling we have system of AV modifyers.
+ The modifyers - interface to internal functions, SQL servers and external
+ programs to change values during request
+\end_layout
+
+\begin_layout Standard
+- Internal functions: set AVP as - attribute=INT:function the function currently
+ available - addrpool=number this is request to internal address pooling
+ system Example: "addr=INT:addrpool=10" (get address from address pool number
+ 10) for setting address pools see config file documentation
+\end_layout
+
+\begin_layout Standard
+- SQL functions: attribute=SQL:sql function request string request to SQL
+ for data.
+ Get only first row value Example: "timeout=SQL:GetTimeoutFunction($name)"
+ it will requested as "SELECT GetTimeoutFunction(PppUserName)" (this is
+ example for PostgreSQL, for Oracle it will be some differ), if i not mistake:
+ "SELECT GetTimeoutFunction(PppUserName) FROM DUAL" (see Oracle documentation
+ about calling PL/SQL functions) (you will need in this information only
+ if you will create your own database driver)
+\end_layout
+
+\begin_layout Standard
+External program: attribute=EXT:external program request string Example:
+ "timeout=EXT:get_timeout.pl" or "timeout=EXT:get.pl $name" NOTE: see BUGS
+ file for status of bug 20010716 (currently this feature doesn't work) The
+ programs can be placed ONLY into "ext" subdirectory in tacppd tree.
+ 
+\end_layout
+
+\begin_layout Standard
+For sending information to external requests you can use additional variables:
+ $name - during this request this will be changed to current username string
+ $port - nas port name $nas - network access server $phone - phone string
+ if it is dialup connection
+\end_layout
+
+\begin_layout Standard
+Example: "timeout=SQL:time_table_function('$name','$nas','$phone')"
+\end_layout
+
+\begin_layout Standard
+!NOTE! - external program modifyer very buggy and don't usable while
+\end_layout
+
+\begin_layout Subsubsection
+common authorization axamples
+\end_layout
+
+\begin_layout Standard
+usually any ISP with DIAL-UP services has several authorization groups:
+\end_layout
+
+\begin_layout Standard
+1.
+ ordinary PPP with use NAS internal address pool service=ppp protocol=lcp
+ service=ppp protocol=ip addr-pool=DIALUP # below only if users use terminals
+ for insert username/password # (some non-standard, advanced or stupid dial-up
+ clients) service=shell cmd= service=shell autocmd=ppp service=shell noescape=tr
+ue
+\end_layout
+
+\begin_layout Standard
+2.
+ group = username - for ppp with static ip addr service=ppp protocol=lcp
+ service=ppp protocol=ip addr=194.85.113.100
+\end_layout
+
+\begin_layout Standard
+3.
+ ppp with use tacppd internal ip addr pooling system this is our addition,
+ but for NAS it will be converted to string "addr=address_from_pool_system"
+ service=ppp protocol=lcp service=ppp protocol=ip addr=INT:addrpool=1
+\end_layout
+
+\begin_layout Standard
+4.
+ ppp with additional ip filters service=ppp protocol=lcp service=ppp protocol=ip
+ addr-pool=DIALUP service=ppp protocol=ip inacl#1=deny ip any 192.168.0.0 0.0.0.255
+ service=ppp protocol=ip inacl#2=permit ip any any
+\end_layout
+
+\begin_layout Standard
+5.
+ uucp (rlogin access to uucp server) service=shell cmd= service=shell autocmd=rl
+ogin aaa.bbb.ru /user uuuser service=shell noescape=true
+\end_layout
+
+\begin_layout Standard
+6.
+ admin access (unrestricted) service=shell cmd= 
+\end_layout
+
+\begin_layout Standard
+7.
+ async tunnel: service=shell cmd= service=shell autocmd=telnet 192.168.10.100
+ 3162 /stre am service=shell noescape=true
+\end_layout
+
+\begin_layout Standard
+some comments:
+\end_layout
+
+\begin_layout Standard
+a) if you use ppp multilink (for example, you have ISDN users), you should
+ add: service=ppp protocol=multilink max-links=2
+\end_layout
+
+\begin_layout Standard
+b) ppp callback service service=ppp protocol=lcp callback-dialstring= service=sh
+ell callback-dialstring= service=shell nocallback-verify=1
+\end_layout
+
+\begin_layout Subsubsection
+specific examples
+\end_layout
+
+\begin_layout Standard
+dial-in PPP with pool DIALUP
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="3">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+service
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+protocol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+av-pair
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ppp
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+lcp
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ppp
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ip
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+addr-pool=DIALUP
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+shell
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+cmd=
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+shell
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+autocmd=ppp
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+shell
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+noescape=true
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+dial-in PPP with pool DIALUP and for ISDN
+\end_layout
+
+\begin_layout LyX-Code
+service | protocol | av-pair --------+----------+------------------
+\end_layout
+
+\begin_layout LyX-Code
+  ppp   |   lcp    |
+\end_layout
+
+\begin_layout LyX-Code
+  ppp   |   ip     | addr-pool=DIALUP
+\end_layout
+
+\begin_layout LyX-Code
+  ppp   |multilink | max-links=2 --------------------------------------
+ 
+\end_layout
+
+\begin_layout Standard
+dial-in PPP with static ip addr
+\end_layout
+
+\begin_layout LyX-Code
+service | protocol | av-pair --------+----------+------------------
+\end_layout
+
+\begin_layout LyX-Code
+  ppp   |   lcp    |
+\end_layout
+
+\begin_layout LyX-Code
+  ppp   |   ip     | addr=10.1.1.10
+\end_layout
+
+\begin_layout LyX-Code
+  shell |          | cmd=
+\end_layout
+
+\begin_layout LyX-Code
+  shell |          | autocmd=ppp
+\end_layout
+
+\begin_layout LyX-Code
+  shell |          | noescape=true --------------------------------------
+ 
+\end_layout
+
+\begin_layout Standard
+async tunneling
+\end_layout
+
+\begin_layout LyX-Code
+service | protocol | av-pair --------+----------+-------------------------------
+-------      shell |          | cmd=
+\end_layout
+
+\begin_layout LyX-Code
+  shell |          | autocmd=telnet 192.168.1.112 /stream       shell |   
+       | noescape=true ---------------------------------------------------------
+-
+\end_layout
+
+\begin_layout Standard
+shell connect (all commands)
+\end_layout
+
+\begin_layout LyX-Code
+service | protocol | av-pair --------+----------+------------------
+\end_layout
+
+\begin_layout LyX-Code
+  shell |          | cmd= -------------------------------------- 
+\end_layout
+
+\begin_layout Standard
+connect for UUCP (autocommand)
+\end_layout
+
+\begin_layout LyX-Code
+service | protocol | av-pair --------+----------+-------------------------------
+----------  shell  |          | cmd=
+\end_layout
+
+\begin_layout LyX-Code
+ shell  |          | autocmd=rlogin smtp.aaa.ru /user uuuser   shell  |  
+        | noescape=true --------------------------------------------------------
+-----
+\end_layout
+
+\begin_layout Standard
+for shell connect with restricted command set you should use PER-COMMAND
+ AUTHORIZATION 
+\end_layout
+
+\begin_layout Standard
+set voice user parameter with voice gateway
+\end_layout
+
+\begin_layout LyX-Code
+  service   | protocol | av-pair ------------+----------+----------------------
+\end_layout
+
+\begin_layout LyX-Code
+ connection |   h323   |  h323-credit-time=120 ---------------------------------
+-------------
+\end_layout
+
+\begin_layout Subsubsection
+per-command authorization
+\end_layout
+
+\begin_layout Standard
+description: per-command authorization for cmd= and cmd-arg= av-pairs
+\end_layout
+
+\begin_layout Standard
+authorization group id; regex with permitted commands; regex with deny commands;
+ regex with permitted command arguments; regex with deny command arguments
+\end_layout
+
+\begin_layout Standard
+.* - all [^.*] - nothing
+\end_layout
+
+\begin_layout Standard
+permit any commands and arguments 
+\end_layout
+
+\begin_layout LyX-Code
+ cmdperm | cmddeny | argperm | argdeny ---------+---------+---------+---------
+\end_layout
+
+\begin_layout LyX-Code
+   .*    |         |    .*   | ---------+---------+---------+---------
+\end_layout
+
+\begin_layout Standard
+deny any commands and arguments
+\end_layout
+
+\begin_layout LyX-Code
+ cmdperm | cmddeny | argperm | argdeny ---------+---------+---------+---------
+\end_layout
+
+\begin_layout LyX-Code
+         |   .*    |         |   .* ---------+---------+---------+---------
+\end_layout
+
+\begin_layout Subsection
+accounting
+\end_layout
+
+\begin_layout Standard
+logging activities
+\end_layout
+
+\begin_layout Standard
+tacpp_v1_log
+\end_layout
+
+\begin_layout Standard
+description: log entries table (only stop entries) server char(16) -- server
+ -- servtime datetime -- time in server -- start_time datetime -- nas internal
+ start time -- task_id int -- nas task_id -- username char(32) -- username
+ -- nas char(16) -- NAS -- 
+\end_layout
+
+\begin_layout Standard
+port char(10) -- nas port -- service char(10) -- service -- cfrom char(64)
+ -- phone or ip addr -- ip char(16) -- ip addr of client -- protocol char(10)
+ -- protocol -- elapsed int -- elapsed time -- bytes_in int -- bytes in
+ port -- bytes_out int -- bytes out from port -- disc_cause int -- disconnect
+ cause -- disc_cause_ext int -- ext disconnect cause -- rx_speed int --
+ connect read speed -- tx_speed int 
+\end_layout
+
+\begin_layout Standard
+-- connect write speed -- h323_call_origin char(10) -- answer/originate/
+ -- h323_call_type char(15) -- Telephony/ -- h323_disconnect_cause int --
+ -- h323_voice_quality int -- -- h323_connect_time datetime -- -- h323_disconnec
+t_time datetime -- -- h323_remote_address char(16) -- remot e ip addr --
+\end_layout
+
+\begin_layout Standard
+the tacppd store accounting information in two destinations: 1.
+ text file 2.
+ database it stores all av-pairs wich it receives from NAS
+\end_layout
+
+\begin_layout Subsection
+traffic information
+\end_layout
+
+\begin_layout Standard
+server can store ifInOctets/ifOutOctets information from NAS and routers.
+ This information collects from device during SNMP polling process.
+\end_layout
+
+\begin_layout Standard
+description: traffic log via interface counters server char(16) -- the server
+ IP -- curtime datetime -- time of entry -- port char(16) -- info for port
+ -- nas char(16) -- on nas ip -- bytein float -- ifInOctets -- byteout float
+ -- ifOutOctets --
+\end_layout
+
+\begin_layout Subsection
+billing data
+\end_layout
+
+\begin_layout Standard
+tacpp_v1_bil tacpp_v1_bilres
+\end_layout
+
+\begin_layout Standard
+description: billing resource table description bilid char(32) -- billing
+ group -- bilidname char(50) -- billing group name -- bilmod char(32) --
+ resource module name --
+\end_layout
+
+\begin_layout Standard
+description: billing resource table bilid char(32) -- billing group -- attribute
+ char(32) -- attribute name -- value char(32) -- attribute val ue --
+\end_layout
+
+\begin_layout Standard
+!NOTE! - billing system no available, it will be in future releases
+\end_layout
+
+\begin_layout Subsection
+additional data notes
+\end_layout
+
+\begin_layout Standard
+The VoIP session (on FXO) logs 4 entries for all connections: 1.
+ start from port 2.
+ start from user connection 3.
+ stop from user connection 4.
+ stop from port
+\end_layout
+
+\begin_layout Standard
+in 1 and 4 you can see FXO port number also, opening ports doing authentication
+ with username of your pots peer number mask (3640 with FXO for example).
+ But it doesn't care about result of it.
+\end_layout
+
+\begin_layout Standard
+in new IOS versions i see some changes in this.
+\end_layout
+
+\begin_layout Standard
+The VoIP ports on Cisco 36xx series with NM-HDV voice modules generate port
+ names as 'ISDN number:number' unless you use "aaa nas port voip" configuration
+ command - than portname is 'Serial num/num:num ' 
+\end_layout
+
+\begin_layout Standard
+if you use tacacs+ for Cisco VoIP gateway authentication, than you should
+ write your TCL script so, that it should be aware of: 1.
+ in first authentication session voip gw does not send information to tacacs+
+ about source/destination phone numbers 2.
+ it does not send information about phone numbers in authorization request
+ packets, and it does not send any av-pair in authorization start 3.
+ authorization request from TCL script create two requests to tacacs+ server
+ - authentication with setted username/pin and with source/destination phone
+ numbers and after that it generate void authorization request, but for
+ send values from tacacs+ to TCL you should use authorization responce in
+ form: h323-credit-time=digit (or any other h323-related av-pairs, see documenta
+tion upper or in Cisco documentation)
+\end_layout
+
+\begin_layout Standard
+Due to logging information where i plan to use device DNS names, not ip
+ addresse s (due to more right logfile understanding, and for statistics),
+ carefully check your DNS entries about network device and database servers
+ names in native and r everse DNS zones.
+ May be the best way - use /etc/hosts file for it.
+ 
+\end_layout
+
+\begin_layout Section
+TCI (tacppd control interface)
+\end_layout
+
+\begin_layout Standard
+For use external programs for control active users and see devices availability.
+ It uses TCP connection with simple commands set.
+ You can use telnet or any simple TCP connection from your protgrams for
+ access to TCI.
+ For use TCI you should configura listener and TCI users (2 level access).
+\end_layout
+
+\begin_layout Subsection
+TCI listener
+\end_layout
+
+\begin_layout LyX-Code
+listener 11001 
+\end_layout
+
+\begin_layout LyX-Code
+ type tci
+\end_layout
+
+\begin_layout LyX-Code
+ maxconnect 10 
+\end_layout
+
+\begin_layout LyX-Code
+ acl 3 
+\end_layout
+
+\begin_layout LyX-Code
+ exit 
+\end_layout
+
+\begin_layout Subsection
+TCI users
+\end_layout
+
+\begin_layout LyX-Code
+manager tciadm 
+\end_layout
+
+\begin_layout LyX-Code
+ password 'tcipwd' 
+\end_layout
+
+\begin_layout LyX-Code
+ type tci 
+\end_layout
+
+\begin_layout LyX-Code
+ acl 1 
+\end_layout
+
+\begin_layout LyX-Code
+ exit 
+\end_layout
+
+\begin_layout Standard
+TCI users have access to all TCI commands..
+\end_layout
+
+\begin_layout Subsection
+TCI commands
+\end_layout
+
+\begin_layout Standard
+The TCI session require authentication, after connect open you have to enter
+ username, and password, after that you can use TCI commands for see list
+ of active users on network devices, see list of network devices and it's
+ status, drop user from all devices, clear port on specifyed device.
+ All output from tacppd will have form: 
+\begin_inset Quotes eld
+\end_inset
+
+#:
+\backslash
+tresponse
+\begin_inset Quotes erd
+\end_inset
+
+.
+ But 
+\backslash
+t this is TAB (
+\backslash
+t).
+ I will write response in form 
+\begin_inset Quotes eld
+\end_inset
+
+#: Ok
+\begin_inset Quotes erd
+\end_inset
+
+, but you should know, that space after 
+\begin_inset Quotes eld
+\end_inset
+
+#:
+\begin_inset Quotes erd
+\end_inset
+
+ - this is TABulation.
+ Also every responce will ended with symbols 
+\backslash
+r
+\backslash
+n, but i will not write it in examples.
+ In every session you can send many commands.
+ Also you can have TCI session opened for a long time.
+\end_layout
+
+\begin_layout Subsubsection
+authentication
+\end_layout
+
+\begin_layout LyX-Code
+s06: {7} % telnet localhost 11001
+\end_layout
+
+\begin_layout LyX-Code
+Trying 127.0.0.1...
+ Connected to localhost.
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Escape character is '^]'.
+ 
+\end_layout
+
+\begin_layout LyX-Code
+tciadm 
+\end_layout
+
+\begin_layout LyX-Code
+tcipwd 
+\end_layout
+
+\begin_layout LyX-Code
+#: Ok
+\end_layout
+
+\begin_layout Standard
+If you use wrong username/password, message will be 
+\begin_inset Quotes eld
+\end_inset
+
+#: Error
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+showdevices
+\begin_inset Quotes erd
+\end_inset
+
+ command
+\end_layout
+
+\begin_layout Standard
+You should send command 
+\begin_inset Quotes eld
+\end_inset
+
+showdevices
+\begin_inset Quotes erd
+\end_inset
+
+ and you will receive device names, ips and status Up/Down in next form.
+\end_layout
+
+\begin_layout LyX-Code
+showdevices 
+\end_layout
+
+\begin_layout LyX-Code
+#: Begin
+\end_layout
+
+\begin_layout LyX-Code
+vgw 192.168.113.21 Up 
+\end_layout
+
+\begin_layout LyX-Code
+vgk 192.168.113.15 Up 
+\end_layout
+
+\begin_layout LyX-Code
+as01 192.168.113.28 Up 
+\end_layout
+
+\begin_layout LyX-Code
+as02 192.168.113.12 Up 
+\end_layout
+
+\begin_layout LyX-Code
+#: End
+\end_layout
+
+\begin_layout Standard
+Output about devices always inside Begin/End.
+ Spaces in output - this is TAB (
+\backslash
+t) symbols.
+ Every string ended by 
+\begin_inset Quotes eld
+\end_inset
+
+
+\backslash
+r
+\backslash
+n
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+showusers
+\begin_inset Quotes erd
+\end_inset
+
+ command
+\end_layout
+
+\begin_layout Standard
+You should send command 
+\begin_inset Quotes eld
+\end_inset
+
+showusers
+\begin_inset Quotes erd
+\end_inset
+
+ and you will receive device with ip and name and users on this device with
+ username, port, phone_from/phone_to and ip address.
+\end_layout
+
+\begin_layout LyX-Code
+showusers 
+\end_layout
+
+\begin_layout LyX-Code
+#: Begin
+\end_layout
+
+\begin_layout LyX-Code
+#: Device 192.168.113.21(vgw) 
+\end_layout
+
+\begin_layout LyX-Code
+501 Serial1/0:31 74212322311/74212323794 0.0.0.0 
+\end_layout
+
+\begin_layout LyX-Code
+#: Device 192.168.113.15(vgk) 
+\end_layout
+
+\begin_layout LyX-Code
+#: Device 192.168.113.28(as01) 
+\end_layout
+
+\begin_layout LyX-Code
+#: Device 192.168.113.12(as02)
+\end_layout
+
+\begin_layout LyX-Code
+#: End
+\end_layout
+
+\begin_layout Standard
+All spaces here - this is TAB (
+\backslash
+t) symbol.
+ Every string ended by 
+\begin_inset Quotes eld
+\end_inset
+
+
+\backslash
+r
+\backslash
+n
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+checkpwd
+\begin_inset Quotes erd
+\end_inset
+
+ command
+\end_layout
+
+\begin_layout Standard
+For check crypted password.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+cryptpwd
+\begin_inset Quotes erd
+\end_inset
+
+ command
+\end_layout
+
+\begin_layout Standard
+For crypt password in tacppd style.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+clearuser
+\begin_inset Quotes erd
+\end_inset
+
+ command
+\end_layout
+
+\begin_layout Standard
+You sould send command 
+\begin_inset Quotes eld
+\end_inset
+
+clearuser
+\begin_inset Quotes erd
+\end_inset
+
+ after that send username for clear.
+ Server returns reply 
+\begin_inset Quotes eld
+\end_inset
+
+Ok
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout LyX-Code
+clearuser
+\end_layout
+
+\begin_layout LyX-Code
+pppuser1100
+\end_layout
+
+\begin_layout LyX-Code
+#: Ok
+\end_layout
+
+\begin_layout Standard
+All spaces here - this is TAB (
+\backslash
+t) symbol.
+ Every string ended by 
+\begin_inset Quotes eld
+\end_inset
+
+
+\backslash
+r
+\backslash
+n
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+cleardeviceport command
+\end_layout
+
+\begin_layout Standard
+You should send command 
+\begin_inset Quotes eld
+\end_inset
+
+cleardeviceport
+\begin_inset Quotes erd
+\end_inset
+
+ after that send device ip and port which will dropped.
+ Server returns 
+\begin_inset Quotes eld
+\end_inset
+
+Ok
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout LyX-Code
+cleardeviceport
+\end_layout
+
+\begin_layout LyX-Code
+192.168.113.28
+\end_layout
+
+\begin_layout LyX-Code
+Async21
+\end_layout
+
+\begin_layout LyX-Code
+#: Ok
+\end_layout
+
+\begin_layout Standard
+All spaces here - this is TAB (
+\backslash
+t) symbol.
+ Every string ended by 
+\begin_inset Quotes eld
+\end_inset
+
+
+\backslash
+r
+\backslash
+n
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+exit command
+\end_layout
+
+\begin_layout Standard
+For end tci session, use command 
+\begin_inset Quotes eld
+\end_inset
+
+exit
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+quit
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Bundle setup and configure
+\end_layout
+
+\begin_layout Standard
+Bundle use TIP (tacppd interchange protocol) - this is UDP packets with
+ multicast addresses.
+ Each tacppd server can send and receive this packets.
+\end_layout
+
+\begin_layout Subsection
+Bundle operation
+\end_layout
+
+\begin_layout Standard
+There are 4 types of packets for bundle operation: device track packet,
+ user track packet, keepalive packet and start packet.
+ Device track packet has information about device IP and it's status: is
+ device Up or Down now.
+ User track packet has information about currently active users and some
+ information about it.
+ Keepalive packet - about tacppd server activity with it's priority information.
+ Start packet - notification about new member in bundle.
+ Tacppd sends device track packet if it done icmp or snmp polling and detects
+ device status change.
+ The device track packet with information about down device can be sent
+ only as result of polling operation.
+ User track packet can be sent as result of snmp polling operation with
+ user status Up or Down, and in case of receive tacacs+ accounting information,
+ and can set user status in Up or Down.
+ Keepalive packets - for selection of active server - this is server which
+ do polling operation and do users drops by snmp - and provide information
+ about server priority and do information about any server availability.
+ Also server priority value have device track and user track packets and
+ it replace keepalive packet if presents.
+ Keepalive packets send every tacppd every 10 seconds.
+ It has tacppd server ip and it's priority.
+\end_layout
+
+\begin_layout Subsection
+Active tacppd server
+\end_layout
+
+\begin_layout Standard
+In bundle one tacppd will be active.
+ Active status means, that this tacppd have to do snmp/icmp network devices
+ polling, and also this tacppd will send to network devices snmp commands
+ for drop users.
+ Also this tacppd resource system will do updates to database during resources
+ changes.
+ This is tacppd with highest bundle priority value.
+ The algorythm of active tacppd selection next: after start every tacppd
+ matched as inactive, send start packet and wait 30 sec.
+ If it receive keepalive, start, dt or ut packet in bundle, than it store
+ information about this tacppd, and compare priority values with own priority
+ value.
+ The maximum priority tacppd set as active.
+ If localhost tacppd priority higher, this server - active.
+ In other case - inactive.
+ If any receive start packet, than it should send set of devicetrack and
+ usertack packets.
+ The list of tacppd servers has expire value of 61 sec, if during this time
+ no information come from any tacppd, than this tacppd server delete from
+ list and if it was active, than do new active server select.
+ Any tacppd send keepalives every 10 secs in case, if no dt or ut packets
+ were created during this period.
+ If it were, than it wait 10 secafter own last dt or ut packet was sent.
+\end_layout
+
+\begin_layout Subsection
+Multicast configuration
+\end_layout
+
+\begin_layout Subsubsection
+Linux
+\end_layout
+
+\begin_layout Standard
+If you use tacppd bundle, you must enable multicast on your Linux box.
+ Exellent documentation available at Multicast-HOWTO (http://www.linux.org/docs/ld
+p/howto/Multicast-HOWTO.html).
+ In several words:
+\end_layout
+
+\begin_layout Description
+Check if it is enabled, and if not, enable Multicasting in the kernel 
+\end_layout
+
+\begin_layout Description
+Configure multicast routing with command:
+\end_layout
+
+\begin_layout Standard
+/sbin/route add -net 224.0.0.0 netmask 240.0.0.0 dev eth0
+\end_layout
+
+\begin_layout Description
+See, if Linux box connected to multicast group, see /proc/net/igmp file.
+ You will see something like:
+\end_layout
+
+\begin_layout LyX-Code
+Idx Device : Count Querier Group Users Timer Reporter 
+\end_layout
+
+\begin_layout LyX-Code
+1 lo : 0 V2 010000E0 1 0:ED688817 0 
+\end_layout
+
+\begin_layout LyX-Code
+2 eth0 : 2 V2 010101EF 1 0:FFFFED3F 1 
+\end_layout
+
+\begin_layout LyX-Code
+              010000E0 1 0:ED688817 0
+\end_layout
+
+\begin_layout Standard
+(if you stop tacppd, than you do not see string where Reporter=1).
+\end_layout
+
+\begin_layout Subsubsection
+FreeBSD
+\end_layout
+
+\begin_layout Subsubsection
+SUN Solaris
+\end_layout
+
+\begin_layout Subsubsection
+All platforms
+\end_layout
+
+\begin_layout Standard
+Also try to do ping to a multicast group address.
+ The bundle configuration in tacppd.conf file should be looking like:
+\end_layout
+
+\begin_layout LyX-Code
+access 4 
+\end_layout
+
+\begin_layout LyX-Code
+ permit ^239.1.1.1$ 
+\end_layout
+
+\begin_layout LyX-Code
+exit
+\end_layout
+
+\begin_layout LyX-Code
+listener 11000 
+\end_layout
+
+\begin_layout LyX-Code
+ type bundle 
+\end_layout
+
+\begin_layout LyX-Code
+ maxconnect 10 
+\end_layout
+
+\begin_layout LyX-Code
+ acl 4 
+\end_layout
+
+\begin_layout LyX-Code
+exit
+\end_layout
+
+\begin_layout LyX-Code
+bundle 239.1.1.1:11000 
+\end_layout
+
+\begin_layout LyX-Code
+ description 'tacppd multicast group' 
+\end_layout
+
+\begin_layout LyX-Code
+ cryptokey key1 
+\end_layout
+
+\begin_layout LyX-Code
+ ttl 1 
+\end_layout
+
+\begin_layout LyX-Code
+exit
+\end_layout
+
+\begin_layout Standard
+The ttl=1 only if all nodes connected to one LAN.
+ If you have routers and other network between nodes, set ttl to more.
+ Also set routers for multicast routing.
+\end_layout
+
+\begin_layout Subsubsection
+Multicast routing configuration
+\end_layout
+
+\begin_layout Standard
+If you have use tacppds installed in several servers situated in several
+ networks and want join tacppds to bundle, you have to setup multicast routing.
+ There are a lot of documentation on http://www.cisco.com about multicast
+ routing configuration.
+ We are see only several simple examples.
+ For example we have two Ethernet segments which interconnected by Catalyst
+ switch in different vlans, interconnected by Cisco router.
+\end_layout
+
+\begin_layout Standard
+Router configuration:
+\end_layout
+
+\begin_layout LyX-Code
+! enable multicast routing
+\end_layout
+
+\begin_layout LyX-Code
+ip multicast-routing
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+! first subinterface configuration
+\end_layout
+
+\begin_layout LyX-Code
+interface FastEthernet0/0.2
+\end_layout
+
+\begin_layout LyX-Code
+ description First TACPPD VLAN
+\end_layout
+
+\begin_layout LyX-Code
+ encapsulation dot1Q 2
+\end_layout
+
+\begin_layout LyX-Code
+ ip pim sparse-mode
+\end_layout
+
+\begin_layout LyX-Code
+ ip cgmp
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+! second subinterface configuration
+\end_layout
+
+\begin_layout LyX-Code
+interface FastEthernet0/0.3
+\end_layout
+
+\begin_layout LyX-Code
+ description Second TACPPD VLAN
+\end_layout
+
+\begin_layout LyX-Code
+ encapsulation dot1Q 3
+\end_layout
+
+\begin_layout LyX-Code
+ ip pim sparse-mode
+\end_layout
+
+\begin_layout LyX-Code
+ ip cgmp
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ip pim rp-address your.router.ip.address
+\end_layout
+
+\begin_layout Standard
+In this example we are using PIM sparse-mode, and RP of our router.
+ Also we set CGMP enabled on subinterfaces, but instead you can use IGMP
+ Snooping feature on the Catalysts, but i prefer CGMP, i think, that it
+ looks like better.
+\end_layout
+
+\begin_layout Standard
+Catalyst switch configuration:
+\end_layout
+
+\begin_layout LyX-Code
+! disable igmp snooping feature (cgmp enabled by default)
+\end_layout
+
+\begin_layout LyX-Code
+no ip igmp snooping
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+! trunk ethernet interface
+\end_layout
+
+\begin_layout LyX-Code
+interface FastEthernet 0/1
+\end_layout
+
+\begin_layout LyX-Code
+ description Router trunk connect
+\end_layout
+
+\begin_layout LyX-Code
+ switchport mode trunk
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+! first ethernet interface
+\end_layout
+
+\begin_layout LyX-Code
+interface FastEthernet0/5
+\end_layout
+
+\begin_layout LyX-Code
+ description First TACPPD server host
+\end_layout
+
+\begin_layout LyX-Code
+ switchport access vlan 2
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+! second ethernet interface
+\end_layout
+
+\begin_layout LyX-Code
+interface FastEthernet0/6
+\end_layout
+
+\begin_layout LyX-Code
+ description Second TACPPD server host
+\end_layout
+
+\begin_layout LyX-Code
+ switchport access vlan 3
+\end_layout
+
+\begin_layout Standard
+In this example we disable IGMP snooping feature and set Catalyst interfaces.
+\end_layout
+
+\begin_layout Standard
+Remember, that you have to use multicast TTL values more than 1 if you will
+ use multicast routing, every hop require add 1 to TTL.
+ For our example set TTL to 2.
+\end_layout
+
+\begin_layout Section
+Peers setup and configure
+\end_layout
+
+\begin_layout Section
+Tacppd using
+\end_layout
+
+\begin_layout Subsection
+Stand-alone configuration without nework devices (for testing)
+\end_layout
+
+\begin_layout LyX-Code
+! tacppd configuration file, build by admin Thu Jun 20 09:06:37 2002 
+\end_layout
+
+\begin_layout LyX-Code
+config
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! debug
+\end_layout
+
+\begin_layout LyX-Code
+ debug file
+\end_layout
+
+\begin_layout LyX-Code
+  facility db
+\end_layout
+
+\begin_layout LyX-Code
+  facility pool
+\end_layout
+
+\begin_layout LyX-Code
+  facility billing
+\end_layout
+
+\begin_layout LyX-Code
+  facility track
+\end_layout
+
+\begin_layout LyX-Code
+  facility tacacs
+\end_layout
+
+\begin_layout LyX-Code
+  facility aaa
+\end_layout
+
+\begin_layout LyX-Code
+  facility snmp
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ debug syslog
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! access list
+\end_layout
+
+\begin_layout LyX-Code
+ access 1
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^192.168.0
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ access 2
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^192.168.0
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ access 3
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^127.0.0
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^192.168.0
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ access 4
+\end_layout
+
+\begin_layout LyX-Code
+  permit ^239.1.1
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! system manager
+\end_layout
+
+\begin_layout LyX-Code
+ manager admin
+\end_layout
+
+\begin_layout LyX-Code
+  password 'admin-pwd'
+\end_layout
+
+\begin_layout LyX-Code
+  type terminal
+\end_layout
+
+\begin_layout LyX-Code
+  acl 1
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ manager webmin
+\end_layout
+
+\begin_layout LyX-Code
+  password 'webmin-pwd'
+\end_layout
+
+\begin_layout LyX-Code
+  type http
+\end_layout
+
+\begin_layout LyX-Code
+  acl 1
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! tcp/udp listener
+\end_layout
+
+\begin_layout LyX-Code
+ listener 2222
+\end_layout
+
+\begin_layout LyX-Code
+  type terminal
+\end_layout
+
+\begin_layout LyX-Code
+  maxconnect 2
+\end_layout
+
+\begin_layout LyX-Code
+  acl 2
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ listener 10000
+\end_layout
+
+\begin_layout LyX-Code
+  type tacacs
+\end_layout
+
+\begin_layout LyX-Code
+  maxconnect 100
+\end_layout
+
+\begin_layout LyX-Code
+  acl 3
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ listener 8888
+\end_layout
+
+\begin_layout LyX-Code
+  type http
+\end_layout
+
+\begin_layout LyX-Code
+  maxconnect 10
+\end_layout
+
+\begin_layout LyX-Code
+  acl 2
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ listener 12001
+\end_layout
+
+\begin_layout LyX-Code
+  type netflow
+\end_layout
+
+\begin_layout LyX-Code
+  maxconnect 10
+\end_layout
+
+\begin_layout LyX-Code
+  acl 2
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ listener 11000
+\end_layout
+
+\begin_layout LyX-Code
+  type bundle
+\end_layout
+
+\begin_layout LyX-Code
+  maxconnect 10
+\end_layout
+
+\begin_layout LyX-Code
+  acl 4
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! address pool
+\end_layout
+
+\begin_layout LyX-Code
+ pool 1
+\end_layout
+
+\begin_layout LyX-Code
+  addr 10.1.1.1
+\end_layout
+
+\begin_layout LyX-Code
+  addr 10.1.1.2
+\end_layout
+
+\begin_layout LyX-Code
+  addr 10.1.1.3
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! network access server
+\end_layout
+
+\begin_layout LyX-Code
+ device 192.168.0.2
+\end_layout
+
+\begin_layout LyX-Code
+  description 'test'
+\end_layout
+
+\begin_layout LyX-Code
+  tacacskey key
+\end_layout
+
+\begin_layout LyX-Code
+  snmpcommunity 'common'
+\end_layout
+
+\begin_layout LyX-Code
+  loginstring 'login++:'
+\end_layout
+
+\begin_layout LyX-Code
+  pwdstring 'pwd++:'
+\end_layout
+
+\begin_layout LyX-Code
+  defauthorization no
+\end_layout
+
+\begin_layout LyX-Code
+  module cisco.so
+\end_layout
+
+\begin_layout LyX-Code
+  polldelay 5
+\end_layout
+
+\begin_layout LyX-Code
+  inttrfcount no
+\end_layout
+
+\begin_layout LyX-Code
+  snmppolling no
+\end_layout
+
+\begin_layout LyX-Code
+  icmppolling yes 
+\end_layout
+
+\begin_layout LyX-Code
+  shutdown no
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ device 127.0.0.1
+\end_layout
+
+\begin_layout LyX-Code
+  description 'our'
+\end_layout
+
+\begin_layout LyX-Code
+  tacacskey key
+\end_layout
+
+\begin_layout LyX-Code
+  snmpcommunity 'public'
+\end_layout
+
+\begin_layout LyX-Code
+  loginstring 'login++:'
+\end_layout
+
+\begin_layout LyX-Code
+  pwdstring 'passw++:'
+\end_layout
+
+\begin_layout LyX-Code
+  defauthorization no
+\end_layout
+
+\begin_layout LyX-Code
+  module cisco.so
+\end_layout
+
+\begin_layout LyX-Code
+  polldelay 60
+\end_layout
+
+\begin_layout LyX-Code
+  inttrfcount no
+\end_layout
+
+\begin_layout LyX-Code
+  snmppolling no
+\end_layout
+
+\begin_layout LyX-Code
+  icmppolling yes
+\end_layout
+
+\begin_layout LyX-Code
+  shutdown no
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! database
+\end_layout
+
+\begin_layout LyX-Code
+ database tacppd-db@192.168.0.2:5432
+\end_layout
+
+\begin_layout LyX-Code
+  cryptokey 'dbkey'
+\end_layout
+
+\begin_layout LyX-Code
+  login tacppd
+\end_layout
+
+\begin_layout LyX-Code
+  password tacppd-pwd
+\end_layout
+
+\begin_layout LyX-Code
+  module pgsql.so
+\end_layout
+
+\begin_layout LyX-Code
+  shutdown no
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ database tacppd-db@192.168.0.3:5432
+\end_layout
+
+\begin_layout LyX-Code
+  cryptokey 'dbkey'
+\end_layout
+
+\begin_layout LyX-Code
+  login tacppd
+\end_layout
+
+\begin_layout LyX-Code
+  password tacppd-pwd
+\end_layout
+
+\begin_layout LyX-Code
+  module pgsql.so
+\end_layout
+
+\begin_layout LyX-Code
+  shutdown no
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! tacppd bundle
+\end_layout
+
+\begin_layout LyX-Code
+ bundle 239.1.1.1:11000
+\end_layout
+
+\begin_layout LyX-Code
+  cryptokey key1
+\end_layout
+
+\begin_layout LyX-Code
+  priority 10
+\end_layout
+
+\begin_layout LyX-Code
+  ttl 1
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! billing module
+\end_layout
+
+\begin_layout LyX-Code
+ billing 0
+\end_layout
+
+\begin_layout LyX-Code
+  description 'void'
+\end_layout
+
+\begin_layout LyX-Code
+  module none.so
+\end_layout
+
+\begin_layout LyX-Code
+  shutdown yes
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+ ! rouming peer
+\end_layout
+
+\begin_layout LyX-Code
+ peer www1.kht.ru:8001
+\end_layout
+
+\begin_layout LyX-Code
+  description 'none'
+\end_layout
+
+\begin_layout LyX-Code
+  cryptokey key1
+\end_layout
+
+\begin_layout LyX-Code
+  timeshift +2
+\end_layout
+
+\begin_layout LyX-Code
+  mask ^Pppwww1.*
+\end_layout
+
+\begin_layout LyX-Code
+  mask ^ppp.*
+\end_layout
+
+\begin_layout LyX-Code
+  exit
+\end_layout
+
+\begin_layout LyX-Code
+ peer www2.kht.ru:8002
+\end_layout
+
+\begin_layout LyX-Code
+  description 'none'
+\end_layout
+
+\begin_layout LyX-Code
+  cryptokey key2
+\end_layout
+
+\begin_layout LyX-Code
+  mask ^Pppwww2.*
+\end_layout
+
+\begin_layout LyX-Code
+  mask ^www.*
+\end_layout
+
+\begin_layout LyX-Code
+  exit 
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+exit
+\end_layout
+
+\begin_layout Standard
+You can use LibTACPLUS (http://sourceforge.net/projects/libtacplus) for emulate
+ network device (in libtacplus's directory /samples you will find simple
+ tacacs+ client).
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Section
+NetFlow collector
+\end_layout
+
+\begin_layout Standard
+Tacppd has inbuilt NetFlow information collector.
+ NetFlow - this is Cisco(R) technology, used in Cisco devices for provide
+ information about ip traffic.
+ Router generate UDP packets with information about data flows.
+ Server can accumulate it and do accounting and billing.
+ The most problem - information volume.
+ Usually we cant directly log this NetFlow packets - this is too large logfiles,
+ and too much resources required for process it.
+ Tacppd has simple aggregation system, where it collects flow information
+ in memory for 15 minutes and writes to database only aggregated information.
+ In future versions we plan add some mechanism for provide detailed logs
+ for configured ip addresses.
+ But currently we write only aggregated data.
+ It greatly reduce data volume and do possible billing and normal accounting
+ of traffic information on per-ip basis.
+\end_layout
+
+\begin_layout Standard
+see tacpp.conf.orig or use CLI for configure NetFlow collector.
+ The log file name with NetFlow information looks like nf20011116.log and
+ recreate every day
+\end_layout
+
+\begin_layout Standard
+log file format differ in depend of NetFlow packet versions 
+\end_layout
+
+\begin_layout LyX-Code
+format v1:
+\end_layout
+
+\begin_layout LyX-Code
+ip_addr         IP addr of router which sends NetFlow information
+\end_layout
+
+\begin_layout LyX-Code
+version         version of NetFlow packets
+\end_layout
+
+\begin_layout LyX-Code
+SysUptime       time in msecs since router booted
+\end_layout
+
+\begin_layout LyX-Code
+unix_secs       current time in seconds since 0000 UTC 1970 unix_nsecs 
+     residual nanoseconds since 0000 UTC 1970 First           SysUptime
+ at start of flow Last            SysUptime of last packet of the flow
+\end_layout
+
+\begin_layout LyX-Code
+protocol        IP protocol, 6-TCP, 17-UDP, 1-ICMP
+\end_layout
+
+\begin_layout LyX-Code
+srcaddr         ip source addr
+\end_layout
+
+\begin_layout LyX-Code
+srcport         TCP/UDP source port number
+\end_layout
+
+\begin_layout LyX-Code
+dstaddr         ip destination addr
+\end_layout
+
+\begin_layout LyX-Code
+dstport         TCP/UDP destination port
+\end_layout
+
+\begin_layout LyX-Code
+nexthop         next hop router's IP addr
+\end_layout
+
+\begin_layout LyX-Code
+input           input interface index
+\end_layout
+
+\begin_layout LyX-Code
+output          output interface index
+\end_layout
+
+\begin_layout LyX-Code
+dPkts           packets sent in time between First and Last dOctets    
+     octets sent in time between First and Last
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+format v5: 
+\end_layout
+
+\begin_layout LyX-Code
+ip_addr         IP addr of router which sends NetFlow information
+\end_layout
+
+\begin_layout LyX-Code
+version         version of NetFlow packets
+\end_layout
+
+\begin_layout LyX-Code
+SysUptime       time in msecs since router booted
+\end_layout
+
+\begin_layout LyX-Code
+unix_secs       current time in seconds since 0000 UTC 1970 unix_nsecs 
+     residual nanoseconds since 0000 UTC 1970 flow_sequence   sequence number
+ of total flows seen engine_type     type of flow switching engine (RP,VIP,etc)
+ engine_id       slot number of flow switching engine First           SysUptime
+ at start of flow Last            SysUptime of last packet of the flow protocol
+        IP protocol, 6-TCP, 17-UDP, 1-ICMP srcaddr         ip source addr
+ srcport         TCP/UDP source port number dstaddr         ip destination
+ addr dstport         TCP/UDP destination port nexthop         next hop
+ router's IP addr input           input interface index output         
+ output interface index dPkts           packets sent in time between First
+ and Last dOctets         octets sent in time between First and Last src_as
+          source peer/origin Autonomous System dst_as          destination
+ peer/origin Autonomous System src_mask        source route's mask bits
+ 
+\end_layout
+
+\begin_layout LyX-Code
+dst_mask        destination route's mask bits tos             IP Type-of-Service
+\end_layout
+
+\begin_layout Standard
+end
+\end_layout
+
+\begin_layout Section
+TACPPD logfiles
+\end_layout
+
+\begin_layout Standard
+Tacppd use several logfiles for provide information with several levels.
+ Also it can use database tables for store some logging information.
+ Every logfile entry starts with fragment with data and time, divided from
+ other part of string by brackets [].
+ In common way it looks like [2003/02/18-03-23:10:56] when you can see year/mont
+h/day-day_of_week-hour:minute:second.
+ All data gets from localhost clock, and writes in local timezone.
+ In later releases possible deprecate field with day of week value.
+\end_layout
+
+\begin_layout Subsection
+tacacs+ log
+\end_layout
+
+\begin_layout Standard
+Tacacs+ accounting information writes in file YYYYMM.log.
+\end_layout
+
+\begin_layout Standard
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+[2002/11/06-04-17:15:28] action=START user=84212322311 port=Serial1/0:21
+  from=84212322311 nas=192.168.113.21 task_id=27 start_time=1036566928 timezone=VSK
+ service=connection protocol=h323 
+\end_layout
+
+\begin_layout LyX-Code
+[2002/11/06-04-17:15:54] action=STOP user=111 port=Serial1/0:21  from=8421232231
+1 nas=192.168.113.21 task_id=27 start_time=1036566928  timezone=VSK service=connect
+ion protocol=h323  h323-gw-id=vgw.tts.khb.cisco h323-incoming-conf-id=5CBC9187
+ F08E11D6 8058C840 5D76F8B 3 h323-call-origin=answer h323-call-type=Telephony
+  h323-setup-time=17:15:28.589 VSK Wed Nov 6 2002 subscriber=RegularLine
+  in-portgrp-id=### 320320 ### h323-connect-time=17:15:28.599 VSK Wed Nov
+ 6 2002  h323-disconnect-time=17:15:53.933 VSK Wed Nov 6 2002 h323-disconnect-cau
+se=10  tariff-type=Unknown h323-voice-quality=0 pre-bytes-in=0 pre-bytes-out=0
+  pre-paks-in=0 pre-paks-out=0 bytes_in=0 bytes_out=64160 paks_in=0 paks_out=401
+ connect-progress=101 elapsed_time=25 nas-rx-speed=0 nas-tx-speed=0
+\end_layout
+
+\begin_layout Standard
+this is full output of TACACS+ accounting packet.
+\end_layout
+
+\begin_layout Subsection
+tacacs+ database log
+\end_layout
+
+\begin_layout Standard
+For billing we should have more useful log for provide acoounting and export
+ information to other software.
+\end_layout
+
+\begin_layout Subsection
+netflow information log
+\end_layout
+
+\begin_layout Subsection
+netflow database log
+\end_layout
+
+\begin_layout Standard
+For provide per-traffic tariffs we should have netflow information available
+ via database.
+\end_layout
+
+\begin_layout Subsection
+events log
+\end_layout
+
+\begin_layout Standard
+Events in tacppd
+\end_layout
+
+\begin_layout Standard
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-19:25:29] create Database Module lpmx@192.168.113.247:5432 [2003/02/
+15-07-19:25:29] - tcp-servers start - 
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-19:25:29] Server terminal now listen at port 2222 [2003/02/15-07-
+19:25:30] Server tacacs now listen at port 10000 [2003/02/15-07-19:25:31]
+ Server bundle now listen at port 11000 [2003/02/15-07-19:25:32] Server
+ tci now listen at port 11001 [2003/02/15-07-19:25:33] Server netflow now
+ listen at port 12001 [2003/02/15-07-19:25:45] NAS 192.168.113.21 (vgw) go
+ Up 
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-19:25:45] NAS 192.168.113.15 (vgk) go Up 
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-19:25:49] NAS 192.168.113.28 (as01) go Up 
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-19:25:55] NAS 192.168.113.12 (as02) go Up 
+\end_layout
+
+\begin_layout Subsection
+info log
+\end_layout
+
+\begin_layout Subsection
+errors log
+\end_layout
+
+\begin_layout Subsection
+debug log
+\end_layout
+
+\begin_layout Standard
+Several debug information as configured in config.
+\end_layout
+
+\begin_layout Standard
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-15:13:54] TACACS: create new tacacs+ session with 192.168.113.21
+ sessid=7029305
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-15:13:54] TACACS: Session Process type=1 seq=1 [2003/02/15-07-15:
+13:54] TACACS: start->action=1 start->service=10 start->authen _type=1 version=1
+92
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-15:13:54] TACACS: Proccess ASCII login/password from 192.168.113.21
+ for 111
+\end_layout
+
+\begin_layout LyX-Code
+[2003/02/15-07-15:13:54] TACACS: try nopassword db_authentication [2003/02/15-07
+-15:13:54] TRACK: add inactive user 111/Serial1/0:30 to list [2003/02/15-07-15:1
+3:54] TACACS: Session Process type=1 seq=3 [2003/02/15-07-15:13:54] AAA:
+  - check by rem_addr(phone) (.* with ) success 
+\end_layout
+
+\begin_layout Section
+Database logging
+\end_layout
+
+\begin_layout Standard
+Tacppd also writes some logs directly to database tables.
+ This is tacacs+ accounting, NetFlow data and some other.
+ This information used by contributed with tacppd billing/accounting system.
+\end_layout
+
+\end_body
+\end_document

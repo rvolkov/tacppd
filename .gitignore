@@ -1,0 +1,14 @@
+*.log
+.DS_Store
+.Trashes
+*.swp
+*.lock
+*~.nib
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+xcuserdata
+xcuserdata/
+*.moved-aside
+*.pid

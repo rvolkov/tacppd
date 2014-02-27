@@ -1,0 +1,384 @@
+----------------------------------------------------------------------------
+
+cvPeerCfgIfIndex OBJECT-TYPE		.1.3.6.1.4.1.9.9.63.1.2.1.1.2
+    SYNTAX InterfaceIndexOrZero
+--    Rsyntax Integer32(0..2147483647)
+    ACCESS read-only
+    DESCRIPTION
+        "The ifIndex of the peer associated ifEntry. The ifIndex is 
+         appeared after the associated ifEntry is created successfully.
+         This ifIndex will be used to access the objects in the 
+         Voice over Telephony or Voice over IP peer specific table. In
+         addition, the ifIndex is also used to access the associated peer
+         configuration entry of the IETF Dial Control MIB. If the 
+         peer associated ifEntry had not been created, then this object
+         has a value of zero. "
+--------------------------------------------------------------------------
+
+cvPeerCfgType OBJECT-TYPE		.1.3.6.1.4.1.9.9.63.1.2.1.1.3
+    SYNTAX INTEGER {
+        voice(1),
+        voip(2)
+        }
+    ACCESS read-write
+    DESCRIPTION
+        "Specify the type of voice related encapsulation.
+         voice - voice encapsulation (voiceEncap ifType) on the telephony
+                 network.
+         voip  - VoIP encapsulation (voiceOverIp ifType) on the IP
+                 backbone."
+    DEFVAL { voice }
+---------------------------------------------------------------------------
+
+cvPeerCfgRowStatus OBJECT-TYPE		.1.3.6.1.4.1.9.9.63.1.2.1.1.4
+    SYNTAX RowStatus
+--    Rsyntax INTEGER {
+--        active(1),
+--        notInService(2),
+--        notReady(3),
+--        createAndGo(4),
+--        createAndWait(5),
+--        destroy(6)
+--        }
+    ACCESS read-write
+    DESCRIPTION
+        " This object is used to create a new row or modify or delete an
+          existing row in this table. The cvPeerCfgType object should not
+          be modified once the new row has been created."
+---------------------------------------------------------------------------
+
+cvVoicePeerCfgSessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.2.1.1
+    SYNTAX DisplayString(SIZE(0..64))
+--    Rsyntax OCTET STRING(SIZE(0..64))
+    ACCESS read-write
+    DESCRIPTION
+        "The object specifies the session target of the peer.
+         Session Targets definitions:
+         The session target has the syntax used by the IETF service
+         location protocol. The syntax is as follows:
+        
+         mapping-type:type-specific-syntax
+        
+         the mapping-type specifies a scheme for mapping the matching dial
+         string to a session target.
+        
+         The valid Mapping type definitions for the peer are as follows:
+         loopback - Syntax: loopback:where
+            'where' string is defined as follows:
+            compressed - loopback is performed on compressed voice as 
+                         close to the CODEC which processes the data as
+                         possible.
+            uncompressed - loopback is performed on the PCM or analog
+                         voice as close to the telephony endpoint as
+                         possible.
+        
+         Local loopback case:
+         uncompressed - the PCM voice coming into the DSP is simply
+             turned around and sent back out, allowing testing of the
+             transmit--> receive paths in the telephony endpoint.
+         compressed - the compressed voice coming out of the CODEC is
+             turned around on the DSP module and fed back into the
+             decompressor through the jitter buffer. In addition to the
+             telephony endpoint, this tests both the encode and decode
+             paths without involving data paths or packet handling on the
+             host router.
+
+         Remote loopback case:
+         compressed - RTP packets received from the network are
+             decapsulated and passed to the DSP board. Instead of feeding
+             these into the CODEC for decompression, they are immediately
+             sent back to the session application as if they had
+             originated locally and been compressed.
+         uncompressed - In addition to the above, the voice samples are
+              sent all the way through the CODEC and then turned around
+              instead of being sent to the telephony endpoint"
+    DEFVAL { "" }
+-----------------------------------------------------------------------------
+
+cvVoicePeerCfgDialDigitsPrefix OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.2.1.2
+    SYNTAX DisplayString(SIZE(0..32))
+--    Rsyntax OCTET STRING(SIZE(0..32))
+    ACCESS read-write
+    DESCRIPTION
+        "The object specifies the prefix of the dial digits for the peer.
+         The dial digits prefix is sent to telephony interface before
+         the real phone number when the system places the outgoing
+         call to the voice encapsulation peer over telephony interface."
+    DEFVAL { "" }
+------------------------------------------------------------------------------
+
+cvVoIPPeerCfgSessionProtocol OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.3.1.1
+    SYNTAX CvSessionProtocol
+--    Rsyntax INTEGER {
+--        other(1),
+--        cisco(2),
+--        sdp(3)
+--        }
+    ACCESS read-write
+    DESCRIPTION
+        "The object specifies the session protocol to be used
+         for Internet call between local and remote router via
+         IP backbone."
+    DEFVAL { cisco }
+----------------------------------------------------------------------------
+
+cvVoIPPeerCfgSessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.3.1.4
+    SYNTAX DisplayString
+--    Rsyntax OCTET STRING(SIZE(0..255))
+    ACCESS read-write
+
+Показывает в виде:
+enterprises.9.9.63.1.2.3.1.4.21 = "ipv4:195.128.128.90"
+enterprises.9.9.63.1.2.3.1.4.22 = "ipv4:195.239.28.170"
+enterprises.9.9.63.1.2.3.1.4.23 = "ipv4:212.20.30.105"
+enterprises.9.9.63.1.2.3.1.4.24 = "ipv4:212.34.32.7"
+enterprises.9.9.63.1.2.3.1.4.25 = "ipv4:212.34.32.7"
+enterprises.9.9.63.1.2.3.1.4.27 = "ipv4:24.11.164.40"
+enterprises.9.9.63.1.2.3.1.4.28 = "ipv4:212.19.18.21"
+настроенные peers
+
+        "The object specifies the session target of the peer.
+         Session Targets definitions:
+         The session target has the syntax used by the IETF service
+         location protocol. The syntax is as follows:
+        
+         mapping-type:type-specific-syntax
+        
+         the mapping-type specifies a scheme for mapping the matching dial
+         string to a session target. The type-specific-syntax is exactly
+         that, something that the particular mapping scheme can understand.
+
+         For example,
+         Session target           Meaning
+         ipv4:171.68.13.55:1006   The session target is the IP version 4
+                                  address of 171.68.13.55 and port 1006
+         dns:pots.cisco.com:1661  The session target is the IP host with
+                                  dns name pots.cisco.com, and port 1661
+         
+         The valid Mapping type definitions for the peer are as follows:
+         ipv4  - Syntax: ipv4:w.x.y.z:port or  ipv4:w.x.y.z 
+         dns   - Syntax: dns:host.domain:port or dns:host.domain
+        
+         loopback - Syntax: loopback:where
+            'where' string is defined as follows:
+            rtp - loopback is performed at the transport protocol level.
+
+         Local loopback case:
+         rtp - the session application sets up an RTP stream to itself
+             (i.e. actually allocates a port pair and opens the
+             appropriate UDP sockets). It then does the full RTP
+             encapsulation, sends the packets to the loopback IP address,
+             receives the RTP packets, and hands the compressed voice back
+             to the CODEC. This tests the entire local processing path,
+             both transmit and receive, in the router, as well as all of
+             the above paths.
+        
+         Remote loopback case:
+         rtp: RTP packets received from the network are decapsulated and
+              immediately re-encapsulated in the outbound RTP stream,
+              using the same media clock (i.e. timestamp) as the
+              received packet. They are then sent back to the remote
+              source router as if the voice had originated on a
+              telephony port on the local router."
+    DEFVAL { "" }
+-----------------------------------------------------------------------------
+
+cvVoIPPeerCfgCoderRate OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.3.1.5
+    SYNTAX INTEGER {
+        g729r8000(1),
+        g729Ar8000(2),
+        g726r16000(3),
+        g726r24000(4),
+        g726r32000(5),
+        g711ulawr64000(6),
+        g711Alawr64000(7)
+        }
+    ACCESS read-write
+    DESCRIPTION
+        "This object specifies the default voice coder rate of speech for
+         the VoIP peer.
+         g729r8000      - G.729 8000  bps
+         g729Ar8000     - G.729 ANNEX-A 8000  bps
+         g726r16000     - G.726 16000 bps
+         g726r24000     - G.726 24000 bps
+         g726r32000     - G.726 32000 bps
+         g711ulawr64000 - G.711 u-Law 64000 bps
+         g711Alawr64000 - G.711 A-Law 64000 bps"
+    DEFVAL { g729r8000 }
+------------------------------------------------------------------------------
+
+cvVoIPPeerCfgFaxRate OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.2.3.1.6
+    SYNTAX INTEGER {
+        none(1),
+        voiceRate(2),
+        fax2400(3),
+        fax4800(4),
+        fax7200(5),
+        fax9600(6),
+        fax14400(7)
+        }
+    ACCESS read-write
+    DESCRIPTION
+        " This object specifies the default transmit rate of FAX the
+          VoIP peer. If the value of this object is 'none', then
+          the Fax relay feature is disabled; otherwise the Fax relay
+          feature is enabled.
+        
+          none      - Fax relay is disabled.
+          voiceRate - the fastest possible fax rate not exceed the
+                      configured voice rate.
+          fax2400   - 2400  bps FAX transmit rate.
+          fax4800   - 4800  bps FAX transmit rate.
+          fax7200   - 7200  bps FAX transmit rate.
+          fax9600   - 9600  bps FAX transmit rate.
+          fax14400  - 14400 bps FAX transmit rate."
+    DEFVAL { voiceRate }
+-----------------------------------------------------------------------------
+
+cvCallActiveConnectionId OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.1.1.1
+    SYNTAX CvcGUid
+--    Rsyntax OCTET STRING(SIZE(0..16))
+    ACCESS read-only
+    DESCRIPTION
+        "The global call identifier for the gateway call."
+-----------------------------------------------------------------------------
+
+cvCallActiveCoderTypeRate OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.1.1.5
+    SYNTAX CvcCoderTypeRate
+--    Rsyntax INTEGER {
+--        other(1),
+--        fax2400(2),
+--        fax4800(3),
+--        fax7200(4),
+--        fax9600(5),
+--        fax14400(6),
+--        g729r8000(10),
+--        g729Ar8000(11),
+--        g726r16000(12),
+--        g726r24000(13),
+--        g726r32000(14),
+--        g711ulawr64000(15),
+--        g711Alawr64000(16)
+--        }
+    ACCESS read-only
+    DESCRIPTION
+        "The negotiated coder rate. It specifies the transmit rate of
+         voice/fax compression to its associated call leg for the call."
+-----------------------------------------------------------------------------
+
+cvCallActiveSessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.1.1.11
+    SYNTAX DisplayString(SIZE(0..64))
+--    Rsyntax OCTET STRING(SIZE(0..64))
+    ACCESS read-only
+    DESCRIPTION
+        "The object specifies the session target of the peer that
+         is used for the call. This object is set with the information
+         in the call associated cvVoicePeerCfgSessionTarget object when
+         the call is connected.  "
+-----------------------------------------------------------------------------
+
+cvVoIPCallActiveConnectionId OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.2.1.1
+    SYNTAX CvcGUid
+--    Rsyntax OCTET STRING(SIZE(0..16))
+    ACCESS read-only
+    DESCRIPTION
+        "The global call identifier for the gateway call."
+-----------------------------------------------------------------------------
+
+cvVoIPCallActiveRemoteIPAddress OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.2.1.2
+    SYNTAX IpAddress
+    ACCESS read-only
+    DESCRIPTION
+        "Remote system IP address for the VoIP call."
+-----------------------------------------------------------------------------
+
+cvVoIPCallActiveSessionProtocol OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.2.1.6
+    SYNTAX CvSessionProtocol
+--    Rsyntax INTEGER {
+--        other(1),
+--        cisco(2),
+--        sdp(3)
+--        }
+    ACCESS read-only
+    DESCRIPTION
+        "The object specifies the session protocol to be used
+         for Internet call between local and remote router via
+         IP backbone."
+------------------------------------------------------------------------------
+
+cvVoIPCallActiveSessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.2.1.7
+    SYNTAX DisplayString
+--    Rsyntax OCTET STRING(SIZE(0..255))
+    ACCESS read-only
+    DESCRIPTION
+        "The object specifies the session target of the peer that
+         is used for the call. This object is set with the information
+         in the call associated cvVoIPPeerCfgSessionTarget object when
+         the voice over IP call is connected.  "
+------------------------------------------------------------------------------
+
+cvVoIPCallActiveCoderTypeRate OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.3.2.1.17
+    SYNTAX CvcCoderTypeRate
+--    Rsyntax INTEGER {
+--        other(1),
+--        fax2400(2),
+--        fax4800(3),
+--        fax7200(4),
+--        fax9600(5),
+--        fax14400(6),
+--        g729r8000(10),
+--        g729Ar8000(11),
+--        g726r16000(12),
+--        g726r24000(13),
+--        g726r32000(14),
+--        g711ulawr64000(15),
+--        g711Alawr64000(16)
+--        }
+    ACCESS read-only
+    DESCRIPTION
+        "The negotiated coder rate. It specifies the transmit rate of
+         voice/fax compression to its associated call leg for the call.
+         This rate is different from the configuration rate because of
+         rate negotiation during the call."
+-----------------------------------------------------------------------------
+
+cvCallHistoryConnectionId OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.4.1.1.1
+    SYNTAX CvcGUid
+--    Rsyntax OCTET STRING(SIZE(0..16))
+    ACCESS read-only
+    DESCRIPTION
+        "The global call identifier for the gateway call."
+-----------------------------------------------------------------------------
+
+cvCallHistorySessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.4.1.1.8
+    SYNTAX DisplayString(SIZE(0..64))
+--    Rsyntax OCTET STRING(SIZE(0..64))
+    ACCESS read-only
+    DESCRIPTION
+        "The object specifies the session target of the peer that
+         is used for the call via telephony interface."
+-----------------------------------------------------------------------------
+
+cvVoIPCallHistoryConnectionId OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.4.2.1.1
+    SYNTAX CvcGUid
+--    Rsyntax OCTET STRING(SIZE(0..16))
+    ACCESS read-only
+    DESCRIPTION
+        "The global call identifier for the gateway call."
+-----------------------------------------------------------------------------
+
+cvVoIPCallHistoryRemoteIPAddress OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.4.2.1.2
+    SYNTAX IpAddress
+    ACCESS read-only
+    DESCRIPTION
+        "Remote system IP address for the call."
+------------------------------------------------------------------------------
+
+cvVoIPCallHistorySessionTarget OBJECT-TYPE	.1.3.6.1.4.1.9.9.63.1.4.2.1.7
+    SYNTAX DisplayString
+--    Rsyntax OCTET STRING(SIZE(0..255))
+    ACCESS read-only
+    DESCRIPTION
+        "The object specifies the session target of the peer that
+         is used for the Voice over IP call."
+------------------------------------------------------------------------------

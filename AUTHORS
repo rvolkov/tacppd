@@ -1,0 +1,27 @@
+TACACS++ daemon (tacppd) team
+------------------------------
+
+Written by:
+
+rv  - Roman Volkov - author and maintainer
+      rv at tacppd dot org
+
+Contributors:
+
+lsk - Igor Lyapin aka lsk (lsk at tacppd dot org)
+      all CLI code, great database fixing and extensions,
+      all XML handling and processing
+maxfieb - Brett Maxfield (Australia) (maxfieb at tacppd dot org)
+      working for implement XML-RPC and use such interfaces for
+      interact with external billing systems. Do a lot of fixes,
+      documentation updates, redesign of automake/autoconf scripts
+oleg - Oleg Zolotaryov (Khabarovsk, Russia) C++ consultations and ideas
+generator
+max - Max Volkov (Khabarovsk, Russia) Perl-programming of web interfaces
+vl - Vladimir Movchanyuk (Khabarovsk, Russia) parser of netflow and
+some example perl scripts
+Dmitry Efimyuk (Mary-El, Russia) testing, discussing
+Vitaly Shevchenko (Moscow, Russia) some kind of oracle work
+
+------------------------------------------------------------------
+For sources of some code portions see in text of appropriate module.

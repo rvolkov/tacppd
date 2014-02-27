@@ -1,0 +1,196 @@
+BODY{
+    margin-top : 5px;
+    margin-left : 5px;
+}
+
+
+HR {COLOR: #7C6A05;
+    background : #7C6A05;
+    WIDTH: 100%;
+    TEXT-ALIGN: left; 
+    HEIGHT: 1px;
+    border: 0px;
+}
+
+
+TABLE.SiteTop{
+    WIDTH: 100%;
+    background : #ffffff;
+    border: 1px dashed #636363;
+}
+TD.SiteTop1{ WIDTH: 100; }
+TD.SiteTop2{ WIDTH: 400; }
+TD.SiteTop3{ }
+TD.inner{ font-size: 10pt; }
+
+TABLE.Reg{
+    WIDTH: 500px;
+    background : #ffffff;
+    border: 1px dashed #636363;
+}
+
+TABLE.TopTable{ WIDTH: 750;}
+TD.TopTableLeft{ WIDTH: 90; }
+TD.TopTableRight{ text-align: center; }
+
+TABLE.TitleTable{ WIDTH: 1100; font-size: 9pt;}
+TD.TitleTable0 {
+    WIDTH: 20px;
+}
+TD.TitleTable1 {
+    WIDTH: 160px;
+    TEXT-ALIGN: center;
+    background : #f1f1f1;
+    border: 1px dashed #636363;
+}
+TD.TitleTable2 {
+    WIDTH: 110px;
+    TEXT-ALIGN: center;
+    background : #f1f1f1;
+    border: 1px dashed #636363;
+}
+TD.TitleTable3 {
+    WIDTH: 190px;
+    TEXT-ALIGN: center;
+    background : #f1f1f1;
+    border: 1px dashed #636363;
+}
+
+
+Table.InnerTable{
+   font-size: 9pt;
+   margin: 10px 10px 10px 20px;
+}
+
+
+A.Link{
+    TEXT-DECORATION: none;
+    COLOR: #401F00; 
+}
+A.Link:hover {
+   COLOR: #772302; 
+   TEXT-DECORATION: underline; 
+}
+
+SPAN.Link{ COLOR: #CB2B06; }
+SPAN.InputText{ COLOR: #444444;}
+SPAN.ColorText{ COLOR: #0000FF; font-size: 10pt;}
+SPAN.big{
+    font-size: 18pt;
+    FONT-WEIGHT: bold;
+}
+SPAN.regmessag{
+    font-size: 12pt;
+    FONT-WEIGHT: bold;
+    COLOR: #4444ff;
+}
+
+SPAN.SelectLang{
+   COLOR: #555555; 
+   font-size: 11pt;
+}
+SPAN.Pages{
+    font-size: 10pt;
+    FONT-WEIGHT: bold; 
+}
+
+INPUT.PlaneText{
+   FONT-SIZE: 9pt; 
+   border: 1px solid #555555; 
+   padding-left: 3px; 
+}
+INPUT.PlaneTextBig{
+   FONT-SIZE: 11pt; 
+   border: 1px solid #555555; 
+   padding-left: 3px; 
+   WIDTH: 250;
+}
+INPUT.PlaneTextRed{
+   COLOR: #FF0000; 
+   FONT-SIZE: 9pt; 
+   border: 1px solid #555555; 
+   padding-left: 3px; 
+}
+INPUT.MiniCmd {font-size: 9pt;
+             text-decoration : none; 
+             background-color: #F5F5F5; 
+             COLOR: #000000; 
+             border: 1px solid #444444; 
+             WIDTH: 60;
+             height: 18;
+           }
+INPUT.SaveCmd {font-size: 9pt;
+             text-decoration : none; 
+             background-color: #F7F7F7; 
+             COLOR: #000000; 
+             border: 1px solid #FF0000; 
+             WIDTH: 70;
+             height: 19;
+           }
+INPUT.SelectPassT {FONT-SIZE: 10pt; 
+                   TEXT-DECORATION: none; 
+                   BACKGROUND-COLOR: #F5F5F5; 
+                   COLOR: #401F00;  border: 1px solid #aaaaaa; 
+                   CURSOR: hand;
+                   padding-left: 3px; 
+                  }
+INPUT.SelectPassB {FONT-SIZE: 10pt; 
+                   TEXT-DECORATION: none; 
+                   BACKGROUND-COLOR: #F5F5F5; 
+                   COLOR: #401F00;  border-bottom: 1px solid #aaaaaa; border-left: 1px solid #aaaaaa; border-right: 1px solid #aaaaaa; border-top: 0px; 
+                   CURSOR: hand;
+                   padding-left: 3px; 
+                  }
+SELECT.MySelect{
+    font-size: 9pt;
+    height: 17;
+    width: 120; 
+}
+SELECT.MySelectColor{
+    COLOR: #CB2B06; 
+    font-size: 9pt;
+    width: 125; 
+}
+
+
+TEXTAREA {
+    scrollbar-3dlight-color : Black;
+    scrollbar-arrow-color : #0D0D0D;
+    scrollbar-base-color : White;
+    scrollbar-darkshadow-color : White;
+    scrollbar-face-color : White;
+    scrollbar-highlight-color : White;
+    scrollbar-shadow-color : Black;
+    scrollbar-track-color : #f9f9f9;
+    FONT-SIZE: 9pt;  
+    COLOR: #004477;  border : 1px solid #000000; 
+    padding-left: 3px; 
+}
+
+
+/*----------- Блок выбора языка системы ----------------*/
+
+DIV.SelectLang{
+    font-size: 9pt;
+    padding: 0px 3px 3px 3px ; 
+    WIDTH: 70;
+    height: 60;
+}
+
+INPUT.SelectLang {font-size: 9pt;
+             text-decoration : none; 
+             background-color: #F5F5F5; 
+             COLOR: #000000; 
+             border: 1px solid; 
+             WIDTH: 70;
+             height: 19;
+           }
+
+SELECT.SelectLang {
+    font-size: 9pt;
+    height: 17;
+    width: 70; 
+    margin-bottom: 2px; 
+}
+
+

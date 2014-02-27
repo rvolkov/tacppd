@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ORACLE_HOME=/usr/lib/oracle/xe/app/oracle/product/10.2.0/server
+LDFLAGS=-L${ORACLE_HOME}/lib
+CFLAGS="-I${ORACLE_HOME}/rdbms/demo -I${ORACLE_HOME}/rdbms/public -I../include"
+
+#g++ -shared -O2 -DMODULE -DDB_OCCI -o occi.so occi.cc ${CFLAGS} ${LDFLAGS} -locci -lclntsh -lwtc9 -ldl -lpthread -lm -lc
+
+#g++ -shared -O2 -DMODULE -DDB_OCCI -o occi.so occi.cc ${CFLAGS} ${LDFLAGS} -locci -lclntsh -ldl -lpthread -lm -lc
+g++ -O2 -DMODULE -DDB_OCCI -o occi.so occi.cc ${CFLAGS} ${LDFLAGS} -locci -lclntsh -ldl -lpthread -lm -lc
+
+#g++ -O2 -DMODULE -DDB_OCCI -o occi9 occi.cc ${CFLAGS} ${LDFLAGS} -locci -lclntsh -lwtc9 -ldl -lpthread -lm

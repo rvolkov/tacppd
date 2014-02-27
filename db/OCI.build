@@ -1,0 +1,16 @@
+#!/bin/sh
+
+ORACLE_HOME=/usr2/oracle/product/9.2.0
+
+LDFLAGS="\
+		-L${ORACLE_HOME}/lib -L${ORACLE_HOME}/rdbms/lib\
+    -lclntsh\
+		`cat ${ORACLE_HOME}/lib/sysliblist`"
+
+CFLAGS="\
+	-I../include\
+	-I${ORACLE_HOME}/rdbms/demo -I${ORACLE_HOME}/rdbms/public
+	-I${ORACLE_HOME}/plsql/public -I${ORACLE_HOME}/network/public
+	-I${ORACLE_HOME}/precomp/public"
+
+g++ -O2 -DMODULE -DDB_OCI -o oci.bin oci.cc ${CFLAGS} ${LDFLAGS}

@@ -1,0 +1,101 @@
+XML db file driver for tacppd by LSK.
+=====================================
+
+Current stage - alfa testing. Do not try to use it anyway for real work. 
+I change this status when xml-db.so  could perform their functions in more
+stable and right way. Read CHANGES for news.
+
+I am not native speaker so feel free to correct me.
+
+Purpose.
+--------
+(+) Create a simple and strainforward db engine for testing environment. 
+(+\-) Create a description file for database creation and management.
+(+\-) Create a version concept for db structure and driver's code.
+(**) Create a mechanism of import/export data from databases for migration purpose.
+
+What you do not ever receive with this engine.
+----------------------------------------------
+(-) Security of db file (all security in this case is file security). And not
+the content of the file.
+(-) Fast work. Heavy load  ... etc ...
+(-) It must be very simple to work for testing so your must be carefull in using it.
+
+
+HOWTO do it working
+-------------------
+xml-db default tacppd database driver, so you will find
+example of configuration into tacpp.conf.example file
+Before run tacppd, copy core xml file xml-db.xml to directory 
+where from you will use it (due config example you should copy it
+to /etc).
+
+
+FAQ
+----
+(Q) How to write proper xml database description
+(A) For example
+ database /etc/xml-db.xml@could_be_any:could_be_any
+  cryptokey 'dbkey'
+  login _could_be_any_
+  password _could_be_any_
+  module xml-db.so
+  shutdown no
+  exit
+your could  see an example of xml-db file in db/xml-db.xml
+from source tree. And of couse must run an create command
+from CLI for the first time.
+
+(Q) Is it safely to edit db file by hand ?
+(A) Yes, if tacppd is not running (read next question). 
+The only restriction is that you xml should be 'well formed'.
+So your must pay attention to special symbols and must MASQ it
+
+ (>) symbol should be represent as (&gt;)
+ (<) symbol should be represent as (&lt;)
+ (') symbol should be represent as (&apos;)
+ (") symbol should be represent as (&quot;)
+ (&) symbol should be represent as (&amp;)
+
+Read  W3C recommendation for  more information
+http://www.w3.org/TR/REC-xml
+
+(Q) While running tacppd and changes file by hand, howto say tacppd
+to re read database file ?
+(A) First of all it is not safe operation during running stage, 
+I addressed this question to Roman. Your could stop tacppd 
+and then start it $-)
+[Remark from Roman]
+NOTE: untested solution for it - shutdown this driver by CLI command
+(in config mode set for this database "shutdown yes"), than you
+can modify this file by hand, after that set command
+"shutdown no" back. 
+[Remark from LSK]
+Untested mean that file is re-reading during this,
+but we could not predict what could be during db  unavailable period.
+
+(Q) Sould I use xml comment's inside database?
+(A) It depend's only on your. But if you write the following
+(1)case
+<!-- My bla bla bla row record -->
+<row bla bla bla/>
+(2)case
+<row bla bla bla>
+<!-- My bla bla bla row record -->
+</row>
+
+while deleting occure, your get
+(1)case
+<!-- My bla bla bla row record -->
+(2)case
+
+(Q) I see a <DATABASE> section in xml-db, do this mean that it could be
+more than one DATABASE per xml document?
+(A) No. It currently do not implemented nor planned. It used only as 
+ROOT xml element.
+
+(Q) How frequent database file updates when modification occure.
+(A) Well. If your read code, you could see that database file updates
+during connection closing procedure. And this mean, from the current 
+tacppd to database interconnection procedure, that after any modification
+request, connection is closed so database is updating.

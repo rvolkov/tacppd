@@ -1,0 +1,110 @@
+#
+# TACPPD, see http://tacppd.org for more information
+#
+
+SHELL = /bin/sh
+VPATH = @srcdir@
+INSTALL = @INSTALL@
+
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+infodir = $(prefix)/info
+libdir = $(prefix)/lib/gnudl
+mandir = $(prefix)/man/man1
+
+CXX = @CXX@
+FLAGS = @CXXFLAGS@ @CFLAGS@
+LDFLAGS = @LDFLAGS@
+OSLIBS = @LIBS@
+OS = @OS@
+
+MDB = @MDB@
+MLIBS = @MLIBS@
+MLDFLAGS = @MLDFLAGS@
+MCFLAGS = @MCFLAGS@
+CP = @CP@
+TAR = @TAR@
+
+#ORA_VER = @ORA_VER@
+
+SNMPLIB_TYPE = @SNMPLIB_TYPE@
+
+TARGET	= tacppd
+
+############################################
+CPPFLAGS = -I../include -I../../include $(FLAGS) -D$(SNMPLIB_TYPE) $(OS)
+
+###########################################################
+# End of customisable section of Makefile
+###########################################################
+
+SRCS =	\
+	myQueue.cc \
+	AAA.cc \
+	ServerTrack.cc \
+	Vty.cc \
+	Command.cc \
+	Cli.cc \
+	App.cc \
+	Tiep.cc \
+	CoreAccess.cc \
+	CorePool.cc \
+	CoreListener.cc \
+	CoreManager.cc \
+	CoreDebug.cc \
+	CoreDevice.cc \
+	CoreDb.cc \
+	CorePeer.cc \
+	CoreBundle.cc \
+	CoreBilling.cc \
+	CoreData.cc \
+	Daemon.cc \
+	Debug.cc \
+	TacDb.cc \
+	DLoad.cc \
+	Logging.cc \
+	LogFile.cc \
+	LogSyslog.cc \
+	LogTerm.cc \
+	Listener.cc \
+	Packet.cc \
+	Tacacs.cc \
+	Http.cc \
+	XmlServer.cc \
+	Tci.cc \
+	Utils.cc \
+	AModify.cc \
+	Icmp.cc \
+	Snmp.cc \
+	UserTrack.cc \
+	NetFlow.cc \
+	Terminal.cc \
+	Diameter.cc \
+	Radius.cc \
+	GtpPrime.cc \
+	main.cc
+
+#	src/md5.cc \
+
+
+OBJS = $(SRCS:.cc=.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) $(OSLIBS); \
+	$(CP) $(TARGET) ..
+
+distclean: clean
+
+clean:
+	-rm -f *.o *~ *.BAK *.bak $(TARGET) \
+
+depend:
+	makedepend $(CFLAGS) $(SRCS)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,2527 @@
+
+
+TACPPD User Guide
+
+<Graphics file: C:/!tacppd/tacppd.org.jpg>
+
+
+(c) Copyright 2003-2006 by Roman Volkov and contributors
+
+Special thanks to Brett Maxfield.
+
+1 Contacts
+
+See tacppd home site http://tacppd.org. For comments, 
+issues and feature requests you can use tacppd 
+sourceforge resources linked to http://tacppd.org site. 
+For other information you can contact directly with 
+Roman Volkov, rv@tacppd.org. For some extra information 
+and services, commercial support and commercial 
+developing contact with http://tacppd.com.
+
+2 Send us your comments
+
+Tacppd developers welcome your comments and suggestions 
+on the quality and usability of this guide.
+
+1. Have you found any errors?
+
+2. Is the information clear?
+
+3. Do you need more informaton?
+
+3 Preface
+
+3.1 Organization
+
+This guide is organized as follows:
+
+3.2 Related Documentation
+
+Available documentation:
+
+1. TACACS+ protocol.
+
+2. TACPPD programmer guide
+
+3.3 Conventions
+
+1. conventions in text
+
+2. conventions in examples
+
+3. conventions in operating system
+
+4. conventions in Cisco configuration
+
+4 COPYRIGHT info
+
+The tacppd (tacacs++ server daemon) software is 
+Copyright (C) 1998-2005 by tacppd team and 
+contributors. For more information visit tacppd home 
+site http://tacppd.org. You may use, distribute and 
+copy the tacppd software under the terms of GNU General 
+Public License version 2. See COPYING file in tacppd 
+distribution for text of GNU GPL. You should have 
+received a copy of the GNU General Public License along 
+with this program; if not, write to the Free Software 
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+MA 02111-1307 USA. This product includes software 
+developed by Eric Young. This product includes software 
+developed by Alec Peterson. It uses RSA Data Security, 
+Inc. MD5 Message-Digest Algorithm. Also some copyright 
+information for other parts available inside source 
+code (NET-SNMP library code).
+
+5 SUPPORT info
+
+This product has community support, available via 
+http://tacppd.org resources: mailing list, phorum, 
+bugtracking and feature requests system from 
+SourceForge's tacppd page 
+(http://sourceforge.net/progects/tacppd). You should 
+know, that support will be provided only when community 
+people will have free time and possibilities to do it, 
+so please, don't require a lot. For information about 
+commercial support visit http://tacppd.com, but you 
+should know, that support will not be provided under 
+any circumstances for this program by tacppd.com, it's 
+employees, volunteers or directors, unless a commercial 
+support agreement and/or explicit prior written consent 
+has been given.
+
+6 Introduction
+
+This is AAA server 
+(authentication,authorization,accounting) for network 
+devices with extra features. The main goal - full 
+database support + integration with bi lling system. 
+Also we try to do mechanism for real-time user sessions 
+control with the really true information for it (if you 
+have network with some untrusted channels , you can 
+loss accounting packets from network devices). We are 
+using model "all-i n-one" (tacacs+ with telnet server, 
+with http server, with NetFlow collector, with SNMP 
+poller and other) for make it more easy for 
+installation and using, also for possible integration 
+in hardware box with telnet/web control and AAA server 
+functionality . This program is developing on C++. It 
+can be compiled for any *nix system with POSIX threads 
+(I suppose). Currently supported platforms only 
+Linux(x86), FreeBS D(x86), Solaris8/9(SPARC) (I don't 
+have access to other, but if you need in other, conta 
+ct me, may be i'll help). Most information about 
+network devices valid only for Cisco e quipment. For 
+your device, see vendor documentation. Now i am 
+thinking about raise tacppd to some set of API or may 
+be separate libra ries for doing applications with 
+integrated CLI, http, log and debug. Network 
+applications which can be easy integrated to hardware 
+linux-based boxes and use external storage like iSCSI 
+devices. For example, smtp/pop3 server, http server, 
+etc. Now i am working for application-independend core 
+of tacppd, which can be separated from tacacs+ or a ny 
+other application code to separated API or library. 
+Hope, you will help me and some later i'll create 
+several tacppd's code based projects of several network 
+services servers. In more recent plans - raise tacppd 
+to network management/accounting system.
+
+6.1 Abstract
+
+TACACS+ (Terminal Access Control Access Server Plus) 
+provides access control for routers, network access 
+servers and other networked computing devices via one 
+or more cen tralized servers. TACACS+ provides separate 
+authentication, authorization and accounting services. 
+The full describe of TACACS+ protocol you can find at 
+ftp://ftp-eng.cisco.com/pub/tacacs/tac-rfc.1.78.txt or 
+
+http://search.ietf.org/internet-drafts/draft-grant-tacacs-02.txt 
+or in /doc directory of this distribution. TACACS+ is 
+used mostly for Cisco devi ces (but I saw it support in 
+3Com HiPer too, and read about it in Cabletron devices) 
+. RADIUS - this is other similar protocol, which 
+working throught UDP and have way to use vendor 
+specific attributes. RADIUS - more compatible protocol 
+but less functional, may be later we will do R ADIUS 
+support in tacppd.
+
+6.2 Features
+
+1. SQL database support for store user information 
+  (together with authorization information, like 
+  per-client IP addresses, etc)
+
+2. multiply redudancy databases, can connect to several 
+  types of databases if appropriate module available
+
+3. open interface for create own database support modules
+
+4. password field in database encrypted by MD5
+
+5. internal IP address pooling system
+
+6. personal tacacs+ key for each device + access 
+  control 
+
+7. reconfiguration and monitoring on-fly via telnet 
+
+8. per-users work time-plan
+
+9. NAS control via SNMP
+
+10. SNMP modules with open interface for easy new 
+  devices adding
+
+11. users in database control via telnet command-line interface
+
+12. intergated NetFlow data collector with some 
+  aggregating functionality and logging directly to database
+
+13. accounting logging directly to database
+
+6.3 ToDo
+
+1. Universal modular billing system 
+
+2. peer-to-peer roaming 
+
+3. Monitoring and configuration via http 
+
+4. RADIUS support 
+
+5. SNMP agent support 
+
+And much more. Use feature requests in tacppd's 
+SourceForge project page and also write to 
+phorum/mailing lists for expand it.
+
+7 Directories and files
+
+/contrib - contributed products
+
+/etc - config dir 
+
+ tacppd.conf.ex - example configuration file 
+
+/db - database modules 
+
+ pgsql.so - PostgreSQL driver 
+
+ mysql.so - MySQL driver 
+
+ msql.so - miniSQL driver 
+
+ none.so - void device 
+
+/snmp - snmp devices modules 
+
+ cisco.so - Cisco devices support 
+
+ none.so - void device 
+
+/include - include files for database and snmp modules 
+
+/run - pid-file dir 
+
+/log - log-file dir 
+
+/tmp - temporary files directory 
+
+/ext - external programs dir 
+
+/http - http monitor files 
+
+/resrc - resource modules dir 
+
+tacppd_start.sh.example - example daemon start script 
+
+tacppd - tacppd bin file 
+
+8 Source compilation
+
+If you will set from binary distribution, skip this 
+chapter. Fast guide available in file INSTALL inside 
+tacppd distribution. 
+
+9 Installation
+
+1. Get binary build from ftp or http for appropriate 
+platform, consult http://tacppd.org for downloads.
+
+latest build from nightly builds:
+
+tacppd-linux-x86-BUILDDATE.tgz
+
+tacppd-linux-x86-snmpstatic-BUILDDATE.tgz
+
+tacppd-fbsd-x86-BUILDDATE.tgz
+
+tacppd-fbsd-x86-snmpstatic-BUILDDATE.tgz
+
+tacppd-solaris-SPARC-BUILDDATE.tgz
+
+tacppd-solaris-SPARC-snmpstatic-BUILDDATE.tgz
+
+where BUILDDATE - this is build date in YYYYMMDD form
+
+latest release build: 
+
+tacppd-linux-x86-VERSION.tgz
+
+tacppd-linux-x86-snmpstatic-VERSION.tgz
+
+tacppd-fbsd-x86-VERSION.tgz
+
+tacppd-fbsd-x86-snmpstatic-VERSION.tgz
+
+tacppd-solaris-SPARC-VERSION.tgz
+
+tacppd-solaris-SPARC-snmpstatic-VERSION.tgz
+
+where VERSION - build version in form 0.0.0
+
+The word "snmpstatic" in the filenames above means that 
+those binaries have been statically linked with the 
+Net-Snmp package. To use the dynamic Net-Snmp library, 
+you should get Net-Snmp from it's homepage at 
+http://www.net-snmp.org and install it. Read through 
+the net-snmp documentation, configure, compile and 
+install the net-snmp shared library using the 
+--enable-shared configure option. 
+
+The default for net-snmp is to only create a static 
+library. When you have compiled the snmp shared 
+library, you can then download and use the tacppd 
+package without the "snmpstatic" word. 
+
+9.1 New install
+
+For first-time install copy file "tacppd_start.sh.orig" 
+to "tacppd_start.sh" and edit it for your directory 
+(read comments in file). For first-time install copy 
+file "etc/tacpp.conf.orig" to "etc/tacpp.conf" and 
+review it (and read "etc/README"). Check if you have 
+workable database libraries (database modules require 
+it). For it, check database module which you will use 
+by ldd: 
+
+ldd db/postgresql.so 
+
+ldd db/mysql.so
+
+if you see library libpq.so/libmysqlclient.so inside - 
+all right in other case, check you /etc/ld.so.conf or 
+LD_LIBRARY_PATH for path to appropriate shared library 
+(and your PostgreSQL/MySQL too) 
+
+REMEMBER! you MUST HAVE appropriate PostgreSQL or MySQL 
+libraries (or miniSQL, if you will use this driver), if 
+you plan to use Oracle, than you m ust have Oracle 
+client installed and configured. 
+
+9.1.1 Database System
+
+Please, contact your database administrator for 
+database name and database user login/password information.
+
+Edit "etc/tacpp.conf" file for database, REMEMBER 
+database key, if you have lost it, no way to restore 
+user passwords! The crypto algorythm uses 2 keys - 
+static - this is this key, and variable key - the user 
+login. If you change username, than you will lost your 
+password! Never use UPDATE request for change username! 
+Please, use tacppd CLI for changes in database tables. 
+For change username, delete this user and add new. If 
+you will use key "none", than no encryption will be 
+done. Use it if you plan to use external database 
+management system, or if this system does not supports 
+tacppd-style encryption. 
+
+Before use, you should create database tables. You MUST 
+use tacppd internal database manipulation manager for 
+it (the database tables format can be changed during 
+development and it should create mostly modern table 
+views). If you already have database tables for tacppd, 
+review ReleaseNotes, CHANGES and this README file for 
+changes. After tacppd starts, you should use CLI 
+(command line interface): in "database" mode you should 
+use command "create" for tables creation (see later for 
+CLI description).
+
+Indexes will be created automatic. See error logs in 
+case of errors.
+
+Now you can add users into database. Tacppd has simple 
+internal user manipulatio n resource (see later for CLI 
+documentation). If you will use own database manipul 
+ation software, remember, that you should encrypt 
+passwords before insert. For example, you can use 
+contributed Perl script in /contrib dir for 
+crypt/decrypt passwords. 
+
+for PostgreSQL (http://www.postgresql.org): contact 
+database administrator to create special user with 
+grants to create, update, insert and select tables and 
+indexes. The next st ep - from database admin user run 
+psql like this: psql -U username database_name and type 
+password on request try to select/create tables for 
+check your rights
+
+for Oracle (http://www.oracle.com): change to oracle 
+user (typically by command "su - oracle") and run: 
+sqlplus username/password@your.oracle.service and test 
+it. We recommend to contact your DB administrator before.
+
+BE CAREFULL!!! The Database table format now in 
+developing and can be changed from build to build with 
+notifications only in CHANGES file!!!
+
+I plan to freeze database formats after first BETA 
+version, but now i highly recommend to use CLI 
+interface for database data management!
+
+From 0.0.5 development i add database version number to 
+name of table, but the version will be frozen only 
+after release. 
+
+9.1.2 Before start steps
+
+1. check tacppd/tacppd_start.sh file for right path to 
+tacppd home (read throught it for several options) 
+
+2. edit tacppd/etc/tacpp.conf file (copy it from 
+tacpp.conf.orig) read carefully throught it and 
+throught etc/README file the default admin user have 
+username: admin and password: admin_password please, 
+change database ip and username/password NOTE: remember 
+database crypto key!!! You will have lost your client 
+passwords if you have lost database key! Otherwise, use 
+"none" key for unencrypted password fields. 
+
+3. check availability of database be sure, that your 
+user created in database and firewalls configuration 
+correct 
+
+4. start tacppd_start.sh script 
+
+5. try to connect to control system by telnet localhost 
+2222 (or any port you defined in configfile for telnet) 
+you should see username request type admin and type 
+admin_password as password (this is default setting in 
+tacpp.conf.orig) Feel free to change default settings.
+
+in CLI (command line interface) you can use ?<CR> for 
+getting help about available commands. [command] ?<CR> 
+- help about command arguments
+
+9.2 Upgrade
+
+Upgrade procedure require stop current tacppd by 
+command "killall tacppd", unpack distribution to place of 
+old tacppd (configuration file and shell scripts will 
+not be changed, will be replaced files 
+etc/tacppd.conf.ex and tacppd_start.sh.example), and 
+run tacppd again. Read release notes for critical changes.
+
+10 Configuration
+
+Tacppd configuration stored in file tacppd.conf. 
+Distribution has file etc/tacppd.conf.ex, just copy 
+this file to etc/tacppd.conf. This file you can edit 
+before tacppd start. During tacppd work you have to use 
+command-line interface (CLI) via telnet for tacppd configuration.
+
+the configuration file latest notes can be available in 
+etc/README (see it before you will start create configuration)
+
+tacppd config file - etc/tacpp.conf, with distribution 
+we are provide file etc/tacpp.conf.orig with common 
+examples, you can write own tacpp.conf file before 
+start or customize tacpp.conf.orig (copy 
+tacpp.conf.orig to tacpp.conf before in this case). You 
+can edit this file from editor, but be carefully: edit 
+this file BEFORE starting tacppd - if you will edit it 
+AFTER, than you can simple lost your changes if you 
+will do "write" command from CLI. Remember - you need 
+in manual config file edit only in first-time 
+installation. Or if you will do anything without 
+working tacppd. In other case you should use CLI 
+(command line interface) commands for configuration - 
+the changes will apply after you press <Enter>.
+
+Tacppd like Cisco device has 2 configurations - one 
+running-config, and other - stored config (or 
+startup-config). The startup-config for tacppd - file 
+etc/tacp p.conf, running-config - in memory. You can't 
+reload startup-config during tacppd work, but you can 
+change running-config and copy it to startup-config.
+
+the config file use next things: remark - string, which 
+begins with pund (#) symbol first command should be 
+word "config", last - word "exit"
+
+The configuration file supports all commands which you 
+can use in CLI "config" mode. 
+
+there are several sections available: debug access 
+manager listener pool nas database bundle billing peer 
+
+10.1 debug
+
+Output debug information. Debug information output to 
+file log/debug.log.
+
+! debug
+
+debug file
+
+ facility db
+
+ facility pool
+
+ facility billing
+
+ facility track
+
+ facility tacacs
+
+ facility aaa
+
+ facility snmp
+
+ facility server
+
+ exit
+
+Facilities mean output debug for such operation.
+
+output of debug information file - output to file 
+syslog - output to local syslog <ip addr> - output to 
+external syslog facility - this is type of information 
+which will be outputed to this destination 
+
+10.2 access lists
+
+Access control. Use Regular Expressions syntax. All 
+connections in tacppd controlled via access lists. It 
+used for control TCP and UDP connections, also it 
+control per-user manager access.
+
+! access list
+
+access 1
+
+ permit ^127.0.0
+
+ permit ^192.168.0
+
+ exit
+
+access 2
+
+ permit ^127.0.0
+
+ deny ^192.168.2.3$
+
+ permit ^192.168.2
+
+ exit
+
+access 3
+
+ permit ^127.0.0
+
+ permit ^192.168.0
+
+ permit ^172.17.35
+
+ exit
+
+Access list checks from begin to end. If any rule 
+permit something, than no more checks. If any rule 
+deny, no more checking too. If no any match, than it 
+mean deny.
+
+access list - control access to listeners and for users 
+"access 1 permit ^127.0.0" 1 - number of access list 
+(1-32000) ^127.0.0 - regular expression you can use 
+usual regular expressions, like: ^127.0.0.1$ and so on 
+
+10.3 manager user
+
+Administrators. Users for access via telnet or 
+web-interface to tacppd. Also users for access across 
+TCI (tacppd control interface).
+
+tacppd manager user user user_name password 'cleartext 
+password' cpassword 'md5 digest password' type terminal 
+! terminal or http available acl access_list_number exit
+
+!NOTE! - during 'write' command password will be stored 
+as md5 digest 
+
+10.4 listener
+
+Tcp/Udp listeners with several sevices.
+
+configuration of several listeners listener port_number 
+! if you run it not from root, ! then tcp/udp port 
+number can't be less 1024 type <type> ! which server 
+maxconnect 100 ! maximum connection number acl 
+access_list_number exit
+
+the listener types available: terminal - telnet for CLI 
+tacacs - tacacs+ radius - radius radacct - radius 
+accounting http - http interface netflow - NetFlow 
+collector bundle - for tacppd bundle peer - for roaming 
+peers snmp - snmp agent
+
+!NOTE! - maximum connection number must be reasonable, 
+this is limits in case of burst load. !NOTE! - 
+radius,radacct,bundle,peer,snmp - not implemented while 
+
+10.5 pool
+
+address pool system pool address_pool_number 
+address.from.this.pool the addresses you can write in 
+form like: 192.168.0.1-192.168.0.10 (this is addresses 
+from 1 to 10) or as 192.168.0.2,192.168.0.5 (separate 2 
+addresses) more complex example: 
+
+192.168.0.1-192.168.0.5,192.168.0.7,192.168.0.9-192.168.0.12 
+
+10.6 network device
+
+Network devices which tacppd must control. Usually this 
+is Cisco routers/access servers.
+
+network devices support
+
+nas <ip.addr.of.device> description 
+<your_comment_about_this_device> tacacskey 
+<tacacs_plus_key> radiuskey <radius_key(for future 
+implementation)> snmpcommunity <your_snmp_community> 
+loginstring <string_for_your_nas> pwdstring 
+<password_invite_string> defaultauthorization yes|no 
+module cisco.so polldelay 5 trfcounter no shutdown no 
+
+10.7 database
+
+Databases list. Can be several databases. First in list 
+- main database. During work tacppd try to connect to 
+first database and if connect will refused it will 
+conecct to second. And so more. Updates, Inserts and 
+other changes to database will be doing to all 
+databases. There no more things for maintain databases 
+equality. May be it will do by some external tools.
+
+! database  
+
+database tacppddb@192.168.0.9:5432
+
+ cryptokey 'none'
+
+ login tacppd
+
+ password TacppdPwd
+
+ module pgsql.so
+
+ shutdown no
+
+ exit
+
+String "tacppd@192168.0.9:5432" means that database 
+server on host 192.168.0.9 on port 5432 use database 
+named "tacppddb". Cryptokey used for crypt passwords in 
+database. Key = "none" - unencrypted (for debugging). In 
+any case crypted and cleartext passwords in database 
+coded to Base64.
+
+work with database system BE CAREFUL with database 
+cryptokey!!! If you lost key, you lost your database!!! 
+Or use "none" key to disable encryption.
+
+database db_name@db_host:db_port cryptokey <key> login 
+<db_login> password <db_pwd> module <database driver> 
+shutdown no 
+
+10.8 bundle
+
+Information for create tacppd bundle. There are only 
+one bundle possible.
+
+bundle 239.1.1.1:11000
+
+ cryptokey key
+
+ priority 1
+
+ ttl 1
+
+ exit
+
+If you set cryptokey to "none" than bundle traffic will 
+be unencrypted (for debug purposes). Ttl value - this 
+is multicast time-to-live in hops. Ttl=1 for multicasts 
+in one LAN, more value - if you have routers between 
+servers in one bundle.
+
+communicate tacppds to bundle
+
+bundle <bundle_ip>:<bundle_port> description <desc> 
+cryptokey <key> ttl <multicast ttl value (usually 1)> 
+
+10.9 billing
+
+billing modules descriptions
+
+billing <number> description <descr> module <module.so> 
+shutdown no 
+
+10.10 peer
+
+Peers to other tacppds for roaming.
+
+roaming peers
+
+peer <ip>:<port> description <descr> cryptokey <key> 
+timeshift <+/- time> mask <regular expr> mask <regular expr>
+
+11 Tacppd CLI - command-line interface
+
+command-line interface available throught telnet. You 
+can configure your server throught CLI, and changes 
+will be immediately available. The next issue - "write" 
+command will crypt cleartext passwords and write 
+current configuration to configuration file 
+"etc/tacpp.conf". When you connect to server via telnet 
+("telnet ip.addr port" - ip.add - addr of host where 
+tacppd work, port - portnumber in tacpp.conf) after 
+user access verification (default user=admin 
+password=admin_password) you see string: 
+your_hostname#" it means, that you now in CLI. try 
+write "?" and press <ENTER> for help No edit keys 
+available in this version, be carefull! I have tested 
+telnet special codes only for Linux telnet, from 
+Windows's HyperTerm you can have problems. Currently 
+you can see and change configuration and check/drop 
+users on your access servers 
+
+command map: tacpp(hostname)# ? config -----            
+                     debug                              
+   manager                                 listener     
+                            access                      
+           pool                                 nas     
+                            database                    
+             bundle                                 
+billing                                 peer            
+                     show                               
+  exit            ! exit from configuration sectio 
+write                                           ! write 
+current configuration show -------                    ! 
+show                                 users           ! 
+show usertable                                 nas      
+       ! show nas information clear ------              
+      ! clear information                               
+  user            ! drop user 
+
+                               port            ! drop 
+nas port database ----        ! database configuration 
+section                                 create  ! 
+create database tables                                 
+add             ! add entry to database                 
+                del             ! delete entry from 
+database                                 show           
+ ! show data                                 modify  ! 
+modify entry in database                                
+ exit            ! exit form database section debug  
+-----  ! debug mode exit
+
+config - change server configuration you should do 
+"write" command to store your working configuration to 
+startup configuration file (etc/tacpp.conf) (use 
+commands from configuration file documentation upper)
+
+show - show several information currently you can see 
+only currently working users table and network devices 
+under control
+
+clear - clear anything currently you can drop 
+users/ports on network devices 
+
+database - database control mode
+
+12 Tacppd HTTP interface
+
+Tacppd has HTTP interface. In default configuration the 
+http server started on port 8888, and use 
+username/password "webmin/webmin" for access. Try it by 
+http://localhost:8888 check access rights in config 
+before. Tacppd has inbuilt web-server with Perl support.
+
+13 Cisco device configuration
+
+Here only some simple information how to configure 
+Cisco devices to use tacppd. You have to be 
+experiencing Cisco user. If you do not clearly 
+understand what we will do in configuration, read Cisco 
+documentation at http://www.cisco.com.
+
+you should setting up TACACS+ on NAS: aaa new-model aaa 
+group server tacacs+ OUR_TACACS server 
+your.server.ip.addr tacacs-server host 
+your.server.ip.addr port server_port key tacacs_key
+
+NOTE: port and key should be same as in tacppd 
+configuration file NOTE2: "aaa group server" command 
+can not be available. Don't care.
+
+-for authentication add: aaa authentication login 
+DIALUP group OUR_TACACS
+
+-for ppp authentication: aaa authentication ppp DIALUP 
+if-needed group OUR_TACACS
+
+-for ppp authorization: aaa authorization network 
+DIALUP group OUR_TACACS 
+
+-for tty commands authorization: aaa authorization exec 
+DIALUP group OUR_TACACS
+
+-for per-command authorization: aaa authorization 
+commands <privilege level 1-15>
+
+-for accounting: aaa accounting suppress null-username 
+aaa accounting update newinfo aaa accounting network 
+DIALUP start-stop group OUR_TACACS
+
+-you can also use accounting periodic updates for extra 
+users list checking: aaa accounting update periodic 1
+
+-and configure this all on interfaces: ppp 
+authentication chap pap DIALUP ppp authorization DIALUP 
+ppp accounting DIALUP 
+
+-and on tty lines: authorization exec DIALUP accounting 
+connection DIALUP login authentication DIALUP
+
+Next thing - set up SNMP: access-list 2 permit host 
+your_server_host snmp-server community 
+your_community_string RW 2 BE CAREFULL - add only your 
+tacppd host into SNMP access-list!
+
+13.1 tacacs+ configuration
+
+First, you should configure tacacs+ servers 
+information. 
+
+13.2 AAA configuration
+
+AAA system.
+
+13.3 SNMP configuration
+
+For use SNMP polling tacppd feature.
+
+14 Database configuration
+
+In any case you have to read vendor documentation and 
+consult with your database administrator. Our 
+information only about some specific things.
+
+14.1 PostgreSQL
+
+Available from http://www.postgresql.org. Has embedded 
+procedural language PL/PGSQL and also functionality of "big"
+ system. Currently i use PostgreSQL for tacppd 
+developing/testing and this is most supported database.
+
+14.2 MySQL
+
+Very useful and fast, but with restricted functionality.
+
+14.3 MiniSQL
+
+Very small and restricted.
+
+14.4 Oracle
+
+You have to have Oracle, or if you will using it for 
+developing process you can get it with developer 
+license ftom OTN: http://otn.oracle.com.
+
+15 Information in database
+
+NOTE: database tables name and it's fields can be 
+changed in any time. I plan to freeze changes in it 
+only in first beta-version.
+
+database table descriptions available in TacDb.cc file
+
+For understanding information stored into database, you 
+should be familiar with information, used in tacacs+ 
+and by network devices.
+
+15.1 authentication
+
+check user access rights
+
+TABLES: tacpp_v1_usr - user information 
+
+tacpp_v1_acc - user access rights 
+
+tacpp_v1_add - additional user data
+
+15.1.1 user information
+
+store username, password, open/close date and time, 
+several groups membership (access group, authorization 
+group, additional user data group), maximum allowed sessions
+
+EXAMPLE: User ppprv with pwd test, authorization group 
+ppp-1, access group ppp-1, billing group ppp-1 and 
+maximum 1 session
+
++-------------+-------------+----------+----------+----------+-----------+
+| 
+
+username  | 
+
+password  | 
+
+avpid  | 
+
+accid  | 
+
+bilid  | 
+
+maxsess |
++-------------+-------------+----------+----------+----------+-----------+
+|  
+
+ppprv    |   
+
+test    | 
+
+test   | 
+
+ppp-1  | 
+
+ppp-1  |    
+
+1    |
++-------------+-------------+----------+----------+----------+-----------+
+
+
+15.1.2 user access rights
+
+access group identifier; data in regular expression 
+form about: permitted phones, network devices ip, 
+network devices ports; time brackets
+
+can be multiply entries in one group
+
+- time brackets format if time not set - it means any 
+time time format: 
+
+* * * * *
+
+^ ^ ^ ^ ^
+
+| | | | +- day of week (0 - 6)
+
+| | | +--- month of year (1 - 12)
+
+| | +----- day of month (1 - 31)
+
+| +------- hour of day (0 - 24)
+
++--------- minute of hour (0 - 60) 
+
+examples: 
+
+* * * * 0,6 - access only on Sat and Sun 
+
+* 20-8 * * 0,6 - access only on Sat and Sun from 20 to 
+8 
+
+10-20,40-50 * * * 1-3,0,6 - more complex example.
+
+Access from phone 322322 from any nas and any port
+
++-----------------+--------+---------+--------+
+|    
+
+phone      | 
+
+nas  | 
+
+port  | 
+
+time |
++-----------------+--------+---------+--------+
+| 
+
+d+322322\/d+  | 
+
+.*   |  
+
+.*   |   
+
+   |
++-----------------+--------+---------+--------+
+
+
+Access from any phone from nas 192.168.1.5 to any port
+
++----------+------------------+---------+--------+
+| 
+
+phone  |      
+
+nas       | 
+
+port  | 
+
+time |
++----------+------------------+---------+--------+
+|  
+
+.*    | 
+
+^192.168.1.5$  |  
+
+.*   |   
+
+   |
++----------+------------------+---------+--------+
+
+
+Access from any phone, any nas and from Asy1
+
+phone | nas |   port   | time ------+-----+----------+---------
+
+  .*  |  .* | ^Asy1$   |
+
+--------------------------------- 
+
+Portnames: Asy1 - AsyX for async dial-up connection 
+(not-ISDN) for ISDN portnames start with Se (Se0:10, 
+...) for example on my AS5300 i see (Asy1 - Asy240 and 
+Se0:1-Se7:30,...) 
+
+Access from any phone from nas 192.168.2.10 from Async1 
+and from any nas from Async3 
+
+phone |        nas     |  port  | time 
+------+----------------+--------+---------
+
+ .*   | ^192.168.2.10$ | ^Asy1$ |
+
+ .*   |      .*        | ^Asy3$ | 
+------------------------------------------ 
+
+P.S. you should remember, that ports for PPP access can 
+be named as AsyX or as ttyX (if user use chap/pap, then 
+AsyX, if it use access from terminal or manual mode - ttyX)
+
+if you wish create several usernames for several 
+destination phone numbers you can use target masks on 
+phone. for example, i have two modem pools - one on 
+phone 320101, other on 8200, and i use next masks: for 
+8-200: ^8d+\/421232\:d+ for 32-01-01: ^8d+\/4212320101$
+
+you should know, that if you use analog access server 
+like cisco 2511 or so on, then phone will be "async/"
+
+also you should know the phone, which your NAS get from 
+E1, you can see it on Cisco equipment with command: 
+debug isdn q931 (if you have E1 connection to telephone 
+switch) 
+
+access for voip users from voice gateway
+
+phone |      nas   |      port      | time 
+------+------------+----------------+---------
+
+  .*  | ^10.1.1.1$ | ^FXO.*|^ISDN.* | 
+----------------------------------------------
+
+15.1.3 user DEFAULT for LL access
+
+you should add user DEFAULT if your NAS doesn't support 
+separate authorization on several ports, if so - no 
+need in this user 
+
+15.1.4 Additional User Data
+
+additional user data group identifier; authentication 
+source identifier (for use other than database source); 
+enable password (this is for network device)
+
+authentication sources: only supported one - "db"
+
+next possibly supported authensource (in future): "ccd" 
+or "ccf" - this is for CryptoCard
+
+CryptoCard for authentication (thanks to Bradley Filmer 
+and Alec Peterson) !NOTE! CryptoCard support will be 
+implemented in future versions
+
+tacppd use file with name "etc/CRYPTOCard" or database 
+table with name "CRYPTOCardTokens"
+
+*** CryptoCard file ***
+
+cryptocard file looks like 
+
+# This is the CRYPTOCard authentication definition 
+database file.
+
+#
+
+# Comments start with a # sign. # Under the display column:
+
+#       0 implies hexadecimal with no phone display
+
+#       1 implies hexadecimal with phone display
+
+#       2 implies decimal with no phone display
+
+#       3 implies decimal with phone display
+
+#
+
+#User    Key(Encrypted)               Display Challenge
+
+#-----------------------------------------------------------
+
+TokUse  
+a8b5c09e4ea6b503a65c7716383b67ff71406e5c7ec9a7b5    3  15952106
+
+bbundy  
+d0b669a9ea7892f4f8a40dedffd12bf34340aee363c8ef1c    2 
+ajblog  
+92b19a0cad6cc908e3e54e34efcf9802a54e15a2017d5066    2 
+gbusha  
+67d5af15d362b92ac30c87f3298aee2d5ecef59beb00723c    2 
+edst    
+6d78607d069a2fd3d8767087ba7bc5398be336c9860e038f    2 
+
+*** CryptoCard database ***
+
+in common example standard cryptocard table looks like 
+
+CREATE TABLE CRYPTOCardTokens (
+
+        UserID char(64) NOT NULL,
+
+        DisplayID char(8),
+
+        SerialNumber char(12),
+
+        InitPIN char(8),
+
+        EncryptedKey char(64),
+
+        NextChallenge char(8),
+
+        ProgDate char(16),
+
+        GroupID char(20),
+
+        Options char(24),
+
+        AuthenCount int(11),
+
+        PRIMARY KEY (UserID)
+
+); 
+
+UserID DisplayID SerialNumber InitPIN  EncryptedKey     
+    NextChallenge  ProgDate    GroupID   Options  
+AuthenCount roman  roman     498024979      4751   
+cad3040197b565b4f964bd0d70d64ae8f90299b89 e67c44b   
+36621554     01/15/2002 Admin-Root 110354101     0
+
+15.2 authorization
+
+check user rights after success access for some 
+protocols and some resources
+
+tacpp_v1_avp - authorization information tacpp_v1_cmd - 
+per-command authorization
+
+15.2.1 authorization information
+
+authorization group identifier; service; protocol; 
+attribute-value pair
+
+AV-pairs - authorization attributes in Tacacs+ any 
+av-pair consist from two fields: avp name field and avp 
+data field (service=ppp, protocol=ip, etc)
+
+You can use follow av-pairs:
+
+service= slip, ppp, arap, shell, tty-daemon, 
+connection, system, firewall
+
+protocol= lcp, ip, ipx, atalk, vines, lat, xremote, 
+tn3270, telnet, rlogin, pad, vpdn, ftp, http, deccp, 
+osicp, h323, unknown
+
+cmd= shell (exec) command. Must be if service=shell can 
+be cmd=NULL
+
+cmd-arg= argument to shell (exec) command can be multiple
+
+acl= number connection access-list (service=shell cmd=NULL)
+
+inacl= identifier for interface in access-list
+
+outacl= identifier for interface out access-list
+
+zonelist= numeric zonelist value (AppleTalk only)
+
+addr= network address 
+
+addr-pool= identifier of address-pool
+
+routing= boolean (is routing information on interface) 
+permit/deny send routing updates throught this interface
+
+route= route for this interface <dst_addr> <mask> 
+[<routing_addr>]
+
+timeout= timer for connection (minutes), 0 - no timeout
+
+idletime= idle-timeout for connection (minutes)
+
+autocmd= auto-command to run (service=shell cmd=NULL)
+
+noescape= boolean (service=shell cmd=NULL) 
+
+nohangup= boolean (service=shell cmd=NULL)
+
+priv_lvl= privilege level
+
+remote_user= remoute userid (TAC_PLUS_AUTHEN_METH_RCMD)
+
+remote_host= remote host (TAC_PLUS_AUTHEN_METH_RCMD)
+
+callback-dialstring= NULL or dialstring, NULL - for 
+request from user
+
+callback-line= line for callback
+
+callback-rotary= rotary
+
+nocallback-verify= do not require authentication after 
+callback 
+
+SOME EXTERNAL AVPAIRS (NOT IN RFC, BUT WITH CISCO 
+SUPPORT) - very-very useful.... inacl#<n> setup 
+multiline access-list (<n>-row number) inacl#1=permit 
+ip any any inacl#2=deny igrp ...
+
+outacl#<n>
+
+route#<n> multiline route entries
+
+rte-ftr-in#<n> input access list definition for routing 
+updates on interface rte-ftr-in#0=router igrp 60 
+rte-ftr-in#1=permit 0.0.3.4 255.255.0.0 
+rte-ftr-in#2=deny any
+
+rte-ftr-out#<n> output acl for routing update
+
+sap#<n> static saps
+
+route#<n> route table 
+
+sap-fltr-in#<n> input sap filter list sap-fltr-out#<n> 
+output sap filter list
+
+pool-def#<n> address pool definition pool-def#1=DIALUP 
+10.1.1.1 10.1.1.100 pool-def#2=INTERNAL 192.168.0.1 192.168.0.100
+
+VoIP AVP: h323-billing-model=0/1 (credit/postpaid or 
+debit/prepaid) h323-credit-time= h323-credit-amount=
+
+as i understand RFC, you can add your own av-pairs if 
+client understand it (be careful, sometimes it can be 
+wrong for some clients), we don't do any control for 
+av-pairs in database - be carefull! 
+
+15.2.2 tacppd authorization data modifyers
+
+for better AV handling we have system of AV modifyers. 
+The modifyers - interface to internal functions, SQL 
+servers and external programs to change values during request
+
+- Internal functions: set AVP as - 
+attribute=INT:function the function currently available 
+- addrpool=number this is request to internal address 
+pooling system Example: "addr=INT:addrpool=10" (get 
+address from address pool number 10) for setting 
+address pools see config file documentation
+
+- SQL functions: attribute=SQL:sql function request 
+string request to SQL for data. Get only first row 
+value Example: "timeout=SQL:GetTimeoutFunction($name)" 
+it will requested as "SELECT 
+GetTimeoutFunction(PppUserName)" (this is example for 
+PostgreSQL, for Oracle it will be some differ), if i 
+not mistake: "SELECT GetTimeoutFunction(PppUserName) 
+FROM DUAL" (see Oracle documentation about calling 
+PL/SQL functions) (you will need in this information 
+only if you will create your own database driver)
+
+External program: attribute=EXT:external program 
+request string Example: "timeout=EXT:get_timeout.pl" or 
+"timeout=EXT:get.pl $name" NOTE: see BUGS file for 
+status of bug 20010716 (currently this feature doesn't 
+work) The programs can be placed ONLY into "ext" 
+subdirectory in tacppd tree. 
+
+For sending information to external requests you can 
+use additional variables: $name - during this request 
+this will be changed to current username string $port - 
+nas port name $nas - network access server $phone - 
+phone string if it is dialup connection
+
+Example: 
+"timeout=SQL:time_table_function('$name','$nas','$phone')"
+
+!NOTE! - external program modifyer very buggy and don't 
+usable while
+
+15.2.3 common authorization axamples
+
+usually any ISP with DIAL-UP services has several 
+authorization groups:
+
+1. ordinary PPP with use NAS internal address pool 
+service=ppp protocol=lcp service=ppp protocol=ip 
+addr-pool=DIALUP # below only if users use terminals 
+for insert username/password # (some non-standard, 
+advanced or stupid dial-up clients) service=shell cmd= 
+service=shell autocmd=ppp service=shell noescape=true
+
+2. group = username - for ppp with static ip addr 
+service=ppp protocol=lcp service=ppp protocol=ip 
+addr=194.85.113.100
+
+3. ppp with use tacppd internal ip addr pooling system 
+this is our addition, but for NAS it will be converted 
+to string "addr=address_from_pool_system" service=ppp 
+protocol=lcp service=ppp protocol=ip addr=INT:addrpool=1
+
+4. ppp with additional ip filters service=ppp 
+protocol=lcp service=ppp protocol=ip addr-pool=DIALUP 
+service=ppp protocol=ip inacl#1=deny ip any 192.168.0.0 
+0.0.0.255 service=ppp protocol=ip inacl#2=permit ip any any
+
+5. uucp (rlogin access to uucp server) service=shell 
+cmd= service=shell autocmd=rlogin aaa.bbb.ru /user 
+uuuser service=shell noescape=true
+
+6. admin access (unrestricted) service=shell cmd= 
+
+7. async tunnel: service=shell cmd= service=shell 
+autocmd=telnet 192.168.10.100 3162 /stre am 
+service=shell noescape=true
+
+some comments:
+
+a) if you use ppp multilink (for example, you have ISDN 
+users), you should add: service=ppp protocol=multilink 
+max-links=2
+
+b) ppp callback service service=ppp protocol=lcp 
+callback-dialstring= service=shell callback-dialstring= 
+service=shell nocallback-verify=1
+
+15.2.4 specific examples
+
+dial-in PPP with pool DIALUP
+
++------------+-------------+--------------------+
+| 
+
+service  | 
+
+protocol  |     
+
+av-pair      |
++------------+-------------+--------------------+
++------------+-------------+--------------------+
+|   
+
+ppp    |   
+
+lcp     |         
+
+         |
++------------+-------------+--------------------+
+|   
+
+ppp    |    
+
+ip     | 
+
+addr-pool=DIALUP |
++------------+-------------+--------------------+
+|  
+
+shell   |     
+
+      |       
+
+cmd=       |
++------------+-------------+--------------------+
+|  
+
+shell   |     
+
+      |   
+
+autocmd=ppp    |
++------------+-------------+--------------------+
+|  
+
+shell   |     
+
+      |  
+
+noescape=true   |
++------------+-------------+--------------------+
+
+
+dial-in PPP with pool DIALUP and for ISDN
+
+service | protocol | av-pair 
+--------+----------+------------------
+
+  ppp   |   lcp    |
+
+  ppp   |   ip     | addr-pool=DIALUP
+
+  ppp   |multilink | max-links=2 
+-------------------------------------- 
+
+dial-in PPP with static ip addr
+
+service | protocol | av-pair 
+--------+----------+------------------
+
+  ppp   |   lcp    |
+
+  ppp   |   ip     | addr=10.1.1.10
+
+  shell |          | cmd=
+
+  shell |          | autocmd=ppp
+
+  shell |          | noescape=true 
+-------------------------------------- 
+
+async tunneling
+
+service | protocol | av-pair 
+
+--------+----------+-------------------------------------- 
+     shell |          | cmd=
+
+  shell |          | autocmd=telnet 192.168.1.112 
+/stream       shell |          | noescape=true 
+----------------------------------------------------------
+
+shell connect (all commands)
+
+service | protocol | av-pair 
+--------+----------+------------------
+
+  shell |          | cmd= 
+-------------------------------------- 
+
+connect for UUCP (autocommand)
+
+service | protocol | av-pair 
+
+--------+----------+----------------------------------------- 
+ shell  |          | cmd=
+
+ shell  |          | autocmd=rlogin smtp.aaa.ru /user 
+uuuser   shell  |          | noescape=true 
+-------------------------------------------------------------
+
+for shell connect with restricted command set you 
+should use PER-COMMAND AUTHORIZATION 
+
+set voice user parameter with voice gateway
+
+  service   | protocol | av-pair 
+------------+----------+----------------------
+
+ connection |   h323   |  h323-credit-time=120 
+----------------------------------------------
+
+15.2.5 per-command authorization
+
+description: per-command authorization for cmd= and 
+cmd-arg= av-pairs
+
+authorization group id; regex with permitted commands; 
+regex with deny commands; regex with permitted command 
+arguments; regex with deny command arguments
+
+.* - all [^.*] - nothing
+
+permit any commands and arguments 
+
+ cmdperm | cmddeny | argperm | argdeny 
+---------+---------+---------+---------
+
+   .*    |         |    .*   | 
+---------+---------+---------+---------
+
+deny any commands and arguments
+
+ cmdperm | cmddeny | argperm | argdeny 
+---------+---------+---------+---------
+
+         |   .*    |         |   .* 
+---------+---------+---------+---------
+
+15.3 accounting
+
+logging activities
+
+tacpp_v1_log
+
+description: log entries table (only stop entries) 
+server char(16) -- server -- servtime datetime -- time 
+in server -- start_time datetime -- nas internal start 
+time -- task_id int -- nas task_id -- username char(32) 
+-- username -- nas char(16) -- NAS -- 
+
+port char(10) -- nas port -- service char(10) -- 
+service -- cfrom char(64) -- phone or ip addr -- ip 
+char(16) -- ip addr of client -- protocol char(10) -- 
+protocol -- elapsed int -- elapsed time -- bytes_in int 
+-- bytes in port -- bytes_out int -- bytes out from 
+port -- disc_cause int -- disconnect cause -- 
+disc_cause_ext int -- ext disconnect cause -- rx_speed 
+int -- connect read speed -- tx_speed int 
+
+-- connect write speed -- h323_call_origin char(10) -- 
+answer/originate/ -- h323_call_type char(15) -- 
+Telephony/ -- h323_disconnect_cause int -- -- 
+h323_voice_quality int -- -- h323_connect_time datetime 
+-- -- h323_disconnect_time datetime -- -- 
+h323_remote_address char(16) -- remot e ip addr --
+
+the tacppd store accounting information in two 
+destinations: 1. text file 2. database it stores all 
+av-pairs wich it receives from NAS
+
+15.4 traffic information
+
+server can store ifInOctets/ifOutOctets information 
+from NAS and routers. This information collects from 
+device during SNMP polling process.
+
+description: traffic log via interface counters server 
+char(16) -- the server IP -- curtime datetime -- time 
+of entry -- port char(16) -- info for port -- nas 
+char(16) -- on nas ip -- bytein float -- ifInOctets -- 
+byteout float -- ifOutOctets --
+
+15.5 billing data
+
+tacpp_v1_bil tacpp_v1_bilres
+
+description: billing resource table description bilid 
+char(32) -- billing group -- bilidname char(50) -- 
+billing group name -- bilmod char(32) -- resource 
+module name --
+
+description: billing resource table bilid char(32) -- 
+billing group -- attribute char(32) -- attribute name 
+-- value char(32) -- attribute val ue --
+
+!NOTE! - billing system no available, it will be in 
+future releases
+
+15.6 additional data notes
+
+The VoIP session (on FXO) logs 4 entries for all 
+connections: 1. start from port 2. start from user 
+connection 3. stop from user connection 4. stop from port
+
+in 1 and 4 you can see FXO port number also, opening 
+ports doing authentication with username of your pots 
+peer number mask (3640 with FXO for example). But it 
+doesn't care about result of it.
+
+in new IOS versions i see some changes in this.
+
+The VoIP ports on Cisco 36xx series with NM-HDV voice 
+modules generate port names as 'ISDN number:number' 
+unless you use "aaa nas port voip" configuration 
+command - than portname is 'Serial num/num:num ' 
+
+if you use tacacs+ for Cisco VoIP gateway 
+authentication, than you should write your TCL script 
+so, that it should be aware of: 1. in first 
+authentication session voip gw does not send 
+information to tacacs+ about source/destination phone 
+numbers 2. it does not send information about phone 
+numbers in authorization request packets, and it does 
+not send any av-pair in authorization start 3. 
+authorization request from TCL script create two 
+requests to tacacs+ server - authentication with setted 
+username/pin and with source/destination phone numbers 
+and after that it generate void authorization request, 
+but for send values from tacacs+ to TCL you should use 
+authorization responce in form: h323-credit-time=digit 
+(or any other h323-related av-pairs, see documentation 
+upper or in Cisco documentation)
+
+Due to logging information where i plan to use device 
+DNS names, not ip addresse s (due to more right logfile 
+understanding, and for statistics), carefully check 
+your DNS entries about network device and database 
+servers names in native and r everse DNS zones. May be 
+the best way - use /etc/hosts file for it. 
+
+16 TCI (tacppd control interface)
+
+For use external programs for control active users and 
+see devices availability. It uses TCP connection with 
+simple commands set. You can use telnet or any simple 
+TCP connection from your protgrams for access to TCI. 
+For use TCI you should configura listener and TCI users 
+(2 level access).
+
+16.1 TCI listener
+
+listener 11001 
+
+ type tci
+
+ maxconnect 10 
+
+ acl 3 
+
+ exit 
+
+16.2 TCI users
+
+manager tciadm 
+
+ password 'tcipwd' 
+
+ type tci 
+
+ acl 1 
+
+ exit 
+
+TCI users have access to all TCI commands..
+
+16.3 TCI commands
+
+The TCI session require authentication, after connect 
+open you have to enter username, and password, after 
+that you can use TCI commands for see list of active 
+users on network devices, see list of network devices 
+and it's status, drop user from all devices, clear port 
+on specifyed device. All output from tacppd will have 
+form: "#:\tresponse". But \t this is TAB (\t). I will 
+write response in form "#: Ok", but you should know, that 
+space after "#:" - this is TABulation. Also every 
+responce will ended with symbols \r\n, but i will not 
+write it in examples. In every session you can send 
+many commands. Also you can have TCI session opened for 
+a long time.
+
+16.3.1 authentication
+
+s06: {7} % telnet localhost 11001
+
+Trying 127.0.0.1... Connected to localhost. 
+
+Escape character is '^]'. 
+
+tciadm 
+
+tcipwd 
+
+#: Ok
+
+If you use wrong username/password, message will be "#: Error"
+
+16.3.2 "showdevices" command
+
+You should send command "showdevices" and you will 
+receive device names, ips and status Up/Down in next form.
+
+showdevices 
+
+#: Begin
+
+vgw 192.168.113.21 Up 
+
+vgk 192.168.113.15 Up 
+
+as01 192.168.113.28 Up 
+
+as02 192.168.113.12 Up 
+
+#: End
+
+Output about devices always inside Begin/End. Spaces in 
+output - this is TAB (\t) symbols. Every string ended 
+by "\r\n".
+
+16.3.3 "showusers" command
+
+You should send command "showusers" and you will receive 
+device with ip and name and users on this device with 
+username, port, phone_from/phone_to and ip address.
+
+showusers 
+
+#: Begin
+
+#: Device 192.168.113.21(vgw) 
+
+501 Serial1/0:31 74212322311/74212323794 0.0.0.0 
+
+#: Device 192.168.113.15(vgk) 
+
+#: Device 192.168.113.28(as01) 
+
+#: Device 192.168.113.12(as02)
+
+#: End
+
+All spaces here - this is TAB (\t) symbol. Every string 
+ended by "\r\n".
+
+16.3.4 "checkpwd" command
+
+For check crypted password.
+
+16.3.5 "cryptpwd" command
+
+For crypt password in tacppd style.
+
+16.3.6 "clearuser" command
+
+You sould send command "clearuser" after that send 
+username for clear. Server returns reply "Ok".
+
+clearuser
+
+pppuser1100
+
+#: Ok
+
+All spaces here - this is TAB (\t) symbol. Every string 
+ended by "\r\n".
+
+16.3.7 cleardeviceport command
+
+You should send command "cleardeviceport" after that send 
+device ip and port which will dropped. Server returns "Ok".
+
+cleardeviceport
+
+192.168.113.28
+
+Async21
+
+#: Ok
+
+All spaces here - this is TAB (\t) symbol. Every string 
+ended by "\r\n".
+
+16.3.8 exit command
+
+For end tci session, use command "exit" or "quit".
+
+17 Bundle setup and configure
+
+Bundle use TIP (tacppd interchange protocol) - this is 
+UDP packets with multicast addresses. Each tacppd 
+server can send and receive this packets.
+
+17.1 Bundle operation
+
+There are 4 types of packets for bundle operation: 
+device track packet, user track packet, keepalive 
+packet and start packet. Device track packet has 
+information about device IP and it's status: is device 
+Up or Down now. User track packet has information about 
+currently active users and some information about it. 
+Keepalive packet - about tacppd server activity with 
+it's priority information. Start packet - notification 
+about new member in bundle. Tacppd sends device track 
+packet if it done icmp or snmp polling and detects 
+device status change. The device track packet with 
+information about down device can be sent only as 
+result of polling operation. User track packet can be 
+sent as result of snmp polling operation with user 
+status Up or Down, and in case of receive tacacs+ 
+accounting information, and can set user status in Up 
+or Down. Keepalive packets - for selection of active 
+server - this is server which do polling operation and 
+do users drops by snmp - and provide information about 
+server priority and do information about any server 
+availability. Also server priority value have device 
+track and user track packets and it replace keepalive 
+packet if presents. Keepalive packets send every tacppd 
+every 10 seconds. It has tacppd server ip and it's priority.
+
+17.2 Active tacppd server
+
+In bundle one tacppd will be active. Active status 
+means, that this tacppd have to do snmp/icmp network 
+devices polling, and also this tacppd will send to 
+network devices snmp commands for drop users. Also this 
+tacppd resource system will do updates to database 
+during resources changes. This is tacppd with highest 
+bundle priority value. The algorythm of active tacppd 
+selection next: after start every tacppd matched as 
+inactive, send start packet and wait 30 sec. If it 
+receive keepalive, start, dt or ut packet in bundle, 
+than it store information about this tacppd, and 
+compare priority values with own priority value. The 
+maximum priority tacppd set as active. If localhost 
+tacppd priority higher, this server - active. In other 
+case - inactive. If any receive start packet, than it 
+should send set of devicetrack and usertack packets. 
+The list of tacppd servers has expire value of 61 sec, 
+if during this time no information come from any 
+tacppd, than this tacppd server delete from list and if 
+it was active, than do new active server select. Any 
+tacppd send keepalives every 10 secs in case, if no dt 
+or ut packets were created during this period. If it 
+were, than it wait 10 secafter own last dt or ut packet 
+was sent.
+
+17.3 Multicast configuration
+
+17.3.1 Linux
+
+If you use tacppd bundle, you must enable multicast on 
+your Linux box. Exellent documentation available at 
+Multicast-HOWTO 
+
+(http://www.linux.org/docs/ldp/howto/Multicast-HOWTO.html). 
+In several words:
+
+  Check if it is enabled, and if not, enable 
+  Multicasting in the kernel 
+
+  Configure multicast routing with command:
+
+/sbin/route add -net 224.0.0.0 netmask 240.0.0.0 dev eth0
+
+  See, if Linux box connected to multicast group, see 
+  /proc/net/igmp file. You will see something like:
+
+Idx Device : Count Querier Group Users Timer Reporter 
+
+1 lo : 0 V2 010000E0 1 0:ED688817 0 
+
+2 eth0 : 2 V2 010101EF 1 0:FFFFED3F 1 
+
+              010000E0 1 0:ED688817 0
+
+(if you stop tacppd, than you do not see string where 
+Reporter=1).
+
+17.3.2 FreeBSD
+
+17.3.3 SUN Solaris
+
+17.3.4 All platforms
+
+Also try to do ping to a multicast group address. The 
+bundle configuration in tacppd.conf file should be 
+looking like:
+
+access 4 
+
+ permit ^239.1.1.1$ 
+
+exit
+
+listener 11000 
+
+ type bundle 
+
+ maxconnect 10 
+
+ acl 4 
+
+exit
+
+bundle 239.1.1.1:11000 
+
+ description 'tacppd multicast group' 
+
+ cryptokey key1 
+
+ ttl 1 
+
+exit
+
+The ttl=1 only if all nodes connected to one LAN. If 
+you have routers and other network between nodes, set 
+ttl to more. Also set routers for multicast routing.
+
+17.3.5 Multicast routing configuration
+
+If you have use tacppds installed in several servers 
+situated in several networks and want join tacppds to 
+bundle, you have to setup multicast routing. There are 
+a lot of documentation on http://www.cisco.com about 
+multicast routing configuration. We are see only 
+several simple examples. For example we have two 
+Ethernet segments which interconnected by Catalyst 
+switch in different vlans, interconnected by Cisco router.
+
+Router configuration:
+
+! enable multicast routing
+
+ip multicast-routing
+
+
+
+! first subinterface configuration
+
+interface FastEthernet0/0.2
+
+ description First TACPPD VLAN
+
+ encapsulation dot1Q 2
+
+ ip pim sparse-mode
+
+ ip cgmp
+
+
+
+! second subinterface configuration
+
+interface FastEthernet0/0.3
+
+ description Second TACPPD VLAN
+
+ encapsulation dot1Q 3
+
+ ip pim sparse-mode
+
+ ip cgmp
+
+
+
+ip pim rp-address your.router.ip.address
+
+In this example we are using PIM sparse-mode, and RP of 
+our router. Also we set CGMP enabled on subinterfaces, 
+but instead you can use IGMP Snooping feature on the 
+Catalysts, but i prefer CGMP, i think, that it looks 
+like better.
+
+Catalyst switch configuration:
+
+! disable igmp snooping feature (cgmp enabled by default)
+
+no ip igmp snooping
+
+
+
+! trunk ethernet interface
+
+interface FastEthernet 0/1
+
+ description Router trunk connect
+
+ switchport mode trunk
+
+
+
+! first ethernet interface
+
+interface FastEthernet0/5
+
+ description First TACPPD server host
+
+ switchport access vlan 2
+
+
+
+! second ethernet interface
+
+interface FastEthernet0/6
+
+ description Second TACPPD server host
+
+ switchport access vlan 3
+
+In this example we disable IGMP snooping feature and 
+set Catalyst interfaces.
+
+Remember, that you have to use multicast TTL values 
+more than 1 if you will use multicast routing, every 
+hop require add 1 to TTL. For our example set TTL to 2.
+
+18 Peers setup and configure
+
+19 Tacppd using
+
+19.1 Stand-alone configuration without nework devices 
+  (for testing)
+
+! tacppd configuration file, build by admin Thu Jun 20 
+09:06:37 2002 
+
+config
+
+
+
+ ! debug
+
+ debug file
+
+  facility db
+
+  facility pool
+
+  facility billing
+
+  facility track
+
+  facility tacacs
+
+  facility aaa
+
+  facility snmp
+
+  exit
+
+ debug syslog
+
+  exit
+
+
+
+
+
+
+
+ ! access list
+
+ access 1
+
+  permit ^127.0.0
+
+  permit ^192.168.0
+
+  exit
+
+ access 2
+
+  permit ^127.0.0
+
+  permit ^192.168.0
+
+  exit
+
+ access 3
+
+  permit ^127.0.0
+
+  permit ^192.168.0
+
+  exit
+
+ access 4
+
+  permit ^239.1.1
+
+  exit
+
+
+
+ ! system manager
+
+ manager admin
+
+  password 'admin-pwd'
+
+  type terminal
+
+  acl 1
+
+  exit
+
+ manager webmin
+
+  password 'webmin-pwd'
+
+  type http
+
+  acl 1
+
+  exit
+
+
+
+ ! tcp/udp listener
+
+ listener 2222
+
+  type terminal
+
+  maxconnect 2
+
+  acl 2
+
+  exit
+
+ listener 10000
+
+  type tacacs
+
+  maxconnect 100
+
+  acl 3
+
+  exit
+
+ listener 8888
+
+  type http
+
+  maxconnect 10
+
+  acl 2
+
+  exit
+
+ listener 12001
+
+  type netflow
+
+  maxconnect 10
+
+  acl 2
+
+  exit
+
+ listener 11000
+
+  type bundle
+
+  maxconnect 10
+
+  acl 4
+
+  exit
+
+
+
+ ! address pool
+
+ pool 1
+
+  addr 10.1.1.1
+
+  addr 10.1.1.2
+
+  addr 10.1.1.3
+
+  exit
+
+
+
+ ! network access server
+
+ device 192.168.0.2
+
+  description 'test'
+
+  tacacskey key
+
+  snmpcommunity 'common'
+
+  loginstring 'login++:'
+
+  pwdstring 'pwd++:'
+
+  defauthorization no
+
+  module cisco.so
+
+  polldelay 5
+
+  inttrfcount no
+
+  snmppolling no
+
+  icmppolling yes 
+
+  shutdown no
+
+  exit
+
+ device 127.0.0.1
+
+  description 'our'
+
+  tacacskey key
+
+  snmpcommunity 'public'
+
+  loginstring 'login++:'
+
+  pwdstring 'passw++:'
+
+  defauthorization no
+
+  module cisco.so
+
+  polldelay 60
+
+  inttrfcount no
+
+  snmppolling no
+
+  icmppolling yes
+
+  shutdown no
+
+  exit
+
+
+
+ ! database
+
+ database tacppd-db@192.168.0.2:5432
+
+  cryptokey 'dbkey'
+
+  login tacppd
+
+  password tacppd-pwd
+
+  module pgsql.so
+
+  shutdown no
+
+  exit
+
+ database tacppd-db@192.168.0.3:5432
+
+  cryptokey 'dbkey'
+
+  login tacppd
+
+  password tacppd-pwd
+
+  module pgsql.so
+
+  shutdown no
+
+  exit
+
+
+
+ ! tacppd bundle
+
+ bundle 239.1.1.1:11000
+
+  cryptokey key1
+
+  priority 10
+
+  ttl 1
+
+  exit
+
+
+
+ ! billing module
+
+ billing 0
+
+  description 'void'
+
+  module none.so
+
+  shutdown yes
+
+  exit
+
+
+
+ ! rouming peer
+
+ peer www1.kht.ru:8001
+
+  description 'none'
+
+  cryptokey key1
+
+  timeshift +2
+
+  mask ^Pppwww1.*
+
+  mask ^ppp.*
+
+  exit
+
+ peer www2.kht.ru:8002
+
+  description 'none'
+
+  cryptokey key2
+
+  mask ^Pppwww2.*
+
+  mask ^www.*
+
+  exit 
+
+
+
+exit
+
+You can use LibTACPLUS 
+(http://sourceforge.net/projects/libtacplus) for 
+emulate network device (in libtacplus's directory 
+/samples you will find simple tacacs+ client).
+
+19.2 Configuration
+
+20 NetFlow collector
+
+Tacppd has inbuilt NetFlow information collector. 
+NetFlow - this is Cisco(R) technology, used in Cisco 
+devices for provide information about ip traffic. 
+Router generate UDP packets with information about data 
+flows. Server can accumulate it and do accounting and 
+billing. The most problem - information volume. Usually 
+we cant directly log this NetFlow packets - this is too 
+large logfiles, and too much resources required for 
+process it. Tacppd has simple aggregation system, where 
+it collects flow information in memory for 15 minutes 
+and writes to database only aggregated information. In 
+future versions we plan add some mechanism for provide 
+detailed logs for configured ip addresses. But 
+currently we write only aggregated data. It greatly 
+reduce data volume and do possible billing and normal 
+accounting of traffic information on per-ip basis.
+
+see tacpp.conf.orig or use CLI for configure NetFlow 
+collector. The log file name with NetFlow information 
+looks like nf20011116.log and recreate every day
+
+log file format differ in depend of NetFlow packet 
+versions 
+
+format v1:
+
+ip_addr         IP addr of router which sends NetFlow information
+
+version         version of NetFlow packets
+
+SysUptime       time in msecs since router booted
+
+unix_secs       current time in seconds since 0000 UTC 
+1970 unix_nsecs      residual nanoseconds since 0000 
+UTC 1970 First           SysUptime at start of flow 
+Last            SysUptime of last packet of the flow
+
+protocol        IP protocol, 6-TCP, 17-UDP, 1-ICMP
+
+srcaddr         ip source addr
+
+srcport         TCP/UDP source port number
+
+dstaddr         ip destination addr
+
+dstport         TCP/UDP destination port
+
+nexthop         next hop router's IP addr
+
+input           input interface index
+
+output          output interface index
+
+dPkts           packets sent in time between First and 
+Last dOctets         octets sent in time between First 
+and Last
+
+
+
+format v5: 
+
+ip_addr         IP addr of router which sends NetFlow information
+
+version         version of NetFlow packets
+
+SysUptime       time in msecs since router booted
+
+unix_secs       current time in seconds since 0000 UTC 
+1970 unix_nsecs      residual nanoseconds since 0000 
+UTC 1970 flow_sequence   sequence number of total flows 
+seen engine_type     type of flow switching engine 
+(RP,VIP,etc) engine_id       slot number of flow 
+switching engine First           SysUptime at start of 
+flow Last            SysUptime of last packet of the 
+flow protocol        IP protocol, 6-TCP, 17-UDP, 1-ICMP 
+srcaddr         ip source addr srcport         TCP/UDP 
+source port number dstaddr         ip destination addr 
+dstport         TCP/UDP destination port nexthop        
+ next hop router's IP addr input           input 
+interface index output          output interface index 
+dPkts           packets sent in time between First and 
+Last dOctets         octets sent in time between First 
+and Last src_as          source peer/origin Autonomous 
+System dst_as          destination peer/origin 
+Autonomous System src_mask        source route's mask 
+bits 
+
+dst_mask        destination route's mask bits tos       
+      IP Type-of-Service
+
+end
+
+21 TACPPD logfiles
+
+Tacppd use several logfiles for provide information 
+with several levels. Also it can use database tables 
+for store some logging information. Every logfile entry 
+starts with fragment with data and time, divided from 
+other part of string by brackets []. In common way it 
+looks like [2003/02/18-03-23:10:56] when you can see 
+year/month/day-day_of_week-hour:minute:second. All data 
+gets from localhost clock, and writes in local 
+timezone. In later releases possible deprecate field 
+with day of week value.
+
+21.1 tacacs+ log
+
+Tacacs+ accounting information writes in file YYYYMM.log.
+
+Example:
+
+[2002/11/06-04-17:15:28] action=START user=84212322311 
+port=Serial1/0:21  from=84212322311 nas=192.168.113.21 
+task_id=27 start_time=1036566928 timezone=VSK 
+service=connection protocol=h323 
+
+[2002/11/06-04-17:15:54] action=STOP user=111 
+port=Serial1/0:21  from=84212322311 nas=192.168.113.21 
+task_id=27 start_time=1036566928  timezone=VSK 
+service=connection protocol=h323  
+h323-gw-id=vgw.tts.khb.cisco 
+h323-incoming-conf-id=5CBC9187 F08E11D6 8058C840 
+5D76F8B 3 h323-call-origin=answer 
+h323-call-type=Telephony  h323-setup-time=17:15:28.589 
+VSK Wed Nov 6 2002 subscriber=RegularLine  
+in-portgrp-id=### 320320 ### 
+h323-connect-time=17:15:28.599 VSK Wed Nov 6 2002  
+h323-disconnect-time=17:15:53.933 VSK Wed Nov 6 2002 
+h323-disconnect-cause=10  tariff-type=Unknown 
+h323-voice-quality=0 pre-bytes-in=0 pre-bytes-out=0  
+pre-paks-in=0 pre-paks-out=0 bytes_in=0 bytes_out=64160 
+paks_in=0 paks_out=401 connect-progress=101 
+elapsed_time=25 nas-rx-speed=0 nas-tx-speed=0
+
+this is full output of TACACS+ accounting packet.
+
+21.2 tacacs+ database log
+
+For billing we should have more useful log for provide 
+acoounting and export information to other software.
+
+21.3 netflow information log
+
+21.4 netflow database log
+
+For provide per-traffic tariffs we should have netflow 
+information available via database.
+
+21.5 events log
+
+Events in tacppd
+
+Example:
+
+[2003/02/15-07-19:25:29] create Database Module 
+lpmx@192.168.113.247:5432 [2003/02/15-07-19:25:29] - 
+tcp-servers start - 
+
+[2003/02/15-07-19:25:29] Server terminal now listen at 
+port 2222 [2003/02/15-07-19:25:30] Server tacacs now 
+listen at port 10000 [2003/02/15-07-19:25:31] Server 
+bundle now listen at port 11000 
+[2003/02/15-07-19:25:32] Server tci now listen at port 
+11001 [2003/02/15-07-19:25:33] Server netflow now 
+listen at port 12001 [2003/02/15-07-19:25:45] NAS 
+192.168.113.21 (vgw) go Up 
+
+[2003/02/15-07-19:25:45] NAS 192.168.113.15 (vgk) go Up 
+
+[2003/02/15-07-19:25:49] NAS 192.168.113.28 (as01) go 
+Up 
+
+[2003/02/15-07-19:25:55] NAS 192.168.113.12 (as02) go 
+Up 
+
+21.6 info log
+
+21.7 errors log
+
+21.8 debug log
+
+Several debug information as configured in config.
+
+Example:
+
+[2003/02/15-07-15:13:54] TACACS: create new tacacs+ 
+session with 192.168.113.21 sessid=7029305
+
+[2003/02/15-07-15:13:54] TACACS: Session Process type=1 
+seq=1 [2003/02/15-07-15:13:54] TACACS: start->action=1 
+start->service=10 start->authen _type=1 version=192
+
+[2003/02/15-07-15:13:54] TACACS: Proccess ASCII 
+login/password from 192.168.113.21 for 111
+
+[2003/02/15-07-15:13:54] TACACS: try nopassword 
+db_authentication [2003/02/15-07-15:13:54] TRACK: add 
+inactive user 111/Serial1/0:30 to list 
+[2003/02/15-07-15:13:54] TACACS: Session Process type=1 
+seq=3 [2003/02/15-07-15:13:54] AAA:  - check by 
+rem_addr(phone) (.* with ) success 
+
+22 Database logging
+
+Tacppd also writes some logs directly to database 
+tables. This is tacacs+ accounting, NetFlow data and 
+some other. This information used by contributed with 
+tacppd billing/accounting system.

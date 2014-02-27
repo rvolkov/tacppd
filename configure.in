@@ -1,0 +1,611 @@
+dnl ####################################
+dnl   This is configure.in for tacppd
+dnl   (c) tacppd development group
+dnl ####################################
+
+
+AC_INIT()
+
+dnl ##########################
+dnl    Checks for programs
+dnl ##########################
+AC_PROG_MAKE_SET
+dnl AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PATH_PROG(CP, cp, cp)
+AC_PATH_PROG(TAR, tar, tar)
+AC_LANG_CPLUSPLUS
+
+dnl #######################################
+dnl      Check for Host information
+dnl #######################################
+dnl AC_CANONICAL_HOST()
+AC_CANONICAL_SYSTEM()
+LIBS=""
+
+dnl #### -fno-external-templates ####
+
+case $host_os in
+	*linux*)
+	OS="-DLINUX -pthread -Wall"
+	MOS="-fPIC -Wall"
+	MLDFLAGS="-shared"
+	MLIBS="-lpthread -lc"
+	;;
+	*solaris*)
+	OS="-DSOLARIS -Wall"
+	MOS="-fPIC -Wall"
+	MLDFLAGS="-shared"
+	MLIBS="-lc"
+	    if test "x$CCPATH" = "x/usr/ucb/cc"; then
+		AC_MSG_ERROR([
+*** the Solaris /usr/ucb/cc compiler does not work here
+*** please put a different compiler in your path first or
+*** run configure with --with-cc=XX, where XX is the other compiler.
+])
+	    fi
+	;;
+	*freebsd*)
+	OS="-DFREEBSD -pthread -D_THREAD_SAFE -Wall"
+	MOS="-fPIC -Wall"
+	MLDFLAGS="-shared"
+	MLIBS="-pthread -lc_r"
+	CPP=gcc
+	CXX=g++
+	CC=$CPP
+	;;
+	*)
+	;;
+esac
+
+case $target in
+	i486-*)
+	OS="-march=i486 $OS"
+	;;
+	i586-*)
+	OS="-march=i586 $OS"
+	;;
+	i686-*)
+	OS="-march=i686 $OS"
+	;;
+	*)
+	;;
+esac
+
+
+dnl ### Check for Crypt function ###
+AC_CHECK_LIB(crypt, crypt)
+dnl ### Checks for libraries in FREEBSD reentrant ###
+AC_CHECK_LIB(c_r,printf)
+dnl ### Check for Crypto libs ###
+AC_CHECK_LIB(crypto,des_key_sched)
+AC_CHECK_LIB(crypto,DES_key_sched)
+dnl ### Replace `main' with a function in -lnsl ###
+AC_CHECK_LIB(nsl, main)
+dnl ### Replace `main' with a function in -ldl ###
+AC_CHECK_LIB(dl, main)
+dnl ### Replace `main' with a function in -lkstat ###
+AC_CHECK_LIB(kstat, main)
+dnl ### Replace `main' with a function in -lpthread ###
+AC_CHECK_LIB(pthread, main)
+dnl ### Replace `main' with a function in -lsocket ###
+AC_CHECK_LIB(socket, main)
+dnl ### Replace `main' with a function in -ldes ###
+AC_CHECK_LIB(des, main)
+dnl ### Replace `main' with a function in -lcipher ###
+AC_CHECK_LIB(cipher, main)
+
+
+echo "OS = $OS"
+
+dnl ###################################################
+
+dnl #### COMPILEDATE=`date +'%Y/%m/%d %T %z'`
+COMPILEDATE=`date +'%Y/%m/%d %T'`
+COMPILEUSER=`whoami`
+echo "#define T_BUILDED \"$COMPILEDATE\"" > vardata.h
+echo "#define T_PERSON \"$COMPILEUSER\"" >> vardata.h
+
+dnl #############################################
+dnl     Common database/snmp modules setting
+dnl #############################################
+MLDFLAGS="$MLDFLAGS $LDFLAGS"
+MCFLAGS="$CFLAGS"
+MLIBS="$MLIBS"
+LIBS="$LIBS"
+
+dnl ###################################################
+dnl          check for gnu compiler >= 3.1
+dnl ###################################################
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_EGREP_CPP(ok, [
+#if (__GNUC__ >= 3) && (__GNUC_MINOR__ >=1)
+ok
+#endif
+], gpp_31_or_greater=yes, AC_MSG_WARN([Some features (XML-RPC) require a GNU compiler >= version 3.1]))
+AC_LANG_RESTORE
+AC_MSG_RESULT(ckecking for gcc compiler >= 3.1 ... $gpp_31_or_greater)
+
+dnl ####################################################
+dnl       sunfreeware packages for Solaris
+dnl ####################################################
+AC_ARG_WITH(sunfreeware,
+    [  --with-sunfreeware		With use Solaris packages from sunfreeware.com [default no]],
+		WITH_SUNFREEWARE=yes,
+		WITH_SUNFREEWARE=no)
+
+LIBX=$LIBS
+LIBS=""
+if test "x$WITH_SUNFREEWARE" = "xyes";then
+    echo "Use sunfreeware packages"
+		LIBX="/usr/local/lib/libpopt.a /usr/local/ssl/lib/libcrypto.a $LIBX"
+else
+    echo "Do not use sunfreeware pkgs"
+fi
+LIBS=$LIBX
+
+
+dnl ###################################################
+dnl         ucd-snmp/net-snmp prefix section
+dnl ###################################################
+dnl SNMP_PREFIX=/usr
+dnl AC_ARG_WITH(snmp-prefix,
+dnl        [  --with-snmp-prefix=PREFIX  SNMP prefix [default=/usr]],
+dnl	SNMP_PREFIX=$withval,
+dnl	SNMP_PREFIX=/usr
+dnl)
+
+AC_MSG_CHECKING(for snmp library prefix)
+AC_ARG_WITH(snmp-prefix,[--with-snmp-prefix  [default=/usr]],
+  ans=$withval,
+  ans=yes
+)
+case "$ans" in
+ no) ;;
+ yes) # Look in:
+      ans="/usr/local /usr"
+     ;;
+ *) # Look where they said
+     ;;
+esac
+case "$ans" in
+ no) ;;
+ *) # Look for libsnmp.a or libsnmp.so or libnetsnmp.a ot libnetsnmp.so:
+   for i in $ans no
+   do
+     test -f $i/lib/libsnmp.a -o -f $i/lib/libsnmp.so -o -f $i/lib/libnetsnmp.a -o -f $i/lib/libnetsnmp.so && break
+   done
+   case "$i" in
+    no)
+       SNMP_PREFIX=
+       ;;
+    *) ans=$i
+       SNMP_PREFIX=$ans
+       ;;
+   esac
+   ;;
+esac
+AC_MSG_RESULT($ans)
+
+dnl ###################################################
+dnl             Use UCD or NET snmp
+dnl ###################################################
+
+dnl *** Check for ucd/net-snmp version
+if test -f "$SNMP_PREFIX/lib/libnetsnmp.a";then
+	echo "Use NET-SNMP package (version >= 5)"
+	SNMPLIB_TYPE=USENETSNMP
+	CFLAGS="-I$SNMP_PREFIX/include $CFLAGS"
+else
+ if test -f "$SNMP_PREFIX/lib/libnetsnmp.so";then
+	echo "Use NET-SNMP package (version >= 5)"
+	SNMPLIB_TYPE=USENETSNMP
+	CFLAGS="-I$SNMP_PREFIX/include $CFLAGS"
+ else
+  if test -f "$SNMP_PREFIX/lib/libsnmp.so";then
+	 echo "Use UCD-SNMP package (version <= 4)"
+	 SNMPLIB_TYPE=USEUCDSNMP
+	 CFLAGS="-I$SNMP_PREFIX/include $CFLAGS"
+  else
+   if test -f "$SNMP_PREFIX/lib/libsnmp.a";then
+	  echo "Use UCD-SNMP package (version <= 4)"
+	  SNMPLIB_TYPE=USEUCDSNMP
+	  CFLAGS="-I$SNMP_PREFIX/include $CFLAGS"
+   else
+    echo "No UCD-SNMP or NET-SNMP package found. You cant use DropLine feature."
+    SNMPLIB_TYPE=NOUSESNMP
+   fi
+  fi
+ fi
+fi
+
+dnl ###################################################
+dnl For static/shared libsnmp/libnetsnmp
+dnl ###################################################
+AC_ARG_WITH(snmp-shared,
+    [  --with-snmp-shared		With shared libsnmp/libnetsnmp [default static]],,)
+
+if test "x$SNMPLIB_TYPE" = "xUSENETSNMP";then
+ if test "x$with_snmp_shared" = "xyes";then
+    AC_CHECK_LIB(netsnmp, snmp_open,
+		  LIBS="-L$SNMP_PREFIX/lib -lnetsnmp $LIBS",
+        AC_MSG_ERROR(*** couldn't find shared libnetsnmp))
+    AC_MSG_RESULT(Shared libnetsnmp... yes)
+		LIBX="-L$SNMP_PREFIX/lib -lnetsnmp $LIBS"
+ else
+dnl disable cheking, AC_CHECK_LIB doesn't work if no shared library present
+dnl    AC_CHECK_LIB(netsnmp, snmp_open,
+dnl        LIBS="$SNMP_PREFIX/lib/libnetsnmp.a $LIBS",
+dnl        AC_MSG_ERROR(*** couldn't find static libnetsnmp))
+    AC_MSG_RESULT(Static libnetsnmp... yes)
+		LIBX="-L$SNMP_PREFIX/lib -lnetsnmp $LIBS"
+ fi
+ LIBS=$LIBX
+else
+dnl LIBX=""
+ if test "x$with_snmp_shared" = "xyes";then
+    AC_CHECK_LIB(snmp, snmp_open,
+		  LIBS="-L$SNMP_PREFIX/lib -lsnmp $LIBS",
+        AC_MSG_ERROR(*** couldn't find shared libsnmp))
+    AC_MSG_RESULT(Shared libsnmp... yes)
+		LIBX="-lsnmp $LIBS"
+ else
+dnl disable cheking, AC_CHECK_LIB doesn't work if no shared library present
+dnl    AC_CHECK_LIB(snmp, snmp_open,
+dnl        LIBS="$SNMP_PREFIX/lib/libsnmp.a $LIBS",
+dnl        AC_MSG_ERROR(*** couldn't find static libsnmp))
+    AC_MSG_RESULT(Static libsnmp... yes)
+		LIBX="$SNMP_PREFIX/lib/libsnmp.a $LIBS"
+ fi
+ LIBS=$LIBX
+fi
+
+dnl ###################################################
+dnl                 Expat section
+dnl ###################################################
+
+
+dnl On FreeBSD, /usr/local/lib is not automatically in the library path
+dnl so if the below paragraph is commented out, the sanity check fails
+dnl because the expat library is not loaded - BM
+
+dnl Expat path
+dnl echo "Check for Expat prefix:"
+AC_ARG_WITH(expat-prefix,
+        [  --with-expat-prefix=PREFIX  libExpat prefix [default=/usr/local]],
+	EXPAT_PREFIX=$withval,
+	EXPAT_PREFIX=/usr/local
+)
+LDFLAGS="-L$EXPAT_PREFIX/lib $LDFLAGS"
+CFLAGS="-I$EXPAT_PREFIX/include $CFLAGS"
+MCFLAGS="-I$EXPAT_PREFIX/include $MCFLAGS"
+
+dnl echo "Expat search: LDFLAGS=$LDFLAGS EXPAT_PREFIX=$EXPAT_PREFIX"
+
+dnl For static/shared libexpat
+dnl echo "Check for static/shared libexpat:"
+AC_ARG_WITH(expat-static,
+    [  --with-expat-static		With static libexpat [default shared]],
+		WITH_EXPAT_STATIC=yes,
+		WITH_EXPAT_STATIC=no)
+
+LIBX=$LIBS
+LIBS=""
+if test "x$WITH_EXPAT_STATIC" = "xyes";then
+    echo "Check for static libexpat"
+    AC_CHECK_LIB(expat, XML_ParserCreate,
+        LIBS="-L$EXPAT_PREFIX/lib -lexpat $LIBS",
+        AC_MSG_ERROR(*** couldn't find static libexpat))
+    AC_MSG_RESULT(Static libexpat... yes)
+		LIBX="-L$EXPAT_PREFIX/lib -lexpat $LIBX"
+else
+    echo "Check for shared libexpat"
+    AC_CHECK_LIB(expat, XML_ParserCreate,
+		  LIBS="-L$EXPAT_PREFIX/lib -lexpat $LIBS",
+        AC_MSG_ERROR(*** couldn't find shared libexpat))
+    AC_MSG_RESULT(Shared libexpat... yes)
+		LIBX="-L$EXPAT_PREFIX/lib -lexpat $LIBX"
+fi
+LIBS=$LIBX
+
+
+dnl #########################################################
+dnl			MySQL section
+dnl #########################################################
+
+dnl For MySQL support
+MYSQL_LIB=""
+dnl echo "Check for MySQL support:"
+AC_ARG_WITH(mysql,
+	[  --with-mysql		With MySQL Support   ],,)
+
+MYSQL_PREFIX=/usr/local
+
+AC_ARG_WITH(mysql-prefix,
+        [  --with-mysql-prefix=PREFIX  Mysql prefix [default=/usr/local]],
+	MYSQL_PREFIX=$withval,
+	MYSQL_PREFIX=/usr/local
+)
+
+if test "x$with_mysql" = "xyes";then
+        MCFLAGS="-I$MYSQL_PREFIX/include/mysql -I/usr/include/mysql $MCFLAGS"
+	TMP="$LDFLAGS -L$MYSQL_PREFIX/lib/mysql"
+	TMP2="$LIBS"
+        LIBS="-L$MYSQL_PREFIX/lib/mysql -lmysqlclient"
+        AC_CHECK_LIB(mysqlclient, mysql_init,
+                        LIBS="-L$MYSQL_PREFIX/lib/mysql -lmysqlclient",
+                        AC_MSG_ERROR(*** couldn't find libmysqlclient ***))
+	MDB="-DDB_MYSQL $MDB";
+	LDFLAGS="$TMP"
+	MYSQL_LIB="$LIBS"
+	LIBS="$TMP2"
+        AC_MSG_RESULT(Mysql support... yes)
+else
+        AC_MSG_RESULT(Mysql support... no)
+fi
+
+dnl ################################################################
+dnl			PostgreSQL section
+dnl ################################################################
+
+dnl For PgSQL support
+dnl echo "Check for PgSQL support:"
+PGSQL_LIB=""
+AC_ARG_WITH(pgsql,
+	[  --with-pgsql		With PgSQL Support   ],,)
+
+AC_ARG_WITH(pgsql-prefix,
+        [  --with-pgsql-prefix=PREFIX  PgSQL prefix [default=/usr/local/pgsql]],
+	PGSQL_PREFIX=$withval,
+	PGSQL_PREFIX=/usr/local/pgsql
+)
+
+if test "x$with_pgsql" = "xyes";then
+        MCFLAGS="-I$PGSQL_PREFIX/include $MCFLAGS"
+	TMP="$LDFLAGS"
+	LDFLAGS="-L$PGSQL_PREFIX/lib"
+	TMP2="$LIBS"
+	LIBS=""
+        AC_CHECK_LIB(pq, PQsetdbLogin,
+                    LIBS="-L$PGSQL_PREFIX/lib -lpq",
+                    AC_MSG_ERROR(*** couldn't find libpq))
+	LDFLAGS="$TMP"
+	MDB="-DDB_PGSQL $MDB"
+	PGSQL_LIB="$LIBS"
+	LIBS="$TMP2"
+        AC_MSG_RESULT(Pgsql support... yes)
+else
+        AC_MSG_RESULT(Pgsql support... no)
+fi
+
+
+dnl ################################################################
+dnl			MiniSQL section
+dnl ################################################################
+
+dnl For MiniSQL support
+dnl echo "Check for MiniSQL support:"
+MSQL_LIB=""
+AC_ARG_WITH(msql,
+	[  --with-msql		With MiniSQL Support   ],,)
+
+AC_ARG_WITH(msql-prefix,
+        [  --with-msql-prefix=PREFIX  MiniSQL prefix [default=/usr/local/msql3]],
+	MSQL_PREFIX=$withval,
+	MSQL_PREFIX=/usr/local/msql3
+)
+
+if test "x$with_msql" = "xyes";then
+        MCFLAGS="-I$MSQL_PREFIX/include $MCFLAGS"
+	TMP="$LDFLAGS"
+	LDFLAGS="-L$MSQL_PREFIX/lib"
+	TMP2="$LIBS"
+        AC_CHECK_LIB(msql, msqlConnect,
+                    LIBS="-L$MSQL_PREFIX/lib -lmsql",
+                    AC_MSG_ERROR(*** couldn't find libmsql))
+	LDFLAGS="$TMP"
+	MDB="-DDB_MSQL $MDB"
+	MSQL_LIB="$LIBS"
+	LIBS="$TMP2"
+        AC_MSG_RESULT(MiniSQL support... yes)
+else
+        AC_MSG_RESULT(MiniSQL support... no)
+fi
+
+
+dnl ##########################################################
+dnl 	              ORACLE SECTION
+dnl ##########################################################
+dnl #AC_ARG_WITH(ora-ver,
+dnl #    [  --with-oracle-version=NUMBER  	Oracle version [default=9]],
+dnl #    ORA_VER=$withval,
+dnl #    ORA_VER=9
+dnl #)
+
+AC_ARG_WITH(oracle-home,
+        [  --with-oracle-home=PREFIX  Oracle Home [default=/home/oracle/product/9.2.0]],
+	ORACLE_HOME=$withval,
+	ORACLE_HOME=/home/oracle/product/9.2.0
+)
+
+dnl ############# Oracle database OCI ###################
+
+dnl echo "Check for Oracle OCI support:"
+OCI_LIB=""
+AC_ARG_WITH(oci,
+	[  --with-oci		With Oracle OCI Support   ],,)
+
+if test "x$with_oci" = "xyes";then
+	MCFLAGS="-I$ORACLE_HOME/rdbms/public -I$ORACLE_HOME/rdbms/demo -I$ORACLE_HOME/plsql/public -I$ORACLE_HOME/network/public -I$ORACLE_HOME/precomp/public $MCFLAGS"
+	TMP="$LDFLAGS"
+	LDFLAGS="-L$ORACLE_HOME/lib -L$ORACLE_HOME/rdbms/lib -lclntsh `cat $ORACLE_HOME/lib/sysliblist`"
+	TMP2="$LIBS"
+dnl #	LIBS="-L$ORACLE_HOME/lib -L$ORACLE_HOME/rdbms/lib -lclntsh `cat $ORACLE_HOME/lib/sysliblist`"
+	AC_CHECK_LIB(clntsh, OCIEnvCreate,
+		LIBS="-L$ORACLE_HOME/lib -L$ORACLE_HOME/rdbms/lib `cat $ORACLE_HOME/lib/sysliblist`",
+		AC_MSG_ERROR(*** couldn't find Oracle libclntsh))
+	LDFLAGS="$TMP"
+	MDB="-DDB_OCI $MDB"
+	OCI_LIB="$LIBS"
+	LIBS="$TMP2"
+        AC_MSG_RESULT(Oracle OCI support... yes)
+else
+        AC_MSG_RESULT(Oracle OCI support... no)
+fi
+
+dnl ################# Oracle database OCCI ########################
+
+echo "Check for Oracle OCCI support:"
+OCCI_LIB=""
+AC_ARG_WITH(occi,
+	[  --with-occi		With Oracle OCCI Support   ],,)
+
+if test "x$with_occi" = "xyes";then
+	MCFLAGS="-I$ORACLE_HOME/rdbms/public -I$ORACLE_HOME/rdbms/demo -I$ORACLE_HOME/plsql/public -I$ORACLE_HOME/network/public -I$ORACLE_HOME/precomp/public $MCFLAGS"
+	TMP="$LDFLAGS"
+	LDFLAGS="-L$ORACLE_HOME/lib -L$ORACLE_HOME/rdbms/lib -locci -lclntsh `cat $ORACLE_HOME/lib/sysliblist`"
+	TMP2="$LIBS"
+dnl #	LIBS="-L$OCCI_PREFIX/lib -lclntsh -lwtc${ORA_VER}"
+	AC_CHECK_LIB(occi, oracle::occi::Environment::createEnvironment,
+		LIBS="-L$ORACLE_HOME/lib -L$ORACLE_HOME/rdbms/lib -lclntsh `cat $ORACLE_HOME/lib/sysliblist`",
+		AC_MSG_ERROR(*** couldn't find libocci.so))
+	LDFLAGS="$TMP"
+	MDB="-DDB_OCCI $MDB"
+	OCCI_LIB="$LIBS"
+	LIBS="$TMP2"
+	AC_MSG_RESULT(Oracle OCCI support... yes)
+else
+	AC_MSG_RESULT(Oracle OCCI support... no)
+fi
+
+dnl	##################### Perl section #########################
+
+echo "Check for Perl support:"
+
+AC_ARG_WITH(perl,
+	[  --without-perl		Without Perl Support   ],,)
+
+if test "x$without_perl" = "xyes";then
+	AC_MSG_RESULT(Perl support... no)
+	OS="-UWITH_PERL $OS"
+else
+	OS="-DWITH_PERL `perl -MExtUtils::Embed -e ccopts` $OS"
+	LIBS="-DWITH_PERL `perl -MExtUtils::Embed -e ldopts` $LIBS"
+	AC_MSG_RESULT(Perl support... yes)
+fi
+
+
+dnl	##########	xml-rpc section (requires gcc >= 3.1) ##############
+
+if test "x$gpp_31_or_greater" = "xyes";then
+echo "Check for xmlrpc support:"
+AC_ARG_WITH(xmlrpc,
+	[  --with-xmlrpc		With xmlrpc Support   ],,)
+
+if test "x$with_xmlrpc" = "xyes";then
+	OS="-DWITH_XMLRPC $OS"
+	LIBS="-lXmlRpc $LIBS"
+	AC_MSG_RESULT(XmlRpc support... yes)
+else
+	AC_MSG_RESULT(XmlRpc support... no)
+	OS="-UWITH_XMLRPC $OS"
+fi
+
+fi
+
+dnl ############# Checks for header files ######################
+
+use_sstream=no
+AC_TRY_CPP([ #include <iostream>
+#include <sstream> ], use_sstream=yes, use_sstream=no)
+if test "x$use_sstream" = "xyes";then
+echo "Use <sstream> header"
+OS="-DHAVE_SSTREAM $OS"
+else
+echo "Use <strstream> header"
+OS="-UHAVE_SSTREAM $OS"
+fi
+
+dnl ############# For CryptoCard support #########################
+
+echo "Check for cryptocard support:"
+AC_ARG_WITH(cryptocard,
+    [  --with-cryptocard		With cryptocard support [default none]],,)
+
+if test "x$with_cryptocard" = "xyes";then
+OS="-DWITH_CCARD $OS"
+AC_CHECK_HEADERS(des.h,use_desh=yes,)
+if test "x$use_desh" = "xyes";then
+echo "Use <des.h> header"
+OS="-DHAVE_DES_H $OS"
+else
+echo "Do not use <des.h> header, possible use <unistd.h>"
+fi
+
+else
+OS="-UWITH_CCARD $OS"
+echo "Do not use headers for cryptocard support compile in"
+fi
+
+dnl ################# for OpenSSL #################
+echo "Check openssl presence:"
+AC_ARG_WITH(openssl,
+    [  --with-openssl		Use OpenSSL (mandatory in future) [default none]],,)
+if test "x$with_openssl" = "xyes";then
+OS="-DWITH_OPENSSL $OS"
+fi
+
+dnl ###########################################################
+
+dnl insert defines to Makefile
+#AC_SUBST(COMPILEDATE)
+#AC_SUBST(COMPILEUSER)
+AC_SUBST(DEFINES)
+AC_SUBST(OS)
+AC_SUBST(MOS)
+AC_SUBST(MDB)
+AC_SUBST(MLIBS)
+AC_SUBST(LIBS)
+AC_SUBST(MLDFLAGS)
+AC_SUBST(MCFLAGS)
+AC_SUBST(CP)
+AC_SUBST(TAR)
+
+AC_SUBST(SNMPLIB_TYPE)
+
+AC_SUBST(PGSQL_LIB)
+AC_SUBST(MYSQL_LIB)
+AC_SUBST(MSQL_LIB)
+AC_SUBST(ORA_VER)
+AC_SUBST(OCI_LIB)
+AC_SUBST(OCCI_LIB)
+
+
+dnl AC_HEADER_STDC
+dnl AC_CHECK_HEADERS(fcntl.h malloc.h strings.h sys/file.h sys/ioctl.h sys/time.h syslog.h unistd.h)
+dnl AC_CHECK_HEADERS(shadow.h,[
+dnl		if test -f /etc/shadow ; then
+dnl		  AC_DEFINE(SHADOW_PASSWORDS)
+dnl		fi
+dnl		],)
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl AC_C_CONST
+dnl AC_HEADER_TIME
+
+dnl Checks for library functions.
+dnl AC_PROG_GCC_TRADITIONAL
+dnl AC_FUNC_SETPGRP
+dnl AC_TYPE_SIGNAL
+dnl AC_FUNC_VPRINTF
+dnl AC_FUNC_WAIT3
+dnl AC_CHECK_FUNCS(regcomp select socket strcspn strdup strtol)
+
+AC_OUTPUT(Makefile ./src/Makefile ./db/Makefile ./snmp/Makefile ./resrc/Makefile)
+
+echo
+echo "For latest information and updates check http://tacppd.org"
+echo

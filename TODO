@@ -1,0 +1,30 @@
+- make messages/debug output to syslog if configured
+
+!!! - redevelop database modules from use <list> to <map> for handle multiple
+connections by number without search for needed connection - probably performance issue!!!
+
+- redesign config parser/CLI. I think, that current handling is not
+  optimal and buggy. So may be try to join several descriptions
+  into one XML - CLI commands, Debug data and database tables/fields data
+  and provide more clear parsing
+- fix possibly security hole with AAA::cpass
+- do collector for SNMP traps
+- do internal SNMP server/agent for generate traps
+  and for share several information to SNMP clients - mostly about current active users,
+  it's IP and phones, about traffic counters on ip addresses or network devices ports,
+  and also for drop users from ports.
+  May be provide some utility and use snmpd which will call this utility.
+- develop and implement TEP - "tacppd exchange protocol"
+  protocol for communication between peer tacppd servers
+  for rouming
+- RADIUS support
+- more enhancements in address pools code for automatic addresses grouping
+- NetFlow information aggregator should be configurable
+- how about handle HTTPS in http code? It will requre external cryptography library or something else.
+- how about implement XML-RPC for interaction with http scripts?
+- DIAMETER support
+- GTP prime support
+
+also we should have some set of standard testing tools - i mean tacacs+
+stress tester, http stress tester, also we can try to do for example
+some set of configuration changes and some collecting information from TCI.

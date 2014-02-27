@@ -1,0 +1,1368 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes true
+\end_header
+
+\begin_body
+
+\begin_layout Title
+TACPPD Developer Guide
+\end_layout
+
+\begin_layout LyX-Code
+                         
+\begin_inset Graphics
+	filename tacppd.org.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+(c) Copyright in 2001-2006 by
+\end_layout
+
+\begin_layout Author
+Roman Volkov and Brett Maxfield
+\end_layout
+
+\begin_layout Section
+Contacts
+\end_layout
+
+\begin_layout Standard
+See tacppd home site http://tacppd.org.
+ For comments, issues and feature requests you can use phorum or mailing
+ list on tacppd project page at SourceForge (http://sourceforge.net/projects/tacp
+pd).
+ For other information you can contact directly with Roman Volkov, rv@tacppd.org.
+ For some extra information and services, commercial support and commercial
+ developing contact with http://tacppd.com.
+\end_layout
+
+\begin_layout Section
+COPYRIGHT info
+\end_layout
+
+\begin_layout Standard
+The tacppd (tacacs++ server daemon) software is Copyright (C) 1998-2005
+ by Roman Volkov and tacppd team.
+ You may use, distribute and copy the tacppd software under the terms of
+ GNU General Public License version 2.
+ See COPYING file in tacppd distribution for text of GNU GPL.
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ This product includes software developed by Eric Young.
+ This product includes software developed by Alec Peterson.
+ It uses RSA Data Security, Inc.
+ MD5 Message-Digest Algorithm.
+ Also some copyright information for other parts available inside source
+ code (NET-SNMP library code).
+\end_layout
+
+\begin_layout Section
+SUPPORT info
+\end_layout
+
+\begin_layout Standard
+This product has community support, available via http://tacppd.org resources:
+ mailing list, phorum, bugtracking and feature requests system from SourceForge'
+s tacppd page (http://sourceforge.net/progects/tacppd).
+ You should know, that support will be provided only when community people
+ will have free time and possibilities to do it, so please, don't require
+ a lot.
+ For information about commercial support visit http://tacppd.com, but you
+ should know, that support will not be provided under any circumstances
+ for this program by tacppd.com, it's employees, volunteers or directors,
+ unless a commercial support agreement and/or explicit prior written consent
+ has been given.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Tacppd APIs, internal structures, programming style, project goals and methods.
+\end_layout
+
+\begin_layout Section
+Writing documentation
+\end_layout
+
+\begin_layout Standard
+For documentation writing we use LyX (http://www.lyx.org).
+ The LyX files are the source for both TEX and HTML.
+ If you wish to contribute toward the documentation, please do not edit
+ changes directly in the .lyx file but send your changes to me for merging.
+ It is much easier if you create a separate .lyx file for your documentation,
+ and for one of the maintainers can then merge it into the documentation.
+\end_layout
+
+\begin_layout Standard
+On a daily basis i will generate TEX and HTML files.
+ The new HTML documents will be available on the web site shortly after.
+ For program code examples please use the 
+\begin_inset Quotes eld
+\end_inset
+
+LyX-code
+\begin_inset Quotes erd
+\end_inset
+
+ style.
+\end_layout
+
+\begin_layout Section
+Developing environment
+\end_layout
+
+\begin_layout Standard
+We are currently using KDevelop.
+ The KDevelop project file available in distribution.
+ The main platform - Linux.
+\end_layout
+
+\begin_layout Section
+Programming style
+\end_layout
+
+\begin_layout Standard
+The main goal is to improve readability of code and thereby the understanding,
+ maintainability and general quality of the code.
+ It is impossible to cover all the specific cases as a general guide and
+ the programmer should be flexible and consoder that other people have to
+ decypher the code they write.
+\end_layout
+
+\begin_layout Subsection
+C++
+\end_layout
+
+\begin_layout Subsubsection
+Comments
+\end_layout
+
+\begin_layout Subsubsection
+Naming conventions
+\end_layout
+
+\begin_layout Itemize
+Names representing types must be in mixed case, starting with upper case.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+Line, SavingsAccount
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community.
+\end_layout
+
+\begin_layout Itemize
+Variable names must be in mixed case starting with lower case.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+line, savingsAccount
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community.
+\end_layout
+
+\begin_layout Itemize
+Named constants (including enumeration values) must be all uppercase using
+ underscore to separate words.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+MAX_ITERATIONS, COLOR_RED, PI
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community
+\end_layout
+
+\begin_layout Itemize
+Names representing methods or functions must be verbs and written in mixed
+ case starting with lower case.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+getName(), computeTotalWidth()
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community.
+\end_layout
+
+\begin_layout Itemize
+Names representing namespaces should be all lowercase.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+analyzer, iomanager, mainwindow
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community.
+\end_layout
+
+\begin_layout Itemize
+Names representing template types should be a single uppercase letter.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+template<class T> ...
+ template<class C, class D> ...
+ 
+\end_layout
+
+\begin_layout Description
+Reason: Common practice in the C++ development community.
+\end_layout
+
+\begin_layout Itemize
+All names should be written in english.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+fileName; // NOT: filNavn 
+\end_layout
+
+\begin_layout Description
+Reason: English is the prefered language for international development.
+\end_layout
+
+\begin_layout Itemize
+Abbreviations and acronyms must not be uppercase when used as name
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+exportHtmlSource(); // NOT: exportHTMLSource();
+\end_layout
+
+\begin_layout Description
+Reason: When the name is connected to another, the readbility is seriously
+ reduced; the word following the abbreviation does not stand out as it should.
+\end_layout
+
+\begin_layout Itemize
+Global variables should always be referred to using the :: operator.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+::mainWindow.open(), ::applicationContext.getName()
+\end_layout
+
+\begin_layout Description
+Reason: For doing global variables separated from other.
+\end_layout
+
+\begin_layout Itemize
+Private class variables should have underscore suffix.
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+class SomeClass {
+\end_layout
+
+\begin_layout LyX-Code
+ private: 
+\end_layout
+
+\begin_layout LyX-Code
+  int length_;
+\end_layout
+
+\begin_layout LyX-Code
+ public:
+\end_layout
+
+\begin_layout LyX-Code
+};
+\end_layout
+
+\begin_layout Description
+Reason: This is important because class variables are considered to have
+ higher significance than method variables, and should be treated with special
+ care by the programmer.
+\end_layout
+
+\begin_layout Itemize
+Variables with a large scope should have long names, variables with a small
+ scope can have short names
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+i, j, k, ::objectForAllProject;
+\end_layout
+
+\begin_layout Description
+Reason: Scratch variables used for temporary storage or indices are best
+ kept short
+\end_layout
+
+\begin_layout Itemize
+The name of the object is implicit, and should be avoided in a method name.
+ 
+\end_layout
+
+\begin_layout Description
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+line.getLength(); // NOT: line.getLineLength();
+\end_layout
+
+\begin_layout Description
+Reason: The latter seems natural in the class declaration, but proves superfluou
+s in use, as shown in the example.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+TABs and spaces
+\end_layout
+
+\begin_layout Standard
+Special characters like TAB and page break must be avoided.
+ (These characters are bound to cause problem for editors, printers, terminal
+ emulators or debuggers when used in a multi-programmer, multi-platform
+ environment.)
+\end_layout
+
+\begin_layout Subsubsection
+Include files and include statements
+\end_layout
+
+\begin_layout Itemize
+Header files must include a construction that prevents multiple inclusion.
+ The convention is an all uppercase construction of the file name with _
+ seperator and the h suffix with __ before and after.
+\end_layout
+
+\begin_layout Description
+Example: for file CoreBundle.h
+\end_layout
+
+\begin_layout LyX-Code
+#ifndef __CORE_BUNDLE_H__
+\end_layout
+
+\begin_layout LyX-Code
+#define __CORE_BUNDLE_H__
+\end_layout
+
+\begin_layout LyX-Code
+ ...
+\end_layout
+
+\begin_layout LyX-Code
+<code>
+\end_layout
+
+\begin_layout LyX-Code
+ ...
+\end_layout
+
+\begin_layout LyX-Code
+#endif //__CORE_BUNDLE_H__
+\end_layout
+
+\begin_layout Itemize
+Include statements must be located at the top of a file only.
+\end_layout
+
+\begin_layout Subsubsection
+use spaces in type definitions
+\end_layout
+
+\begin_layout Standard
+Use only one space in type definition:
+\end_layout
+
+\begin_layout LyX-Code
+int intValue;
+\end_layout
+
+\begin_layout LyX-Code
+char charValue;
+\end_layout
+
+\begin_layout LyX-Code
+int intVal1,intVal2;
+\end_layout
+
+\begin_layout Standard
+Use one space before 
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+ in pointer definition:
+\end_layout
+
+\begin_layout LyX-Code
+char *strType;
+\end_layout
+
+\begin_layout LyX-Code
+int *aaa;
+\end_layout
+
+\begin_layout LyX-Code
+void
+\end_layout
+
+\begin_layout LyX-Code
+methodName(int a,char *aaa,int *bbb) {}
+\end_layout
+
+\begin_layout Subsubsection
+if() rule
+\end_layout
+
+\begin_layout Standard
+The space after last 
+\begin_inset Quotes eld
+\end_inset
+
+)
+\begin_inset Quotes erd
+\end_inset
+
+ before 
+\begin_inset Quotes eld
+\end_inset
+
+{
+\begin_inset Quotes erd
+\end_inset
+
+, spaces around condition, no space after 
+\begin_inset Quotes eld
+\end_inset
+
+if
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout LyX-Code
+if(aaa > bbb) {
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+  <code>
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Standard
+If use united conditions (with 
+\begin_inset Quotes eld
+\end_inset
+
+&&
+\begin_inset Quotes erd
+\end_inset
+
+ and/or 
+\begin_inset Quotes eld
+\end_inset
+
+||
+\begin_inset Quotes erd
+\end_inset
+
+), than no spaces around condition:
+\end_layout
+
+\begin_layout LyX-Code
+if(aaa>bbb && ccc<ddd) {
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+  <code>
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Subsubsection
+switch/case
+\end_layout
+
+\begin_layout Standard
+No space before first 
+\begin_inset Quotes eld
+\end_inset
+
+(
+\begin_inset Quotes erd
+\end_inset
+
+, one space after 
+\begin_inset Quotes eld
+\end_inset
+
+)
+\begin_inset Quotes erd
+\end_inset
+
+ before 
+\begin_inset Quotes eld
+\end_inset
+
+{
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+case
+\begin_inset Quotes erd
+\end_inset
+
+ moved for one space, code moved usually - 2 spaces.
+ Comments about 
+\begin_inset Quotes eld
+\end_inset
+
+case
+\begin_inset Quotes erd
+\end_inset
+
+ in one line with it.
+\end_layout
+
+\begin_layout LyX-Code
+switch(statement) {
+\end_layout
+
+\begin_layout LyX-Code
+ case 1:  // case comment
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   <code>
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   break;
+\end_layout
+
+\begin_layout LyX-Code
+ case 2:  // case comment
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   <code>
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   break;
+\end_layout
+
+\begin_layout LyX-Code
+ default:  // default comment
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   <code>
+\end_layout
+
+\begin_layout LyX-Code
+    ...
+\end_layout
+
+\begin_layout LyX-Code
+   break;
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Subsubsection
+method
+\end_layout
+
+\begin_layout Standard
+Method return value in separate line, no space after method name before
+ 
+\begin_inset Quotes eld
+\end_inset
+
+(
+\begin_inset Quotes erd
+\end_inset
+
+, no space after 
+\begin_inset Quotes eld
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+ in method arguments, space after 
+\begin_inset Quotes eld
+\end_inset
+
+)
+\begin_inset Quotes erd
+\end_inset
+
+ and before 
+\begin_inset Quotes eld
+\end_inset
+
+{
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+{
+\begin_inset Quotes erd
+\end_inset
+
+ in one line with method name and arguments:
+\end_layout
+
+\begin_layout LyX-Code
+void
+\end_layout
+
+\begin_layout LyX-Code
+CoreClass::methodX(int input,char *str) {
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+  <code>
+\end_layout
+
+\begin_layout LyX-Code
+   ...
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Section
+TACPPD operation
+\end_layout
+
+\begin_layout Standard
+The intent of tacppd operation is - use some OO model for provide universal
+ access to TCP/UDP server, database engine, configuration engine, logging
+ engine.
+\end_layout
+
+\begin_layout Section
+Internals
+\end_layout
+
+\begin_layout Section
+Data structures
+\end_layout
+
+\begin_layout Standard
+As core of the project we use Core* obgects.
+ It has all tacppd configuration inside.
+\end_layout
+
+\begin_layout Section
+Logging/Debug system
+\end_layout
+
+\begin_layout Standard
+In main.cc during tacppd start you can see creation of next object: logTermSystem
+, logSyslogSystem, logSystem.
+\end_layout
+
+\begin_layout Subsection
+log/debug facilities
+\end_layout
+
+\begin_layout Standard
+There are several log/debug facilities available (the latest list you can
+ see in sources Debug.cc/Debug.h):
+\end_layout
+
+\begin_layout LyX-Code
+// Debug Facilities 1-250
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_TACACS     1               // tacacs+ protocol events
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_BILLING    2               // billing subsytem
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_AAA        3               // AAA
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_DB         4               // database system activity
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_SNMP       5               // snmp system activity
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_NETFLOW    6               // netflow collector
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_SERVER     7               // tcp/udp server
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_CC         8               // cryptocard
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_POOL       9               // address pool system
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_TRACK      10              // user track system
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_HTTP       11              // http interface
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_TIP        12              // bundle protocol
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_TEP        13              // external protocol
+\end_layout
+
+\begin_layout Standard
+Also there are several internal facilities for output to logfiles (defined
+ in Logging.h file):
+\end_layout
+
+\begin_layout LyX-Code
+// log critical error messages
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_ERROR                 0
+\end_layout
+
+\begin_layout LyX-Code
+// log NetFlow
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_NETFLOWLOG            252
+\end_layout
+
+\begin_layout LyX-Code
+// log events
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_EVENT                 253
+\end_layout
+
+\begin_layout LyX-Code
+// log informational
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_INFORM                254
+\end_layout
+
+\begin_layout LyX-Code
+// log logging information to other file
+\end_layout
+
+\begin_layout LyX-Code
+#define LOG_LOGGING               255
+\end_layout
+
+\begin_layout Subsection
+logTermSystem
+\end_layout
+
+\begin_layout Standard
+During new terminal session creation, you should register socket descriptor
+ of this session with this system by use call:
+\end_layout
+
+\begin_layout LyX-Code
+::logTermSystem->add(<socket handler>);
+\end_layout
+
+\begin_layout Standard
+It means, that logging system will have information for output to terminal.
+ Also when you close terminal session, do not forget call:
+\end_layout
+
+\begin_layout LyX-Code
+::logTermSystem->del(<socket handler>);
+\end_layout
+
+\begin_layout Standard
+This system periodic checks list of messages and if any created entry require
+ present facility, than it send this string to socket.
+ To require any facility you can use call:
+\end_layout
+
+\begin_layout LyX-Code
+::logTermSystem->add_debug_fc(<socket handler>,<facility number>);
+\end_layout
+
+\begin_layout Standard
+For close output of special facility use:
+\end_layout
+
+\begin_layout LyX-Code
+::logTermSystem->del_debug_fc(<socket handler>,<facility number>);
+\end_layout
+
+\begin_layout Section
+Database API
+\end_layout
+
+\begin_layout Standard
+The database system API was created for provide possible universal access
+ to any database engine of data file.
+ It has loadable modules-drivers, which should provide low-level access.
+ All database structures uses tacppd point of view.
+ It means, that we have some fixed set of types which can be not supported
+ by database engine, but database support module must accept this types
+ and convert it and data to database appropriate form.
+ 
+\end_layout
+
+\begin_layout Subsection
+Database version 1
+\end_layout
+
+\begin_layout Standard
+The version 1 of tacppd database currently only version.
+\end_layout
+
+\begin_layout Subsubsection
+users data
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_usr
+\end_layout
+
+\begin_layout LyX-Code
+user name (username) - string
+\end_layout
+
+\begin_layout LyX-Code
+password (password) - string
+\end_layout
+
+\begin_layout LyX-Code
+open date (dopen) - datatime
+\end_layout
+
+\begin_layout LyX-Code
+close date (dclose) - datatime
+\end_layout
+
+\begin_layout LyX-Code
+authorization group (avpid) - string
+\end_layout
+
+\begin_layout LyX-Code
+access group (accid) - string
+\end_layout
+
+\begin_layout LyX-Code
+resource group (bilid) - string
+\end_layout
+
+\begin_layout LyX-Code
+additional data group (addid) - string
+\end_layout
+
+\begin_layout LyX-Code
+max sessions (maxsess) - integer
+\end_layout
+
+\begin_layout Standard
+This is information for authentication.
+ Store username, password, open/close date and time, several groups membership
+ (access group, authorization group, additional user data group), maximum
+ allowed sessions.
+ If database key not equal word 
+\begin_inset Quotes eld
+\end_inset
+
+none
+\begin_inset Quotes erd
+\end_inset
+
+, than field password crypted.
+ It crypted with use md5 and than stored in base64.
+\end_layout
+
+\begin_layout Standard
+EXAMPLE:
+\end_layout
+
+\begin_layout Standard
+- lets create user 
+\begin_inset Quotes eld
+\end_inset
+
+ppprv
+\begin_inset Quotes erd
+\end_inset
+
+ with password 
+\begin_inset Quotes eld
+\end_inset
+
+test
+\begin_inset Quotes erd
+\end_inset
+
+, authorization group 
+\begin_inset Quotes eld
+\end_inset
+
+ppp-1
+\begin_inset Quotes erd
+\end_inset
+
+, access group 
+\begin_inset Quotes eld
+\end_inset
+
+ppp-acc
+\begin_inset Quotes erd
+\end_inset
+
+, no resource group and maximum 1 session available.
+\end_layout
+
+\begin_layout LyX-Code
+username=ppprv
+\end_layout
+
+\begin_layout LyX-Code
+password=test
+\end_layout
+
+\begin_layout LyX-Code
+avpid=ppp-1
+\end_layout
+
+\begin_layout LyX-Code
+accid=ppp-acc
+\end_layout
+
+\begin_layout LyX-Code
+bilid=
+\end_layout
+
+\begin_layout LyX-Code
+maxsess=1
+\end_layout
+
+\begin_layout Subsubsection
+additions to users data
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_add
+\end_layout
+
+\begin_layout LyX-Code
+additional data group
+\end_layout
+
+\begin_layout LyX-Code
+authentication source
+\end_layout
+
+\begin_layout LyX-Code
+enable access password
+\end_layout
+
+\begin_layout Subsubsection
+user access rights
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_acc
+\end_layout
+
+\begin_layout LyX-Code
+access group name (accid)
+\end_layout
+
+\begin_layout LyX-Code
+access by phone
+\end_layout
+
+\begin_layout LyX-Code
+from specifyed NAS
+\end_layout
+
+\begin_layout LyX-Code
+from specifyed port
+\end_layout
+
+\begin_layout LyX-Code
+restricted access time
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout Subsubsection
+authorization information
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_avp
+\end_layout
+
+\begin_layout LyX-Code
+author group id
+\end_layout
+
+\begin_layout LyX-Code
+service
+\end_layout
+
+\begin_layout LyX-Code
+protocol
+\end_layout
+
+\begin_layout LyX-Code
+attribute=vlue pair
+\end_layout
+
+\begin_layout Subsubsection
+per-command access authorization
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_cmd
+\end_layout
+
+\begin_layout LyX-Code
+author group id (avpid)
+\end_layout
+
+\begin_layout LyX-Code
+permitted commands
+\end_layout
+
+\begin_layout LyX-Code
+denied commands
+\end_layout
+
+\begin_layout LyX-Code
+permitted arguments
+\end_layout
+
+\begin_layout LyX-Code
+denied arguments
+\end_layout
+
+\begin_layout Subsubsection
+resource module data
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_res
+\end_layout
+
+\begin_layout Subsubsection
+resource module resources information
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_resdata
+\end_layout
+
+\begin_layout Subsubsection
+resource changes log
+\end_layout
+
+\begin_layout Description
+Name: tacpp_v1_reslog
+\end_layout
+
+\begin_layout Subsection
+Database structure definition in tacppd database API
+\end_layout
+
+\begin_layout Standard
+In files TacDb.cc and TacDb.h++
+\end_layout
+
+\begin_layout Standard
+TacDb.h++: in class TacDb in provate section you can find or add database
+ table descriptor as: DbTable *table_name_var;
+\end_layout
+
+\begin_layout Standard
+TacDb.cc: in constructor you should add: table_name_var = new DbTable("table_name
+","table description"); and also add table fields: 
+\end_layout
+
+\begin_layout Standard
+table_name_var->add("field_name","field description",FIELD_TYPE); where
+ FIELD_TYPE = STR_TYPE - char(), varchar() - string 
+\end_layout
+
+\begin_layout Standard
+for this type you should add field size:
+\end_layout
+
+\begin_layout Standard
+table_name_var->add("field_str","description",STR_TYPE,32); 
+\end_layout
+
+\begin_layout Standard
+UINT_TYPE - unsigned int 
+\end_layout
+
+\begin_layout Standard
+INT_TYPE - ordinary int (remember, usually in SQL databases no signed int
+ type, and this will unsigned too)
+\end_layout
+
+\begin_layout Standard
+FLOAT_TYPE - float
+\end_layout
+
+\begin_layout Standard
+DATE_TYPE - datetime or similar 
+\end_layout
+
+\begin_layout Standard
+BOOL_TYPE - boolean
+\end_layout
+
+\begin_layout Section
+Database module
+\end_layout
+
+\begin_layout Standard
+Database modules system was created for provide acceess to any database
+ engine.
+ Any module have to be linked with database library.
+ We have untested feature for reload one type database module to other during
+ operation, also for change module version or for change database library
+ version without tacppd restart.
+\end_layout
+
+\begin_layout Section
+SNMP module
+\end_layout
+
+\begin_layout Standard
+Snmp modules system was created for provide easy implementation snmp operation
+ with any snmp-capable device.
+ We use snmp operation with net-snmp library (www.net-snmp.org).
+ The snmp low-level code situated inside tacppd core.
+ The modules are only interpret results.
+\end_layout
+
+\begin_layout Section
+Resource module
+\end_layout
+
+\begin_layout Standard
+This is one method for implement resource control system.
+\end_layout
+
+\begin_layout Section
+XML-RPC
+\end_layout
+
+\begin_layout Subsection
+XML-RPC server side implementation
+\end_layout
+
+\begin_layout Subsection
+XML-RPC client side implementation
+\end_layout
+
+\begin_layout Subsubsection
+C/C++
+\end_layout
+
+\begin_layout Subsubsection
+Perl
+\end_layout
+
+\begin_layout Subsubsection
+Java
+\end_layout
+
+\begin_layout Section
+Debugging
+\end_layout
+
+\begin_layout Subsection
+memory leaks
+\end_layout
+
+\begin_layout Standard
+For memory operation debug we will use Valgrind (http://developer.kde.org/~sewardj
+/) - an open-source memory debugger for x86-GNU/Linux.
+\end_layout
+
+\begin_layout Section
+Testing
+\end_layout
+
+\begin_layout Standard
+Some TACACS+ testing tools available with libtacplus library http://sf.net/projec
+ts/libtacplus in samples directory (tacacs+ client, etc)
+\end_layout
+
+\end_body
+\end_document

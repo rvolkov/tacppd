@@ -1,0 +1,42 @@
+file: BUGS
+title: tacppd bugs
+
+OPEN:
+
+#200708101520
+possible problem on FreeBSD system - where time_t = int. Some problem with function overload.
+
+#200406232257
+when you send command "help" into CLI, then it shows help
+information, but close CLI session after that, looks like problem
+that this command is last command in CLI data XML file
+
+
+CLOSED:
+
+#200306171844 - fixed now
+sometime tacppd very fast eat all memory, looks like to
+uncondicional cycle with memory occupation.
+It can be after start, but can be after several days.
+* problem was in use gethostbyname() function in multithread
+environment. The situation can occures in unplanned manner.
+ipaddr.h now uses thread safe call gethostbyname_r
+I test this issue several days with debugger without problems.
+
+#200307071502
+some memory leak, i guess. It working some time, and in several
+cases i see that it uses more and more memory. The memory using
+is increase not fast and in some cases it doesn't visible.
+- i guess, that this leak can occur into Tacacs.cc (tacacs+ code),
+i just fixed it, but will test it, not shure.
+
+#200307230847
+problem with executing Perl files from http server if Perl compiled
+with multithreading support (i think, not sure). Call run_perl()
+freeze process and do not return output.
+Perl library used: /usr/lib/perl5/5.8.0/i686-linux-thread-multi/CORE/libperl.so
+
+#200308151402
+when tacppd working in bundle and new member add to bundle,
+old member start occupy CPU resources. Possible bug with
+bundle start packet processing.

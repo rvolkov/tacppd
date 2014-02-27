@@ -1,0 +1,32 @@
+my $nf_server = 'server.nnnnnn.ru';
+my $nf_dbname = 'lpmx';
+my $nf_dbuser = 'user';
+my $nf_dbpswd = 'password';
+
+-- Это список сетей или отдельных IP адресов
+CREATE TABLE tacppd_v1_nfuser (
+               usernet  inet PRIMARY KEY,   -- сеть или IP
+               name     varchar(32),        -- клиент
+               comment  text
+               );
+-- Добавить сеть
+INSERT INTO nf_user VALUES ('200.500.140.217/32', 'Sirena', 'Some comment...')
+-- Добавить IP
+INSERT INTO nf_user (usernet, name) VALUES ('192.168.0.13', 'Valja')
+
+-- Таблица делается из запроса
+-- структура вышла как получилось
+-- потом я поправлю (т.е. сначала создам таблицу с нужной структурой)
+CREATE TABLE nf_tot_YYYYMM (
+              name char(254),   
+                ip char(254),   
+          bytes_in numeric(18), 
+         bytes_out numeric(18), 
+       currenttime timestamp
+      );
+      
+-- Таких таблиц у Родриго должно быть 2
+-- nf_tot_200306 и nf_tot_200307
+-- надо сделать показ объемов трафика по пользователям
+-- примерно как у нас на webtown/cisco
+

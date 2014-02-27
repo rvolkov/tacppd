@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+<SCRIPT language="JavaScript">
+function Toggle(linkname,item) {
+ obj=document.getElementById(item);
+ visible=(obj.style.display!="none")
+ key=document.getElementById("x" + item);
+ if(visible) {
+  obj.style.display="none";
+//  key.innerHTML="<img src='"+path+"' border=0> "+linkname;
+  key.innerHTML=linkname;
+ } else {
+  obj.style.display="block";
+//  key.innerHTML="<img src='"+path2+"' border=0> "+linkname;
+  key.innerHTML=linkname;
+ }
+}
+</SCRIPT>
+</HEAD>
+<BODY bgcolor=#000088>
+
+<FONT color=#ccffcc>
+Configuration:<BR>
+<HR>
+1. <A id="tmenu1" href="javascript:Toggle('Admin tools','vtmenu1');">Admin tools</A><BR>
+<DIV id="vtmenu1" style="display: none;">
+ 1.1 <A href="./" TARGET="workplace">TCI config</A><BR>
+ 1.2 <A href="./" TARGET="workplace">TACDB config</A><BR>
+ 1.3 <A href="./" TARGET="workplace">LPMX config</A><BR>
+ 1.4 <A href="./" TARGET="workplace">NFDB config</A><BR>
+ 1.5 <A href="./" TARGET="workplace">NFVIEW config</A>
+</DIV>
+<HR>
+2. <A id="tmenu2" href="javascript:Toggle('Tacppd','vtmenu2');">Tacppd</A><BR>
+<DIV id="vtmenu2" style="display: none;">
+ 2.1 <A href="./tci/showcf.pl" TARGET="workplace">show</A><BR>
+ 2.2 <A href="./" TARGET="workplace">modify</A>
+</DIV>
+<HR>
+3. <A id="tmenu3" href="javascript:Toggle('Database','vtmenu3');">Database</A><BR>
+<DIV id="vtmenu3" style="display: none;">
+ 3.1 <A href="./" TARGET="workplace">settings</A><BR>
+ 3.2 <A href="./" TARGET="workplace">show</A><BR>
+ 3.3 <A href="./" TARGET="workplace">modify</A>
+</DIV>
+<HR>
+
+<P></P>
+Management:<BR>
+
+<HR>
+1. <A id="xmenu1" href="javascript:Toggle('Fault','menu1');">Fault</A><BR>
+<DIV id="menu1" style="display: none;">
+ 1.1 <A id="vxmenu1" href="javascript:Toggle('Network Management','vmenu1');">
+ Network Management</A><BR>
+ <DIV id="vmenu1" style="display: none;">
+  1.1.1 <A href="./tci/" TARGET="workplace">Network discovery</A><BR>
+  1.1.2 <A href="./a2.html" TARGET="workplace">Topology mapping</A><BR>
+  1.1.3 <A href="./a3.html" TARGET="workplace">Event handler</A><BR>
+  1.1.4 <A href="./a4.html" TARGET="workplace">Performance data</A><BR>
+  1.1.5 <A href="./a5.html" TARGET="workplace">Management data</A>
+ </DIV>
+ 1.2 <A href="./a1.html" TARGET="workplace">Troubleshooting Infrastructure</A><BR>
+ 1.3 <A href="./a2.html" TARGET="workplace">Fault detection</A><BR>
+ 1.4 <A href="./a3.html" TARGET="workplace">Proactive fault monitoring</A>
+</DIV>
+
+<HR>
+
+2. <A id="xmenu2" href="javascript:Toggle('Configuration','menu2');">Configuration</A><BR>
+<DIV id="menu2" style="display: none;">
+ 2.1 <A href="./a1.html" TARGET="workplace">configuration management</A><BR>
+ 2.2 <A href="./a2.html" TARGET="workplace">inventory management</A><BR>
+ 2.3 <A href="./a3.html" TARGET="workplace">software management</A>
+</DIV>
+
+<HR>
+
+3. <A id="xmenu3" href="javascript:Toggle('Performance','menu3');">Performance</A><BR>
+<DIV id="menu3" style="display: none;">
+ 3.1 <A href="./a1.html" TARGET="workplace">Service Level Agreement</A><BR>
+ 3.2 <A href="./a2.html" TARGET="workplace">Performance Monitoring</A><BR>
+ 3.3 <A href="./a3.html" TARGET="workplace">Performance Analysis</A>
+</DIV>
+
+<HR>
+
+4. <A id="xmenu4" href="javascript:Toggle('Security','menu4');">Security</A><BR>
+<DIV id="menu4" style="display: none;">
+ 4.1 <A href="./webdb/index.pl" TARGET="workplace">Authentication</A><BR>
+ 4.2 <A href="./a2.html" TARGET="workplace">Authorization</A><BR>
+ 4.3 <A href="./a3.html" TARGET="workplace">Accounting</A><BR>
+ 4.4 <A href="./a4.html" TARGET="workplace">ACL</A>
+</DIV>
+
+<HR>
+
+5. <A id="xmenu5" href="javascript:Toggle('Accounting','menu5');">Accounting</A><BR>
+<DIV id="menu5" style="display: none;">
+ 5.1 <A href="./nfdb/" TARGET="workplace">NetFlow</A><BR>
+ 5.2 <A href="./a2.html" TARGET="workplace">IP Accounting</A><BR>
+ 5.3 <A href="./a3.html" TARGET="workplace">tacacs/radius traffic log</A>
+</DIV>
+
+<HR>
+
+</FONT>
+
+</BODY>
+
+</HTML>

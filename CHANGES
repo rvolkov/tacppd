@@ -1,0 +1,967 @@
+                      TACACS++ daemon project changes list
+                      ------------------------------------
+Maintained by Roman Volkov (rv at tacppd dot org)
+
+20070903
+rv - plays with autoconf files, path dirs etc. Try to make Eclipse happy with tacppd for use it for
+develop, build and debug
+
+20070810
+rv - light cleans in CLI code (release 0.0.9)
+
+20070731
+rv - license changed from GPL to absolutely free (see COPYING) - 
+i want to make this code more useful for any
+Compile under FC7 (gcc 4.1.2)
+
+20070211
+rv - some cleanups in Tiep.cc (use MSG_NOSIGNAL during UDP operation
+except signal processing by hands)
+Compile under FC6 (gcc 4.1.1)
+
+20061804
+rv * thanks to mjl - fixed bug with mysql driver
+also now compiled on FC4, several warnings fixed
+
+20051103
+rv * add two fields to netflow traffic table - "srcuser" and "dstuser" - 
+and do checking across active users table for write actual usernames
+into netflow traffic table if address is found into active users
+
+20050721
+rv * new API documentation now compiled with doxygen (doc/tacppd-api.tar.gz)
+
+20050104
+rv * some cleanups in XML config file
+
+20041021
+rv * perl enabled by default
+
+20041017
+rv
+* fix config/Makefile.in, it was a problem with "make install"
+* add path to expat.h file autodetected to MCFLAGS for use in modules
+  if expat includes installed not in usual place
+
+20040930
+rv * remove several locks in listener code, can work much faster but need
+testing of multiply simultaneous connections
+
+20040925
+rv * add tacppd.xmi file - imported tacppd objects in Umbrello UML modeller
+
+20040913
+rv * Fix in ipaddr.h for FreeBSD compiling
+
+20040815
+rv * start several cleans with tacacs+ code - search some unstable work problem
+
+20040811
+rv * do workaround in ipaddr.h for FreeBSD compiling under. May be ugly - must
+see what to use against gethostbyname() for thread save operation.
+
+20040810
+rv * add tacppd_v1_nfuser table into internal database system - this is
+netflow users which we need in count traffic
+* changes in web and billing utilities for current database names
+
+20040801
+rv
+*remove %z from date arguments in configure script - this argument
+uncompatible with Solaris
+*fix crash in some configs with wrong counting of Debug systems and
+Device numbers, it was a bug which du crash during show configuration
+if it was only one device or one debug into config 
+
+20040607
+rv1125
+* move developing to gcc 3.4.0, so some fixes in code
+* start changing table names from tacpp_* form to tacppd_* form
+for proper show this tables owner, so it can be a some instability
+during migration occur
+* addins for implement authentication domains feature
+
+20040531
+rv1125
+* add initial nfview web application for view netflow information stored
+into database (results of lpmx_nf.pl software)
+
+20040520
+rv1125
+* fixes in Makefile.in - fix problem with "make install" install of 
+documentation to http subdirectory.
+* do possible compile and work without snmp library without poll/drop
+
+20040311
+rv1125
+* 18:59 small source code cleans
+
+20040208
+rv1125
+* 01:05 fix crash in Logging.cc
+
+20040204
+rv1125
+* regenerate documentation with latest versions of LyX and LaTEX2HTML
+* move to use doxygen for generate API documentation, regenerate
+
+20040202
+rv1125
+* add use library libcrypto into configure.in (and fix cheking function) - for
+compatibility with latest versions of net-snmp
+* fixes in detection of ucd-snmp/net-snmp library
+* move to use KDevelop 3.0, so add new project file tacppd.kdevelop
+* config file name change from "tacpp.conf" to "tacppd.conf",
+"tacpp.conf.example" to "tacppd.conf.ex", "tacpp.xml" to "tacppd.xml"
+
+################################################################
+After this date a new format of entries into this file used -
+dev-nic
+* comment1
+* comment2
+this is done for better show personality of changer, and also for
+provide better looking
+################################################################
+
+20040123
+ - some changes in developing policy. I will do several reordering of
+   project.
+
+20030827
+ - add files from LPMX project (simple billing system)
+
+20030821
+  - release 0.0.7pre3
+
+20030621
+  - NetflowCollector can write data to text file if
+    database connectivity was broken
+  - remove some locks in NetFlow code
+  - add simple handling of NetFlow version 5 and version 7 packets
+
+20030620
+  - in TacDb do working with log tables less memory-intensive,
+    create data for tables with void information only before
+    create tables call
+  - in NetFlow collector code open database connect only if
+    cache has expired entryes
+  - in NetFlow collector some plays with timeouts, it now collects
+    data for matched flows up to 10 minutes, max cache size appx 60000
+  - remove two unused variables from TacacsServerAuthentication
+
+20030616
+  - ugly workaround for listener code locking system
+  - fix possible memory leak in pgsql database driver
+
+20030611
+  - fix memory leak in CoreDevice.cc in user tracking code,
+    add free memory in usr_del methods
+
+20030317
+  - add TCI example web Perl script to embedded http server pages
+  - remove some functions from UserTrack code
+
+20030307
+  - add GET and POST methods support to embedded http server
+
+20030126
+  - do properly crypted/unencrypted passwords in database handling
+    ATTENTION!!! your old entryes can be unreadable! store it first in cleartext!
+    if you use database cryptoke 'none', than you have open passwords in database,
+    so it will your business to control that password symbols can be properly handled
+    by database engine
+
+20030121
+  - fix bug with wrong database ip storage in CoreDb code
+    (in long ip addresses was stripped last digit)
+
+20030104
+  - bugfix release 0.0.6a (in testing now, but looks like that
+    problem with frozen tcp connection was fixed), also a lot
+    of cleans after testing with valgrind memory debugger
+
+20021231
+  - release 0.0.6
+
+20021219
+  - fixed crash in process of bundle neighbor time-to-live expirt
+  - user info send to bundle only if such user created in database
+
+20021215
+  - new config file parsing code (from lsk), now joined with
+    terminal access code
+
+20021210
+  - rewrite Debug.h/Debug.cc for use STL
+
+20021209
+  - merge with latest Lsk's code for configuration processing
+  - fixes in configure script for right detect libexpan and
+    libsnmp
+  - move UserTrack code and list of users, connected to devices
+    to use STL's <list>, several fixes in UserTrack code
+  - rewrite device list in CoreDevice for use STL's <list>
+  - rewrite CoreManager for use STL's <list>
+  - rewrite CorePeer for use STL's <list>
+  - rewrite CorePool for use STL
+
+20021208
+  - release this date build as tacppd 0.0.6pre1
+
+20021202
+  - enable code for tracking max open tcp connections
+  - listener code cleanups, some move to STL
+
+20021130
+  - remove lock from tcp/udp server code, can be unstable
+    max tcp connection open tracking while disabled
+
+20021127
+  - move Core* objects handling to STL's <list>
+  - move handling tacacs+ session to STL's <list>
+  - move tiep packets creation for use STL's <list>
+
+20021126
+  - fix crash in UserTrack code - other miss "i" and "j" :)
+  - fix authorization fail in case of first void entry in select
+    of av-pair from database system (its happen on PostgreSQL),
+    or may be as result of db-driver work
+
+20021125
+  - fix crash when do delete expired user from UserTrack -
+    used "i" instead "j" :)
+
+20021113
+  - fix crash with UserTrack add call (recursive call without end)
+  - fix bug with lost debug information, more correct set locking
+    in Logging functions, implement new method for
+    prepare log information (C++ << style)
+
+20021112
+  - fix bug with function query in database driver
+
+20021110
+  - implement some function for future support Tacppd Control Interface
+	  ability for external program control active users, way to
+		implement XML-RPC gateway in future
+
+20021030
+  - Tiep/bundle now generate regular keepalive packets, also
+    it receive this packets, send start packets,
+    generate full update packets, and generate
+    incremental device track update packets
+
+20021029
+  - fixes in devices polling and user traclinf algorythm, still uncomplete
+  - ipaddr.h redesign, it now return string
+  - default prefix dir for snmp library moved to /usr (from /usr/local)
+
+20021028
+  - Utils.cc/Utils.h reorganization - now most dangerous
+    functions returns string value
+
+20021025
+  - mystring.h deleted, all mystring types changed to standard string
+
+20021022
+  - merge with Lsk's code for process configuration commands
+    syntax throught external XML system, very cool
+  - implement new ServerTrack code - system for maintain
+    tacppds in bundle and detect active server
+  - remove old ServerStatus tracking code
+
+20021017
+  - remove database data double buffering
+  - full redesign of UserTrack code: users lists now attached to
+    network device data structures, and code much more simple and
+    safe
+  - more CoreDevice code cleanups
+
+20021016
+  - move DeviceTrack methods to CoreDevice, do structures
+    more simple, and remove DeviceTrack code
+  - implement much more simple Bundle handling (CoreBundle class
+    full redesign)
+
+20021015
+  - fixes in autoconf and in nightly builds
+  - merge with lsk branch with new CLI code which use Expat
+    and XML for create CLI system
+
+20021008
+  - simplify devices/users and bundle checking algorythm
+
+20021007
+  - add several strings in UserGuide about multicast routing configuration
+    for tacppd bundle setup
+  - several fixes in DeviceTrack/UserTrack code and in TIEP implementation
+
+20021002
+  - do TIP packet splitted to 7 - now tacppds can exhange unlimited
+    information about active users and devices
+
+20021001
+  - fix possible bug with database passwords encryption
+    (in md5_xor method it was possible write symbol out of array)
+  - add user status packets exchange in bundle, but while for
+    devices with small number of active users
+
+20020930
+  - device tracking messages exchange into bundle working, but only with
+    no encryption (cryptokey set to 'none')
+
+20020923
+  - crypted passwords for manager users in configfile now in base64 form
+  - crypted passwords in database now in base64 form
+  (you must reenter passwords in database now !!!)
+
+20020920
+  - add several words for xml-rpc integrated server support
+    files Client.cc/Client.h removed, files XmlRpc.cc/XmlRpc.h added
+  - move base64 functions from Http.cc/Http.h code to Utils.cc/Utils.h
+
+20020917
+  - add some to documentation
+	- some files moved to new tacppd coding style
+
+20020904
+  - fixes in Makefiles
+  - continue merging with Isk's terminal interface code
+
+20020830
+  - snmp/cisco now do not try collect ifInOctetc/ifOutOctets info,
+    this job integrated to snmp/cisco-trf module
+
+20020829
+  - several fixes, some words in documentation about multicast bundles
+
+20020822
+  - make interface for bundle exchange about network devices status
+  - simple system for exchange device status info across bundle
+
+20020819
+  - fixes in headers for freebsd (4.2 require some extra headers
+    for compile icmp code)
+
+20020818
+  - move developming environment to gcc 3.2
+
+20020816
+  - fix possible bug in DbModule decrypt method
+  - do database fields unencrypted if database crypto key = "none"
+
+20020815
+  - add Tiep.cc/Tiep.h files for tacppd bundle and peer exchange methods
+
+20020814
+  - add several includes to global.h and use POSIX style 'cp' command
+    in Makefile for do FreeBSD 4.6 happy (thanks to Brett Maxfield)
+  - the bundle/bundle listener now attach tacppd to bundle multicast group
+  - move snmp tracking to new system DeviceTrack, which will use snmp/icmp
+    for test device availability
+
+20020813
+  - add icmp polling together with snmp polling - enabled by 'icmppolling'
+    command in configuration. If snmp polling enabled too, that if it
+    returns success, no icmp test will be doing (Icmp.cc/Icmp.h files)
+
+20020809
+  - add --with-http in configure - it enable integrated http server support,
+    if not set, no http code used.
+  - remove --with-libperl-shared from configure - do it automatic
+
+20020808
+  - comment in code for device info store in database - i am thinking that may be
+    better to save current storage into configfile...
+  - change 'nas' word in configuration to 'device' - it is better
+	- add parameters 'snmppolling' and 'icmppolling' to device configuration
+	- change word 'trfcounter' to 'inttrfcount' - for better understanding
+  - fix in AModifyer EXT code
+  - a lot of comments moved to KDoc format
+  - add part for sending several variables from http code to perl script
+
+20020807
+  - add Perl support in http code - now it run .pl files in http directory
+    and out it's output to web browser
+  - external authorization modifyer - without testing
+  - add tables and it's processing in TacDb for authenticate and control
+    web system users
+
+20020806
+  - add table to database with network devices information
+  - prepare configure scripts for compile together with libperl for
+    integrate Perl support for http code
+
+20020805
+  - start 0.0.6 development brunch
+  - radius related code commented - due to tacacs+ support in Cisco VoIP gateways,
+    i move RADIUS support to small priority task
+  - support of output to browser *.class java files, add several files for java
+    testing in http dir
+  - some http code cleanups
+  - delete 'radiuskey' word in configuration file
+  - add table for network devices to database system, it will replace CoreNas code
+    and "nas" section in config file
+
+20020805
+  - fix in mysql code
+  - fix in configure.in for <sstream> header
+  - this code - 0.0.5a release
+
+20020802
+  - fixes in tacacs+ authorization of Cisco VoIP gateways - it requests
+    authorization start without any av-pairs inside, and we should
+    responce to it...
+  - add file debitcard.0.0.2.tcl to /contrib - this is example of VoIP gw
+    TCL script for use with tacppd, with use tacacs+ authorization for
+    sending available credit time amount to device with use
+    'h323-credit-time=value' av-pair
+  - i think to move documentation to html
+
+20020801
+  - possible crash in database module fixed (it could try write big string in small char array)
+  - possible crash in database code fixed
+  - tacacs+ handle code fixes - now it can correct handle requests,
+    where authentication start packet has username, but doesn't have password
+    (for example, VoIP authentication)
+
+20020731
+I am close to release 0.0.5a, please test latest build and report me results!
+  - double buffering system in get2add method for access to database data
+  - do more accuracy LogFile output under burst load - if we can't write to file faster
+    then information come, we can drop debug information and preserve only log
+  - several cleanups in HTTP support core code
+
+20020730
+  - move test build to gcc 3.1.1
+  - some fixes in Http.h/Http.cc in incorrect files handling from
+    Dmitry Efimyuk
+  - fixes in UserTrack system - memory leak
+  - do LogSystem less memory intensive, do dropping stress inserted strings to LogFile system
+
+20020729
+  - more cleans in UserTrack system - previous subject too
+
+20020726
+  - fixes in UserTrack system - do correct handling add/delete active/inactive users
+
+20020725
+  - cleans in Listener code locking process
+	- more fix in TACACS+ PacketReader process in case of failed client connect
+  - fix in TACACS+ session clean process in TacacsPacketReader function
+
+20020724
+  - incorrect tacacs+ client session drop can do tacppd crash (fixed)
+  - move snmp polling to own thread
+  - more changes in logging mutex lock/unlock process
+
+20020723
+  - set aditional mutex locks in TacDb methods - hope to add stability
+  - fixes in logging code locking process - now it write all information (previous version lose
+    strings in stress output)
+
+20020722
+  - prepare configure script for OCI and OCCI (Oracle Call Interface/Oracle C++ Call Interface)
+    drivers support (drivers do not complete!)
+  - some more correct errors messages handling in database code and database modules:
+    use one define DB_MODULE_ERRLEN in core and in drivers both for set limits to error message
+    string from databases API.
+  - some comments to classes/methods in kdoc style - will use kdoc for API-docs generation
+  - perl module for tacppd style encryption in /contrib - now gziped, think to move it to separate project
+  - add file tacppd-api.tar.gz to distribution - this is tacppd API doc from KDOC
+	
+20020718
+  - fixes with memory freeing in several places
+    (reported and fixed by Dmitry Efimyuk)
+
+Ok, i think, that feature list enough for version 0.0.5
+now i freeze work for add new features and accept only bugfixes
+
+20020702
+  - fix with processing symbols ADCB in CLI
+  - use username "DEFAULT" in authorization requests if no username available
+  - several locks in Core objects
+  - change 'open' and 'close' fieldnames to 'dopen' and 'dclose' due to some
+    postgresql versions incompatibility (reported by Isk)
+
+20020701
+  - fixed bug where during tacacs+ authorization process we could send av-pair with length = 0
+    (reported by Isk)
+  - check for valid symbols entered via CLI (reported by Isk)
+  - simple string editing in CLI - use Arrow keys and Backspace
+
+20020626
+  - fix in clear() function for database fields, add data clearing
+  - tacacs+ single-mode support, delete 'tacsingle' command in config
+  - simple commands queue in CLI with Up and Down keys arrangement
+  - debug output into CLI mode
+  - fix possible memory leak in debug output code
+
+20020625
+  - fixes in incorrect throw/catch handling in main.cc, which creates strange things in case of
+    errors in config file, by Dmitry Efimyuk.
+
+20020622
+  - config parser doesn't correct handle regular expression strings, fixed by Dmitry Efimyuk
+
+20020621
+  - add tacacs+ single-connection multiplexer, but while buggy :( 
+    also add 'tacsingle' directive in configuration for enable/disable it
+
+20020620
+  - fixed bug with incorrect daemonization (reported by Dmitry Efimyuk)
+     problem: tacppd doesn't go to daemon mode, linux doesn't say anything, freebsd out
+		 some about extra calls to free()
+		 reason: wrong use of 'throw' call in Daemon.cc in daemon() function
+		 fix: do not use 'throw' in daemon(), use _exit(0) instead
+  - fixed bug with authorization information handling (reported by Igor Lyapin)
+     problem: authorization code gets av-pairs from database where service=xxx and protocol=xxx av-pairs
+		 doesn't match values requested from NAS
+		 reason: Tacacs.cc file, TacacsServerAuthorization::process() code - no checks for service=xxx and
+		 protocol=xxx av-pairs, wrong code without search in this av-pairs values in av-pairs adding code
+		 fix: add several checks in av-pairs handling code, now looks like right, but require extra testing
+  - various fixes and cleans in CLI database handling
+  - database modules updates for possible use SELECT without WHERE statement, useful for
+    CLI command 'show' for list all entries in table
+
+20020619
+  - first view database manipulation system via CLI but without check by open and close datetime
+  - TacacsServerAuthorization::match_value wrong results, fixed by Igor Lyapin
+
+20020618
+  - add functions for database table fields indexes/unique indexes identification and
+    for automatic indexes creation, updated drivers: pgsql.cc
+
+20020617
+  - database table names have new format - tacpp_v1_name, where v1 - version1, i'll be add version digit
+    in case of format changes. The format version 1 while in development!
+  - developing version 1 format of database tables - several changes
+
+20020616
+  - possible use libcipher instead libdes, set checking for <des.h> header and libcipher
+    in configure scripts (thanks to Dmitriy Efimyuk)
+
+20020614
+  - add check in configure.in for use <sstream> or <strstream>
+	 (prefer <sstream> if present), add flag -D_THREAD_SAFE for *freebsd
+  - add check for processor type in configure.in, but this can create
+    uncompatibility with very old gcc
+
+20020606
+  - changes in log/debug system for multiply outputs support, add support for syslog output,
+    see changes in config file (added 'debug syslog'), output to external syslogds doesn't ready
+
+20020603
+  - in global.h <strstream> changed to <sstream> for gcc 3.1
+    if you will have problems with older compilers - see global.h for it
+
+20020429
+  - now you can use net-snmp 5.0 (read INSTALL if you have a problem with it) (me)
+  - some fixes in Terminal subsystem (me)
+
+20020426
+  - fixes with config parsing and applying (me)
+
+20020425
+  - not remember all, but many changes in config file handling 
+	  in core classes (me)
+  - add directory for resource modules: ./resrc and do some with it
+    in configure.in and Makefile.in (me)
+  - bug with incorrect catch in Config.cc fixed (me, thanks to Sean A. Walberg)
+  - some work with resource modules system (me)
+
+20020424
+  - CorePeer and CoreBundle code (me)
+  - compilation fixes (me)
+  - Listener code cleanups (me)
+
+20020422
+  - CoreBilling object config manipulation and module load/unload (me)
+  - start example file name changed to tacppd_start.sh.example (me)
+  - config example file now renamed to tacpp.conf.example (me)
+	- CoreNeighbor system will now have name CoreBundle, the Neighbors system will
+    join tacppds to bundle, and will have name Bundle now (in configuration too) (me)
+  - add to Listener some untested capabilities for UDP multicast (me)
+  - write some parts of CoreBundle (me)
+  - buildcf(int,char*) methods in Core-classes moved to Core_data basic class - it equal for all
+    objects (me)
+
+20020419
+  - changes in Core-class's lock/unlock system - now it more nice and some more simple (me)
+
+20020416
+  - remove databse buffer system - now we can use UserTrack.get2add calls for
+    access to user database information instead. (me)
+  - selected by UserTrack users will be adding to userTrack
+    as INACTIVE, and change its state to ACTIVE only after accounting packets
+    arrives. The entry have TTL and if no accounting or smtp information
+    for this user come, UserTrack deletes it after TTL expires. (me)
+  - cleanups in code, try to compile it all - ok, it is now compilable, but
+    not tested (me)
+
+20020412
+  - Cosmonauts DAY !!! 12th of april 1961.... Best wishes to all human. (me)
+  - implement fill methods << and = to ipaddr.h (me)
+  - UserTrack system now have active and inactive entries - inactive - after first request, but without
+    accounting data, active - if accounting data presents
+  - UserTrack system now can be used as database buffer - no buffer in database system requred, if
+    you will use UserTrack method "db_user get2add(mystring<DB_USERNAME_LEN>)", aging time 3 min + 1 sec
+
+20020411
+  - API documentation can be generated by kdoc, some later i plan to share it by www (me)
+  - Billing.cc/Billing.h - changed and now a part of new user tracking subsystem UserTrack.cc/UserTrack.h
+    billing functions will be working in CoreBilling system (me)
+  - drop nas emulator subdir in contrib - i think to do this in libtacplus library project (me)
+  - cleanups in distribution - delete several old files and dirs (me)
+
+20020410
+  - all types now placed into namespace "tacpp" (me)
+  - database control via CLI disabled - i am thinking about it's new implementation (me)
+  - plenty of fixes with wrong destructors - hope all memory leaks fixed :) (me)
+  - do per-symbol input in terminal server code - but while without properly handling it in
+    Config class. (me)
+  - SNMP code audit for memory leaks - terrible code (from me), but no memory problems. (me)
+  - i'll be add developer at the end of change entry from that moment
+
+20020326
+  - CoreAccess class supports 'permit' and 'deny' statements in access lists
+    due to this - new format of defining access lists in config file
+
+20020322
+  - changes in object names for clear understand
+  - do new system for storage objects - CoreData class, which have List with all other
+    Core objects, access to it - throughout virtual functions
+
+20020320
+  - no converting port names to internal format, tacppd will use port name, as see it from router
+    (buggy - need compare with portnames in SNMP code)
+
+20020319
+  - set copy constructors in db_user, ipaddr and mystring data structures, use now in several places to
+    prevent some memory allocation/deallocation problems
+  - database format changed due to billing system developing
+  - change database type identifiers names for resolve conflict with miniSQL include files
+
+20020315
+  - configure.in changed for properly support static/shared ucd-snmp library
+    and for correct filenames for ucd-snmp and net-snmp packages
+
+20020301
+  - handling hostnames in config file
+  - prefer hostnames in config
+  - ipaddr class now checks inserted hostname for plain and reverse DNS
+    resolving
+
+20020226
+  - Extend tacacs+ code debug output for config command "debug file facility tacacs"
+
+20020220
+  - Copying policy changed to GNU GPL
+  - all .h++ files renamed to .h
+  - possible memory leak in UDP server code fixed
+
+20020215
+  - licenses text now placed in appropriate modules
+  - i move to KDevelop 2.1 (project file now rebuilded)
+
+20020214
+  - user data manipulation now replaced by new code with
+    use pointers, the database data buffer now disabled
+    (i will do it later)
+  - various fixes in tacacs authorization code
+
+20020212
+  - add some changes to NetFlow export packets formats due to
+    cisco documentation (hope, i didn't add bug) - will test later
+  - datatables list now stored in dinamic memory
+
+20020211
+  - logfiles format cleanup - no unnessesary ':'
+  - logging system now less memory intensive - some optimization
+
+20020209
+  - table names changed to tacpp_tablename for better identification
+  - a lot of cleanups in data manipulation code (function names, etc)
+  - some changes in database tables fields (i think to change in future
+    only traffic log and billing resources tables)
+  - write debug facility name into debug file
+  - fixed bug with wrong fields type during table creation
+    (it is strongly recommended use this or newer version)
+  - documentation updates
+
+20020129
+  - several code uglyfications for future
+  - cryptocard code will use external file or database table
+  - changes in database tables
+  - several cleanups in database code
+
+20020125
+  - fix for compile with latest net-snmp package
+
+20020104
+  - database table handling code updates (TacDb.cc/TacDb.h++)
+  - billing resource table "tp_bilres" renamed to "tp_bil"
+
+20011227
+  - fixed bug with store crypted passwords which have symbol '/' inside
+  - some cleans in database code
+	
+20011226
+  - clean password processing code
+
+20011224
+  - add MODIFY data in CLI database section
+
+20011221
+  - bug with password encryption in CLI database manipulation fixed
+  - some CLI fixes
+  - version 0.0.4 released
+
+20011220
+  - add support of H323_VSA in tacacs+ authentication service
+    (AUTH_SVC number 10), as for plain ASCII login
+  - database CLI enhance - now you can add/delete and view users
+    via CLI
+  - database changes - recreate tables if upgrade!
+
+20011218
+  - changes in database drivers - add db_function function
+  - cleanups and fixes in database interface code
+  - remove backup file with failed db queries functionality
+
+20011217
+  - some changes in CryptoCard code (development)
+
+20011129
+  - database changes for cryptocard one-time passwords
+  - EXAMPLE.sql file removed - all information in README
+
+20011128
+  - documentation updates
+  - i start work with cryptocard code and now require libdes package
+    installed. See INSTALL file for libdes links
+
+20011126
+  - compilation problems with SOLARIS
+
+20011123
+  - updates in database format - so you must recreate your old tables
+  - enhancements in CLI database manipulation code
+
+20011121
+  - documentation updates
+  - memory leak in user sessions list replace fix
+  - some enhancements in CLI code
+  - memory leak in logging code fixed
+
+20011120
+  - fixed bug in pgsql.cc database driver module
+  - fixed bug in mysql.cc database driver module
+  - fixed bug in msql.cc database driver module
+
+20011116
+  - fixes and changes into TCP/UDP server code,
+    now it correctly work with TCP and UDP both
+  - add NetFlow collection server - while only to log file
+  - log file for tacacs and netflow recreate every day
+
+20011115
+  - changes in database subsystem again
+  - new database tables format - not equal with DATABASE.sql file,
+    no manual database table creation available - only throught CLI
+    with "create" command in "database" mode
+  - several fixes and cleanups in terminal CLI code -
+    it's some usable now
+  - cisco's h323 accounting datetime data converts to time_t
+
+  NOTE: for work with this shaphot:
+  - create database tables from CLI "database" mode
+  - indexes you should create manually
+  - you should add users manually to database
+
+20011114
+  - changes in snmp modules format
+  - snmp code cleans - more simple structures
+  - snmp errors/events now logged into "snmp" debug facility
+  - more error/events messages in snmp code available
+  - several memory leaks in destructors fixed
+  - some database code redesign - unstable
+
+20011113
+  - fixes and cleanups in http code
+  - database identify as dbname@ipaddress:port
+    changes in config file in database section, see tacpp.conf.orig
+
+20011108
+  - next database drivers/system update - database multiconnect support
+    (several connections to each database in one time)
+  - mysql driver fixes (now in new format)
+  - pgsql driver fixes
+  - bug 20010807 fixed
+
+20011106
+  - new database subsystem (warning - unstable)
+  - new database drivers format (unstable too)
+  - only pgsql and none drivers now in new format
+
+20011105
+  - more fixes in database system :(
+    Be ready for some time delay in developing process -
+    i am working for new database subsystem with new database
+    driver format - and when it will ready, i'll jump to it.
+    (new database driver - db/pgsql2.cc - do not ready yet)
+	
+20011101
+  - more fixes in database subsystem, if you had problems with
+    server crash during database operation, check this version
+    (thanks to Edel SM)
+	
+20011030
+  - fixed misconfiguration in DATABASE.sql and in source code
+    (thanks to Aleksey)
+  - changes in config file - debug levels deleted,
+    now you can set up several debug "facilities", for several
+    areas of debug information
+    tacpp.conf.orig file was changed, look it after upgrade !
+
+20011029
+  - No separate thread for snmp polling - all periodic
+    tasks now collected into periodic_tasks() function and
+    are calling from main()
+
+20011025
+  - Debug/Log system code looks like stable, but not completely
+    tested (open file fixes, mutexes fixes and so on). All other
+    code need in correct setup log events.
+
+20011024
+  - full redesign of Debug/Log system. Very unstable!
+    I have log manager object, which have buffers
+    for all log/debug requestors. Requestors should be registered
+    into that manager. This is for split debug information to
+    several facilities and also for debug output to terminals
+
+20011012
+  - more source cleanups
+  -	CoreData.cc and CoreData.h have splited to several
+    Core*.cc and Core*.h++ files
+
+20011008
+  - source cleanups
+
+20011001
+  - License changed to BSD style, source distribution
+    now in process of creation - I'll plan to produce it today
+
+20010829
+  - stupid bugs fixes
+
+20010807
+  - cleanups and fixes for build with gcc 3.0
+
+20010806
+  - EXT: modifer fixing have frozen: it need more investigation.
+
+20010803
+  - add BUGS file to distribution
+  - cisco snmp parser sources available (in "snmp" dir file cisco.cc)
+  - documentation updates
+	
+20010801
+  - documentation updates
+
+20010731
+  - in universal server code added steps for UDP support
+
+20010730
+  - EXT: modifyer programs can be called only from "ext"
+    subdirectory in tacppd main dir (security reason)
+  - documentation updates
+
+20010729
+  - fixes and cleanups
+  - some rewrite EXT: modifyer code, but while without success
+  - documentation updates
+
+20010725
+  - EXT: modifyer doesn't working while
+
+20010719
+  - documentation updates
+
+20010716
+  - EXT: authorization modifyer added to BUGS (it doesn't work)
+
+20010713
+  - add file contrib/README
+
+20010711
+  - occi9.so and occi.cc doesn't work !
+  - rename db/oci8.cc and db/occi9.cc back to db/oci.cc and db/occi.cc
+  - add file db/OCI.build for hand build of Oracle OCI module
+  - add compiled db/occi9.so driver for Oracle9i OCCI (requires Oracle
+    shared libraries) - not tested yet
+  - add DBORACLE.sql file with database structure for Oracle
+
+20010710
+  - add BUGS file
+  - oracle 9i occi driver updates
+  - add file db/OCCI.build - script for building Oracle9 occi9.cc module
+
+20010709
+  - SQL: modifyer tested
+  - documentation fixes
+
+20010707
+  - change version number to 0.0.2
+  - EXT: avp modifyer doesn't work while
+  - variables in AVP modifyers work!
+  - INT: authorization modifyer now work! (tested for addrpool)
+  - fixed bug which do core dump in snmp code if NAS has status
+    shutdown
+
+20010706
+  - external program authorization modifyer have implemented
+  - add uncompleted Oracle8 driver: db/oci8.cc - while i have not
+    complete it. May be later.
+  - authorization SQL modifyers have implemented
+  - modifyers code enabled now
+
+20010705
+  - authorization modifyers now implemented, but released only
+    for internal addrpool system
+  - documentation updates
+		
+20010703
+  - unattached AVpairs modifyers code
+  - documentation update
+
+20010631
+  - documentation update
+  - first step in localization
+
+20010620
+  - remove db_cols function from database modules (no way to use it)
+  - db/mysql.cc module updates
+  - db/postgresql.cc module updates
+  - db/occi.cc module for Oracle9 C++ Call Interface renamed to occi9.cc
+
+20010619
+  - add untested Oracle9i OCCI module (db/occi.cc)
+  - the weekday number in logfiles now in format 1-7 (early 0-6)
+	
+20010615
+  - little documentation update
+
+20010614
+  - add EXAMPLE.sql file with common examples
+  - some documentation updates
+  - the mSQL support while removed due to no datetime type
+    support in this engine
+
+20010609
+  - fixed bug: don't write to status file completele changes
+    if device goes Up
+
+20010608
+  - initial nightly build

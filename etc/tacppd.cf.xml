@@ -1,0 +1,756 @@
+<?xml version='1.0'?>
+<!DOCTYPE commandnode [
+
+<!-- CR help, when all command was entered and user reques a help we just say /Press enter!/ -->
+<!ENTITY crhlp 'Press enter to execute command.'>
+
+<!-- exit Command ID for most cases there is not need of doing any work when exit, just return CMD_EXIT
+now this XML is not proper formed because cmdID is ID but in current I use ecmdID=exitCMDid and it is not unique
+may be I should use CDATA not ID?? FIXME -->
+<!ENTITY ecmdID 'exitCMDid'>
+    
+<!ELEMENT	commandnode (commandnode*,command*)>
+<!-- command ID must be unique for CLI, it used to call proper method
+     throuth  class commandFacility interface -->
+<!-- exitMask=EXit for most cases but I do not restrict of using full
+     command ability
+     exitMask could be EXit INTerface {interf:eth0-eth9} ;-) -->
+<!ATTLIST	commandnode
+    cmdID ID #REQUIRED
+    inviteStr CDATA #REQUIRED
+    inviteStrMark CDATA  '#'
+    crhelp CDATA  '&crhlp;'
+    ecmdID CDATA '&ecmdID;'
+    emask CDATA #REQUIRED
+    ehelp CDATA #REQUIRED
+    mask CDATA #REQUIRED
+    help CDATA #REQUIRED
+>
+
+<!ATTLIST	command
+    cmdID ID #REQUIRED
+    crhelp CDATA  '&crhlp;'
+    mask CDATA #REQUIRED
+    help CDATA #REQUIRED
+>
+
+]>
+
+<commandnode cmdID='root' inviteStr='tacppd' inviteStrMark='>'
+    emask='Exit' ehelp='Exit from tacppd CLI'
+    mask='root' help='Not need but required.'>
+    
+    <commandnode cmdID='database' inviteStr='(database)' 
+	    emask='Exit' ehelp='Exit from database section'
+        mask='DAtabase' help='Database control.'>
+
+	<command cmdID='dcreate'
+    	    mask='CReate' help='Create all database tables.'/>
+        <command cmdID='dadduser'
+	    mask='ADd' help='Add to database.'
+            mask1='USer' help1='Specify to add user'/>
+        <command cmdID='daddadd'
+            mask='ADd' help='Add to database.'
+            mask1='ADd' help1=': FIXME'/>
+        <command cmdID='daddaccess'
+    	    mask='ADd' help='Add to database.'
+            mask1='ACcess' help1='Access restriction data'/>
+        <command cmdID='daddavp'
+            mask='ADd' help='Add to database.'
+            mask1='AVp' help1='Authorization data'/>
+        <command cmdID='daddcommand'
+            mask='ADd' help='Add to database.'
+            mask1='COmmand' help1='Command authorization'/>
+        <command cmdID='daddlog'
+            mask='ADd' help='Add to database.'
+            mask1='LOg' help1='Log'/>
+        <command cmdID='daddtrfint'
+            mask='ADd' help='Add to database.'
+            mask1='TRfint' help1='Per interface traffic'/>
+        <command cmdID='daddbilling'
+            mask='ADd' help='Add to database.'
+            mask1='BILLIng' help1='Billing data'/>
+        <command cmdID='daddbillres'
+            mask='ADd' help='Add to database.'
+            mask1='BILLRes' help1='Billing resources'/>
+        <command cmdID='daddnfusr'
+            mask='ADd' help='Add to database.'
+            mask1='NFUsr' help1='NetFlow users table'/>
+
+        <command cmdID='ddeluser'
+            mask='Del' help='Delete from database.'
+            mask1='USer' help1='Specify  user to delete.'/>
+        <command cmdID='ddeladd'
+            mask='Del' help='Delete from database.'
+            mask1='ADd' help1=': FIXME'/>
+        <command cmdID='ddelaccess'
+            mask='Del' help='Delete from database.'
+            mask1='ACcess' help1=': FIXME'/>
+        <command cmdID='ddelavp'
+            mask='Del' help='Delete from database.'
+            mask1='AVp' help1=': FIXME'/>
+        <command cmdID='ddelcommand'
+            mask='Del' help='Delete from database.'
+            mask1='COmmand' help1='Commands'/>
+        <command cmdID='ddellog'
+            mask='Del' help='Delete from database.'
+            mask1='LOg' help1='Log'/>
+        <command cmdID='dedltrfint'
+            mask='Del' help='Delete from database.'
+            mask1='TRfint' help1='Int trf'/>
+        <command cmdID='ddelbilling'
+            mask='Del' help='Delete from database.'
+            mask1='BILLIng' help1='Billing data'/>
+        <command cmdID='ddelbillres'
+            mask='Del' help='Delete from database.'
+            mask1='BILLRes' help1='Billing resource'/>
+        <command cmdID='ddelnfusr'
+            mask='Del' help='Delete from database.'
+            mask1='NFUsr' help1='NetFlow users'/>
+
+        <command cmdID='dmoduser'
+            mask='Modify' help='Modify in database.'
+            mask1='USer' help1='User name.'/>
+        <command cmdID='dmodadd'
+            mask='Modify' help='Modify in database.'
+            mask1='ADd' help1=': FIXME'/>
+        <command cmdID='dmodaccess'
+            mask='Modify' help='Modify in database.'
+            mask1='ACcess' help1=': FIXME'/>
+        <command cmdID='dmodavp'
+            mask='Modify' help='Modify in database.'
+            mask1='AVp'	help1=': FIXME'/>
+        <command cmdID='dmodcommand'
+            mask='Modify' help='Modify in database.'
+            mask1='COmmand' help1=': FIXME'/>
+        <command cmdID='dmodlog'
+            mask='Modify' help='Modify in database.'
+            mask1='LOg' help1=': FIXME'/>
+        <command cmdID='dedltrfint'
+            mask='Modify' help='Modify in database.'
+            mask1='TRfint' help1=': FIXME'/>
+        <command cmdID='dmodbilling'
+            mask='Modify' help='Modify in database.'
+            mask1='BILLIng' help1=': FIXME'/>
+        <command cmdID='dmodbillres'
+    	    mask='Modify' help='Modify in database.'
+            mask1='BILLRes' help1=': FIXME'/>
+        <command cmdID='dmodnfusr'
+            mask='Modify' help='Modify in database.'
+            mask1='NFUsr' help1=': FIXME'/>
+
+        <command cmdID='dshowuser'
+            mask='SHow' help='Show from database.'
+            mask1='USer' help1='User name.'/>
+        <command cmdID='dshowadd'
+            mask='SHow' help='Show from database.'
+            mask1='ADd' help1=': FIXME'/>
+        <command cmdID='dshowaccess'
+            mask='SHow' help='Show from database.'
+            mask1='ACcess' help1=': FIXME'/>
+        <command cmdID='dshowavp'
+            mask='SHow' help='Show from database.'
+            mask1='AVp' help1=': FIXME'/>
+        <command cmdID='dshowcommand'
+            mask='SHow' help='Show from database.'
+            mask1='COmmand' help1=': FIXME'/>
+        <command cmdID='dshowlog'
+            mask='SHow' help='Show from database.'
+            mask1='LOg' help1=': FIXME'/>
+        <command cmdID='dedltrfint'
+            mask='SHow' help='Show from database.'
+            mask1='TRfint' help1=': FIXME'/>
+        <command cmdID='dshowbilling'
+            mask='SHow' help='Show from database.'
+            mask1='BILLIng' help1=': FIXME'/>
+        <command cmdID='dshowbillres'
+            mask='SHow' help='Show from database.'
+            mask1='BILLRes' help1=': FIXME'/>
+        <command cmdID='dshownfusr'
+            mask='SHow' help='Show from database.'
+            mask1='NFUsr' help1='NetFlow users'/>
+    </commandnode>
+
+    <commandnode cmdID='config' inviteStr='(config)'
+                 emask='Exit' ehelp='Exit from config section'
+                 mask='CONfig' help='Tacppd config object.'
+                 ecmdID='confExit'>
+	<command cmdID='confShow'
+                  mask='SHow' help='Show config.'/>
+        <command cmdID='confWrite'
+                  mask='WRite' help='Write running config to cfg file.'/>
+        <command cmdID='confAccessNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='ACcess' help0='Remove comletely access.'
+                  mask1='{int:0-}' help1='Access list number. ' />
+        <commandnode cmdID='confAccessNode' inviteStr='(access)'
+                 emask='Exit' ehelp='Exit from access config section'
+                  mask0='ACcess' help0='Add or modify existing access list.'
+                  mask1='{int:0-}' help1='Access list number. ' inviteStrMark='$'>
+    	    <command cmdID='confAccessPermit'
+                  mask='PErmit' help='Permit IP address.'
+                  mask2='{str:2-255}' help2='Regular expression string.'/>
+            <command cmdID='confAccessDeny'
+                  mask='DEny' help='Deny IP address.'
+                  mask2='{str:2-255}' help2='Regular expression string.'/>
+            <command cmdID='confAccessIntNoPermit'
+                  mask='NO' help='Remove entity.'
+                  mask1='PErmit' help1='Permit IP address.'
+                  mask2='{str:2-255}' help2='Regular expression string.'/>
+            <command cmdID='confAccessIntNoDeny'
+                  mask='NO' help='Remove entity.'
+                  mask1='DEny' help1='Deny IP address.'
+                  mask2='{str:2-255}' help2='Regular expression string.'/>
+        </commandnode>
+
+	<command cmdID='confDebugNoFile'
+                  mask='NO' help='Remove entity.'
+                  mask0='DEbug' help0='Remove debug destination.'
+                  mask1='FIle' help1='File output. ' />
+        <command cmdID='confDebugNoIP'
+                  mask='NO' help='Remove entity.'
+                  mask0='DEbug' help0='Remove debug destination.'
+                  mask1='{ip:}' help1='Local or remote syslog output. '/>
+
+        <commandnode cmdID='confDebugNodeFile' inviteStr='(debug)'
+                 emask='Exit' ehelp='Exit from debug section'
+                  mask0='DEBug' help0='Add or modify existing debug output.'
+                  mask1='FIle' help1='Debug destination. ' inviteStrMark='$'>
+    	    <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TAcacs' help2='Tacacs.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='Billing' help2='Billing.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='Aaa' help2='Aaa.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debg for facility.'
+                  mask2='DB' help2='Database.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='SNmp' help2='SNmp.'/>
+    	    <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='NETflow' help2='Netflow.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='SErver' help2='SErver.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='CC' help2='Crypto Card.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='POol' help2='Pool.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TRAck' help2='Track.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='HTtp' help2='Http.'/>
+            <command cmdID='confDebugF'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TIp' help2='Tip.'/>
+    	    <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TAcacs' help2='Tacacs.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='Billing' help2='Billing.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='Aaa' help2='Aaa.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='DB' help2='Database.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='SNmp' help2='SNmp.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='NETflow' help2='Netflow.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='SErver' help2='SErver.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='CC' help2='CC FIXME.'/>
+    	    <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='POol' help2='Pool.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TRAck' help2='Track.'/>
+            <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='HTtp' help2='Http.'/>
+    	    <command cmdID='confDebugFIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TIp' help2='Tip.'/>
+	</commandnode>
+
+        <commandnode cmdID='confDebugNodeIP' inviteStr='(debug)'
+                 emask='Exit' ehelp='Exit from debug section'
+                  mask0='DEBug' help0='Add or modify existing debug output.'
+                  mask1='{ip:}' help1='Debug destination. ' inviteStrMark='$'>
+	    <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TAcacs' help2='Tacacs.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='Billing' help2='Billing.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='Aaa' help2='Aaa.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='DB' help2='Database.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='SNmp' help2='SNmp.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='NETflow' help2='Netflow.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='SErver' help2='SErver.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='CC' help2='CC FIXME.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='POol' help2='Pool.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TRAck' help2='Track.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='HTtp' help2='Http.'/>
+            <command cmdID='confDebugIP'
+                  mask='FACIlity' help='Debug for facility.'
+                  mask2='TIp' help2='Tip.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TAcacs' help2='Tacacs.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='Billing' help2='Billing.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='Aaa' help2='Aaa.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='DB' help2='Database.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='SNmp' help2='SNmp.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='NETflow' help2='Netflow.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='SErver' help2='SErver.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='CC' help2='CC FIXME.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='POol' help2='Pool.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TRAck' help2='Track.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='HTtp' help2='Http.'/>
+            <command cmdID='confDebugIPIntNo'
+                  mask='NO' help='Remove debug for facility.'
+                  mask0='FACIlity' help0='Debug for facility.'
+                  mask2='TIp' help2='Tip.'/>
+	</commandnode>
+
+        <command cmdID='confManagerNo'
+            mask='NO' help='Remove entity.'
+            mask0='MAnager' help0='System manager.'
+            mask1='{str:2-30}' help1='Manager login name.'/>
+
+        <commandnode cmdID='confManagerNode' inviteStr='(manager)'
+            emask='Exit' ehelp='Exit from mnager config section'
+            mask='MAnager' help='Create manager or modify existing.'
+            mask1='{str:2-30}'  help1='Manager login name.' inviteStrMark='$'>
+    	    <command cmdID='confManagerPwd'
+                  mask='PAssword' help='System manager password.'
+                  mask2='{str:5-30}' help2='Manager password.'/>
+    	    <command cmdID='confManagerCPwd'
+                  mask='CPAssword' help='System manager crypted password, generally making by system.'
+                  mask2='{str:1-30}' help2='Manager crypted password.'/>
+            <command cmdID='confManagerAcl'
+                  mask='ACl' help='Access list number.'
+                  mask4='{int:1-100}' help4='Access number.'/>
+            <command cmdID='confManagerHttp'
+                  mask='TYpe' help='System manager type.'
+                  mask3='Http' help3='Http access type.'/>
+            <command cmdID='confManagerTerm'
+                  mask='TYpe' help='System manager type.'
+                  mask3='Terminal' help3='Terminal access type.'/>
+            <command cmdID='confManagerTci'
+                  mask='TYpe' help='System manager type.'
+                  mask3='TCI' help3='tacppd control interface client.'/>
+        </commandnode>
+
+        <command cmdID='confDeviceNo'
+                 mask='NO' help='Remove entity.'
+                 mask0='DEVice' help0='Delete network device.'
+                 mask1='{ip:}' help1='IP address.'/>
+
+        <commandnode cmdID='confDeviceNode' inviteStr='(device)'
+                 emask='Exit' ehelp='Exit from device config section'
+                 mask='DEVice' help='Create network device or modify existed.'
+                 mask1='{ip:}' help1='IP address.' inviteStrMark='$'>
+            <command cmdID='confDeviceMan'
+                mask='MAnager' help='System manager.'/>
+            <command cmdID='confDeviceDescr'
+                mask='DEScription' help='Set description.'
+                mask1='{str:0-255}' help1='Description string.'/>
+            <command cmdID='confDeviceTKey'
+                    mask='Tacacskey' help='Set key for tacacs'
+                    mask1='{str:2-30}' help1='Value for tacacs key string.'/>
+            <command cmdID='confDeviceSnmpComm'
+                        mask='SNMPCommunity' help='Set snmp community'
+                        mask1='{str:2-30}' help1='Value for community string.'/>
+            <command cmdID='confDeviceLogin'
+                        mask='LOginstring' help='Set login request string'
+                        mask1='{str:2-30}' help1='Value for login string.'/>
+            <command cmdID='confDevicePwd'
+                        mask='PWdstring' help='Set password request string'
+                        mask1='{str:2-30}' help1='Value for pwd string.'/>
+            <command cmdID='confDeviceDauth'
+                mask='DEFauthorization' help='Set permit or not default authorization'
+                mask1='{choice:Yes|No}' help1='To be or not to be?'/>
+            <command cmdID='confDeviceModule'
+                mask='MOdule' help='Set snmp processor module'
+                mask1='{str:2-30}' help1='Module FIXME!'/>
+            <command cmdID='confDevicePollDelay'
+                mask='POlldelay' help='Set polling delay'
+                mask1='{int:1-300}' help1='Value for polling delay.'/>
+            <command cmdID='confDeviceSnmpPolling'
+                mask='SNMPPolling' help='Set permit snmp polling'
+                mask1='{choice:Yes|No}' help1='To be or not to be?'/>
+            <command cmdID='confDeviceIcmpPolling'
+                mask='ICmppolling' help='Set permit icmp polling'
+                mask1='{choice:Yes|No}' help1='To be or not to be?'/>
+            <command cmdID='confDeviceIntrfCount'
+                mask='INttrfcount' help='Store or not interface traffic information'
+                mask1='{choice:Yes|No}' help1='To be or not to be?'/>
+            <command cmdID='confDeviceShut'
+                mask='SHutdown' help='Shutdown.'
+                mask1='{choice:Yes|No}' help1='To be or not to be?'/>
+        </commandnode>
+
+	<command cmdID='confListenerNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='Listener' help0='Remove system listener.'
+                  mask1='{int:1-65535}' help1='Listener port.' />
+
+        <commandnode cmdID='confListenerNode' inviteStr='(listener)'
+              emask='Exit' ehelp='Exit from listener config section'
+              mask='Listener' help='Create listener or modify existed.'
+              mask1='{int:1-65535}' help1='Listener port.' inviteStrMark='$'>
+    	    <command cmdID='confListenerTac'
+                  mask='TYpe' help='Listener type.'
+                  mask2='TAcacs' help2='TACACS+ server.'/>
+    	    <command cmdID='confListenerRad'
+                  mask='TYpe' help='Listener type.'
+                  mask2='RADIus' help2='RADIUS server.'/>
+    	    <command cmdID='confListenerRadacc'
+                  mask='TYpe' help='Listener type.'
+                  mask2='RADAcct' help2='RADIUS accounting.'/>
+            <command cmdID='confListenerHttp'
+                  mask='TYpe' help='Listener type.'
+                  mask2='HTtp' help2='Http server.'/>
+            <command cmdID='confListenerTerm'
+                  mask='TYpe' help='Listener type.'
+                  mask2='TErminal' help2='Terminal server.'/>
+            <command cmdID='confListenerNetf'
+                  mask='TYpe' help='Listener type.'
+                  mask2='Netflow' help2='Netflow collector.'/>
+            <command cmdID='confListenerBundle'
+                  mask='TYpe' help='Listener type.'
+                  mask2='BUndle' help2='Bundle controller.'/>
+            <command cmdID='confListenerPeer'
+                  mask='TYpe' help='Listener type.'
+                  mask2='PEer' help2='Rouming peers.'/>
+            <command cmdID='confListenerTraps'
+                  mask='TYpe' help='Listener type.'
+                  mask2='TRaps' help2='Snmp traps collector.'/>
+            <command cmdID='confListenerSnmp'
+                  mask='TYpe' help='Listener type.'
+                  mask2='SNmp' help2='SNMP.'/>
+            <command cmdID='confListenerSyslog'
+                  mask='TYpe' help='Listener type.'
+                  mask2='SYslog' help2='Syslog.'/>		  
+            <command cmdID='confListenerTci'
+                  mask='TYpe' help='Listener type.'
+                  mask2='TCi' help2='tacppd control interface.'/>
+            <command cmdID='confListenerXml'
+                  mask='TYpe' help='Listener type.'
+                  mask2='XMl' help2='Xml-Rpc Command Interface.'/>
+            <command cmdID='confListenerMaxconnect'
+                  mask='maxconnect' help='Max simultenios connections.'
+                  mask2='{int:1-300}' help2='Number.'/>
+            <command cmdID='confListenerAcl'
+                  mask='ACl' help='Access list number.'
+                  mask2='{int:1-100}' help2='Number.'/>
+    	</commandnode>
+
+        <command cmdID='confPeerNo'
+	          mask='NO' help='Remove entity.'
+                  mask0='PEer' help0='Remove peer.'
+                  mask1='{str:2-255}' help1='Peer hostname:port.'/>
+
+    	<commandnode cmdID='confPeerNode' inviteStr='(peer)'
+            emask='Exit' ehelp='Exit from peer config section'
+            mask='PEer' help='Add or modify existing roaming peer.'
+    	    mask1='{str:2-255}' help1='Peer hostname:port.'  inviteStrMark='$'>
+    	    <command cmdID='confPeerDescr'
+                  mask='DEscription' help='Set peer description.'
+                  mask2='{str:0-255}' help2='System description in quotas.'/>
+    	    <command cmdID='confPeerMask'
+                  mask='MAsk' help='Set peer user mask.'
+                  mask2='{str:0-255}' help2='Regex username mask.'/>
+            <command cmdID='confPeerNoMask'	    
+                  mask='No' help='Unset peer user mask.'
+                  mask1='MAsk' help1='Set peer user mask.'
+                  mask2='{str:0-255}' help2='Regex username mask.'/>
+            <command cmdID='confPeerCrypto'
+                  mask='CRyptokey' help='Set peer crypto.'
+                  mask2='{str:0-255}' help2='Cryptokey.'/>
+	</commandnode>
+
+	<command cmdID='confPoolNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='POol' help0='Remove pool.'
+                  mask1='{int:1-}' help1='Pool number.'/>
+
+        <commandnode cmdID='confPoolNode' inviteStr='(pool)'
+                 emask='Exit' 	ehelp='Exit from ip pool config section'
+                  mask='POol' help='Add or modify existing pool.'
+                  mask1='{int:0-}' help1='Pool number.'  inviteStrMark='$'>
+    	    <command cmdID='confPoolAddr'
+                  mask='ADdr' help='Add address.'
+                  mask2='{ip:}' help2='IP address (addr1,addr2,start-end).'/>
+            <command cmdID='confPoolNoAddr'
+                  mask='NO' help='Remove address.'
+                  mask0='ADdr' help0='Address.'
+                  mask2='{ip:}' help2='IP address (addr1,addr2,start-end).'/>
+	</commandnode>
+
+        <command cmdID='confBillingNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='BIlling' help0='Remove billing module.'
+                  mask1='{int:0-}' help1='Billing number.' />
+
+        <commandnode cmdID='confBillingNode' inviteStr='(billing)'
+                 emask='Exit' ehelp='Exit from billing config section'
+                  mask='BIlling' help='Add or modify existing billing module.'
+                  mask1='{int:0-}' help1='Billing number.' inviteStrMark='$'>
+    	    <command cmdID='confBillingDescr'
+    	          mask='DEscription' help='set module description.'
+                  mask2='{str:0-255}' help2='Module description in quotas.'/>
+            <command cmdID='confBillingModule'
+                  mask='MOdule' help='Set loadable billing module.'
+                  mask2='{str:0-255}' help2='Module filename.'/>
+	</commandnode>
+
+        <command cmdID='confBundleNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='BUNdle' help0='Remove tacppd bundle.'
+                  mask1='{str:2-255}' help1='hostname:port '/>
+
+        <commandnode cmdID='confBundleNode' inviteStr='(bundle)'
+            emask='Exit' ehelp='Exit from bundle config section'
+            mask0='BUNdle' help0='Add or modify existing tacppd bundle.'
+            mask1='{str:2-255}' help1='hostname:port ' inviteStrMark='$'>
+            <command cmdID='confBundleCrypto'
+                  mask='CRYptokey' help='Set cryptokey.'
+                  mask2='{str:0-255}' help2='Cryptokey string.'/>
+            <command cmdID='confBundlePrio'
+            mask='PRiority' help='Set bundle priority.'
+            mask2='{int:0-}' help2='Value for select active server, more number - more priority.'/>
+            <command cmdID='confBundleTTl'
+                  mask='TTl' help='Set ttl for bundle multicasts.'
+                  mask2='{int:0-}' help2='ttl for bundle multicasts in hops.'/>
+	</commandnode>
+
+        <command cmdID='confDbNo'
+                  mask='NO' help='Remove entity.'
+                  mask0='DAtabase' help0='Remove database.'
+                  mask1='{str:2-}' help1='database_name@hostname:port '/>
+		  
+        <commandnode cmdID='confDbNode' inviteStr='(database)'
+             emask='Exit' ehelp='Exit from database config section'
+             mask0='DAtabase' help0='Add or modify existing database.'
+             mask1='{str:2-}' help1='database_name@hostname:port ' inviteStrMark='$'>
+    	    <command cmdID='confDbCrypto'
+                  mask='CRYptokey' help='Set cryptokey.'
+                  mask2='{str:0-255}' help2='Cryptokey string.'/>
+            <command cmdID='confDbLogin'
+                  mask='LOgin' help='Set user name for database login.'
+                  mask2='{str:0-255}' help2='Login name.'/>
+            <command cmdID='confDbPasswd'
+                  mask='PAssword' help='Set password for database login.'
+                  mask2='{str:0-255}' help2='Password.'/>
+            <command cmdID='confDbModule'
+                  mask='MOdule' help='Set module for database.'
+                  mask2='{str:0-255}' help2='Module name.'/>
+            <command cmdID='confDbShutdown'
+                  mask='SHutdown' help='To shutdown database.'
+                  mask1='{choice:Yes|No}'  help1='Database active or not'/>
+	</commandnode>
+    </commandnode>
+
+    <commandnode cmdID='debug' inviteStr='(debug)'
+                 emask='Exit' ehelp='Exit from debug section.'
+                 mask='DEbug' help='Debug tacppd.'>
+	<command cmdID='debnoall'
+                 mask='NO' help='To undebug feature .'
+                 mask1='DEbug' help0='FIXME'
+                 mask2='ALl' help1='Toundebug all features.'/>
+        <command cmdID='debnotacacs'
+                 mask='NO' help='To undebug feature .'
+                 mask1='DEbug' help0='FIXME'
+                 mask2='TAcacs' help1='Please do better description FIXME'/>
+        <command cmdID='debnobilling'
+                 mask='NO' help='To undebug feature .'
+                 mask2='DEbug' help0='FIXME'
+                 mask1='BIlling' help1='Please do better description FIXME'/>
+        <command cmdID='debnoaaa'
+                 mask='NO' help='To undebug feature .'
+                 mask2='DEbug' help0='FIXME'
+                 mask1='AAa' help1='Please do better description FIXME'/>
+        <command cmdID='debnobd'
+                 mask='NO' help='To undebug feature .'
+                 mask2='DEbug' help0='FIXME'
+                 mask1='DB' help1='To debug database.'/>
+        <command cmdID='debnosnmp'
+                 mask='NO' help='To undebug feature .'
+                 mask2='DEbug' help0='FIXME'
+                 mask1='SNmp' help1='To debug snmp operation'/>
+        <command cmdID='debnonetflow'
+                 mask='NO' help='To undebug feature .'
+                 mask2='DEbug' help0='FIXME'
+                 mask1='NEtflow' help1='Please do better description FIXME'/>
+        <command cmdID='debnoserver'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='SErver' help1='Please do better description FIXME'/>
+        <command cmdID='debnocc'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='CC' help1='Please do better description FIXME'/>
+        <command cmdID='debnopool'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='POol' help1='Please do better description FIXME'/>
+        <command cmdID='debnotrack'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='TRack' help1='Please do better description FIXME'/>
+        <command cmdID='debnohttp'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='HTtp' help1='Please do better description FIXME'/>
+        <command cmdID='debnotip'
+                 mask='NO' help='To undebug feature .'
+                 mask0='DEbug' help0='FIXME'
+                 mask1='TIp' help1='Please do better description FIXME'/>
+        <command cmdID='deball'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='ALl' help1='For maximum debugging info.'/>
+        <command cmdID='debtacacs'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='TAcacs' help1='Please do better description FIXME'/>
+        <command cmdID='debbilling'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='BIlling' help1='Please do better description FIXME'/>
+        <command cmdID='debaaa'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='AAa' help1='Please do better description FIXME'/>
+        <command cmdID='debbd'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='DB' help1='To debug database.'/>
+        <command cmdID='debsnmp'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='SNmp' help1='To debug snmp operation'/>
+        <command cmdID='debnetflow'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='NEtflow' help1='Please do better description FIXME'/>
+        <command cmdID='debserver'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='SErver' help1='Please do better description FIXME'/>
+        <command cmdID='debcc'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='CC' help1='Please do better description FIXME'/>
+        <command cmdID='debpool'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='POol' help1='Please do better description FIXME'/>
+        <command cmdID='debtrack'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='TRack' help1='Please do better description FIXME'/>
+        <command cmdID='debhttp'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='HTtp' help1='Please do better description FIXME'/>
+        <command cmdID='debtip'
+                 mask='DEbug' help='To debug feature.'
+                 mask1='TIp' help1='Please do better description FIXME'/>
+    </commandnode>
+
+    <commandnode  cmdID='show' inviteStr='(show)'
+                 emask='Exit' ehelp='Exit from show section.'
+                 mask='SHow' help='Show users and NAS.'>
+	<command cmdID='shusers'
+                 mask='Users' help='Display current working users.'/>
+        <command cmdID='shnas'
+                 mask='Nas' help='Show NAS.'/>
+    </commandnode>
+
+    <commandnode  cmdID='clear' inviteStr='(clear)'
+               emask='Exit' ehelp='Exit from clear section.'
+               mask='CLear' help='Clear users and NAS.'>
+	<command cmdID='cluser'
+               mask='User' help='Drop user.'
+               mask1='{str:2-30}' help1='Supply user name.'/>
+        <command cmdID='clport'
+               mask='Port' help='Drop port on nas.'
+               mask1='{ip:}' help1='Supply IP address.'
+               mask2='{int:0-65535}' help2='Supply Port number.'/>
+    </commandnode>
+
+    <command cmdID='help' mask='Help' help='Enter for editing keys description.'/>
+
+</commandnode>
+
+<!-- this is all -->

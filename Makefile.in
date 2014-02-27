@@ -1,0 +1,149 @@
+#
+# TACPPD, see http://tacppd.org for more information
+#
+
+SHELL = /bin/sh
+VPATH = @srcdir@
+INSTALL = @INSTALL@
+
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+infodir = $(prefix)/info
+libdir = $(prefix)/lib/gnudl
+mandir = $(prefix)/man/man1
+
+CXX = @CXX@
+FLAGS = @CXXFLAGS@ @CFLAGS@
+LDFLAGS = @LDFLAGS@
+OSLIBS = @LIBS@
+OS = @OS@
+
+MDB = @MDB@
+MLIBS = @MLIBS@
+MLDFLAGS = @MLDFLAGS@
+MCFLAGS = @MCFLAGS@
+CP = @CP@
+TAR = @TAR@
+
+#ORA_VER = @ORA_VER@
+
+SNMPLIB_TYPE = @SNMPLIB_TYPE@
+
+TARGET	= tacppd
+SUBDIRS = src snmp db resrc
+
+############################################
+CPPFLAGS = -I../include -I../../include $(FLAGS) -D$(SNMPLIB_TYPE) $(OS)
+
+###########################################################
+# End of customisable section of Makefile
+###########################################################
+
+all: $(TARGET)
+
+$(TARGET):
+	cd src; ${MAKE}; cd ..
+	cd db; ${MAKE}; cd ..
+	cd snmp; ${MAKE}; cd ..
+	cd resrc; ${MAKE}; cd ..
+
+dbmodules:
+	cd db; ${MAKE}; cd ..
+
+snmpmodules:
+	cd snmp; ${MAKE}; cd ..
+
+resmodules:
+	cd resrc; ${MAKE}; cd ..
+
+
+distclean: clean
+
+clean:
+	for i in ${SUBDIRS}; do			\
+	    cd $$i; ${MAKE} clean; cd ..;	\
+	done
+
+install:
+	$(INSTALL) -d ${prefix}/tacppd
+	$(INSTALL) -d ${prefix}/tacppd/log
+	$(INSTALL) -d ${prefix}/tacppd/run
+	$(INSTALL) -d ${prefix}/tacppd/snmp
+	$(INSTALL) -d ${prefix}/tacppd/http
+	$(CP) -r http ${prefix}/tacppd
+	$(INSTALL) -d ${prefix}/tacppd/db;\
+	$(INSTALL) -d ${prefix}/tacppd/etc;\
+	$(INSTALL) -d ${prefix}/tacppd/ext;\
+	$(INSTALL) -d ${prefix}/tacppd/resrc;\
+	$(INSTALL) -m 0644 resrc/README ${prefix}/tacppd/resrc;\
+	$(INSTALL) -m 0755 resrc/none.so ${prefix}/tacppd/resrc;\
+	$(INSTALL) -d ${prefix}/tacppd/contrib;\
+	$(INSTALL) -d ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/tac_plus.rfc.1.78.txt ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/README ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/rfc2138.txt ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/rfc2139.txt ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/UserGuide.tar.gz ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/UserGuide.tex ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/DeveloperGuide.tar.gz ${prefix}/tacppd/doc;\
+	$(INSTALL) -m 0644 doc/DeveloperGuide.tex ${prefix}/tacppd/doc;\
+	$(INSTALL) -d ${prefix}/tacppd/tmp;\
+	$(INSTALL) -d ${prefix}/tacppd/include
+	$(INSTALL) -m 0644 include/db_module.h ${prefix}/tacppd/include;\
+	$(INSTALL) -m 0644 include/snmp_module.h ${prefix}/tacppd/include;\
+	$(INSTALL) -m 0755 -s tacppd ${prefix}/tacppd
+	$(INSTALL) -m 0644 BUGS ${prefix}/tacppd
+	$(INSTALL) -m 0644 ReleaseNotes ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 CHANGES ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 AUTHORS ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 README ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 FAQ.html ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 THANKS ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 INSTALL ${prefix}/tacppd;\
+	$(INSTALL) -m 0644 COPYING ${prefix}/tacppd;\
+	$(INSTALL) -m 0755 tacppd_start.sh.example ${prefix}/tacppd;\
+	$(INSTALL) -m 0600 etc/tacppd.conf.ex ${prefix}/tacppd/etc
+	$(INSTALL) -m 0600 etc/tacppd.xml ${prefix}/tacppd/etc
+	$(INSTALL) -m 0600 etc/xml-db.xml.ex ${prefix}/tacppd/etc	
+	$(INSTALL) -m 0644 etc/README ${prefix}/tacppd/etc
+	$(INSTALL) -m 0644 contrib/README ${prefix}/tacppd/contrib;\
+	$(INSTALL) -m 0744 contrib/crypt_pw.pl ${prefix}/tacppd/contrib;\
+	$(INSTALL) -m 0644 contrib/MD5-1.7+TACPW.tgz ${prefix}/tacppd/contrib;\
+	$(INSTALL) -m 0755 db/pgsql.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0755 db/mysql.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0755 db/msql.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0755 db/none.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/pgsql.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/mysql.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/msql.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/occi.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/occi.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0755 db/OCCI.build ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0755 db/OCI.build ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/oci.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/oci.so ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/none.cc ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 db/README ${prefix}/tacppd/db;\
+	$(INSTALL) -m 0644 ext/README ${prefix}/tacppd/ext;\
+	$(INSTALL) -m 0644 snmp/README ${prefix}/tacppd/snmp;\
+	$(INSTALL) -m 0755 snmp/none.so ${prefix}/tacppd/snmp;\
+	$(INSTALL) -m 0755 snmp/cisco.so ${prefix}/tacppd/snmp
+#	$(INSTALL) -m 0755 snmp/cisco-asy.so ${prefix}/tacppd/snmp
+#	$(INSTALL) -m 0755 snmp/cisco-e1.so ${prefix}/tacppd/snmp
+#	$(INSTALL) -m 0755 snmp/cisco-trf.so ${prefix}/tacppd/snmp
+	$(INSTALL) -m 0644 snmp/none.cc ${prefix}/tacppd/snmp;\
+	$(INSTALL) -m 0644 snmp/cisco.cc ${prefix}/tacppd/snmp;\
+	$(INSTALL) -m 0644 snmp/cisco-trf.cc ${prefix}/tacppd/snmp
+	$(INSTALL) -m 0644 snmp/cisco-asy.cc ${prefix}/tacppd/snmp
+	$(INSTALL) -m 0644 snmp/cisco-e1.cc ${prefix}/tacppd/snmp
+	$(TAR) xvzf doc/UserGuide.tar.gz --directory=${prefix}/tacppd/http/admin/doc
+	$(TAR) xvzf doc/DeveloperGuide.tar.gz --directory=${prefix}/tacppd/http/admin/doc
+
+depend:
+	makedepend $(CFLAGS) $(SRCS)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
