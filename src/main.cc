@@ -10,7 +10,7 @@
 
 #include "global.h"
 #include "../version.h"
-#include "../build/vardata.h"
+//#include "../build/vardata.h"
 
 // set platform name during compilation
 #ifdef LINUX

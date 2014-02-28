@@ -26,13 +26,14 @@
 //#ifndef _POSIX_THREAD_SAFE_FUNCTIONS
 //#define _POSIX_THREAD_SAFE_FUNCTIONS
 //#endif // _POSIX_THREAD_SAFE_FUNCTIONS
-
+#ifdef __APPLE__
+#define FREEBSD   1
+#endif
 
 //#ifdef __linux__
 //  #define _GNU_SOURCE
 //  #include <features.h>
 //#endif __linux__
-
 #ifdef FREEBSD
   typedef int socken_t;    // FreeBSD use int for socket
   #include <sys/param.h>

@@ -6,7 +6,68 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F76BC58C18C09E77005725FB /* AModify.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C48E18BEF8340032ED2C /* AModify.cc */; };
+		F76BC58D18C09E7B005725FB /* AAA.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C48C18BEF8340032ED2C /* AAA.cc */; };
+		F76BC58E18C09E8D005725FB /* App.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49018BEF8340032ED2C /* App.cc */; };
+		F76BC58F18C09E94005725FB /* Cli.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49218BEF8340032ED2C /* Cli.cc */; };
+		F76BC59018C09E97005725FB /* Command.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49418BEF8340032ED2C /* Command.cc */; };
+		F76BC59118C09E9B005725FB /* CoreAccess.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49618BEF8340032ED2C /* CoreAccess.cc */; };
+		F76BC59218C09E9E005725FB /* CoreBilling.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49818BEF8340032ED2C /* CoreBilling.cc */; };
+		F76BC59318C09EA1005725FB /* CoreBundle.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49A18BEF8340032ED2C /* CoreBundle.cc */; };
+		F76BC59418C09EA5005725FB /* CoreData.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49C18BEF8340032ED2C /* CoreData.cc */; };
+		F76BC59518C09EA9005725FB /* CoreDb.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C49E18BEF8340032ED2C /* CoreDb.cc */; };
+		F76BC59618C09EAC005725FB /* CoreDebug.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4A018BEF8340032ED2C /* CoreDebug.cc */; };
+		F76BC59718C09EB0005725FB /* CoreDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4A218BEF8340032ED2C /* CoreDevice.cc */; };
+		F76BC59818C09EBA005725FB /* CoreListener.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4A418BEF8340032ED2C /* CoreListener.cc */; };
+		F76BC59918C09EBA005725FB /* CoreManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4A618BEF8340032ED2C /* CoreManager.cc */; };
+		F76BC59A18C09EC3005725FB /* CorePeer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4A818BEF8340032ED2C /* CorePeer.cc */; };
+		F76BC59B18C09EC3005725FB /* CorePool.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4AA18BEF8340032ED2C /* CorePool.cc */; };
+		F76BC59D18C09EC3005725FB /* Daemon.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4AE18BEF8340032ED2C /* Daemon.cc */; };
+		F76BC59E18C09EC3005725FB /* Debug.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4B018BEF8340032ED2C /* Debug.cc */; };
+		F76BC59F18C09EC3005725FB /* Diameter.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4B218BEF8340032ED2C /* Diameter.cc */; };
+		F76BC5A018C09EC3005725FB /* DLoad.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4B418BEF8340032ED2C /* DLoad.cc */; };
+		F76BC5A118C09EE3005725FB /* GtpPrime.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4B818BEF8340032ED2C /* GtpPrime.cc */; };
+		F76BC5A218C09EE3005725FB /* Http.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4BA18BEF8340032ED2C /* Http.cc */; };
+		F76BC5A318C09EE3005725FB /* Icmp.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4BC18BEF8340032ED2C /* Icmp.cc */; };
+		F76BC5A418C09EE3005725FB /* Listener.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4BE18BEF8340032ED2C /* Listener.cc */; };
+		F76BC5A518C09EE3005725FB /* LogFile.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4C018BEF8340032ED2C /* LogFile.cc */; };
+		F76BC5A618C09EE3005725FB /* Logging.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4C218BEF8340032ED2C /* Logging.cc */; };
+		F76BC5A718C09EE3005725FB /* LogSyslog.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4C418BEF8340032ED2C /* LogSyslog.cc */; };
+		F76BC5A818C09EE3005725FB /* LogTerm.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4C618BEF8340032ED2C /* LogTerm.cc */; };
+		F76BC5A918C09EE3005725FB /* main.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4C818BEF8340032ED2C /* main.cc */; };
+		F76BC5AA18C09EE3005725FB /* myQueue.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4CA18BEF8340032ED2C /* myQueue.cc */; };
+		F76BC5AB18C09EE3005725FB /* NetFlow.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4CC18BEF8340032ED2C /* NetFlow.cc */; };
+		F76BC5AC18C09EE3005725FB /* Packet.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4CE18BEF8340032ED2C /* Packet.cc */; };
+		F76BC5AD18C09EE3005725FB /* Radius.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4D018BEF8340032ED2C /* Radius.cc */; };
+		F76BC5AE18C09EE3005725FB /* ServerTrack.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4D218BEF8340032ED2C /* ServerTrack.cc */; };
+		F76BC5AF18C09EE3005725FB /* Snmp.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4D418BEF8340032ED2C /* Snmp.cc */; };
+		F76BC5B018C09EE3005725FB /* Tacacs.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4D618BEF8340032ED2C /* Tacacs.cc */; };
+		F76BC5B118C09EE3005725FB /* TacDb.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4D818BEF8340032ED2C /* TacDb.cc */; };
+		F76BC5B218C09EE3005725FB /* Tci.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4DA18BEF8340032ED2C /* Tci.cc */; };
+		F76BC5B318C09EE3005725FB /* Terminal.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4DC18BEF8340032ED2C /* Terminal.cc */; };
+		F76BC5B418C09EE3005725FB /* Tiep.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4DE18BEF8340032ED2C /* Tiep.cc */; };
+		F76BC5B518C09EE3005725FB /* UserTrack.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4E018BEF8340032ED2C /* UserTrack.cc */; };
+		F76BC5B618C09EE3005725FB /* Utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4E218BEF8340032ED2C /* Utils.cc */; };
+		F76BC5B718C09EE3005725FB /* Vty.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4E418BEF8340032ED2C /* Vty.cc */; };
+		F76BC5B818C09EE3005725FB /* XmlServer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F7E5C4E618BEF8340032ED2C /* XmlServer.cc */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F71AE1EA18C096A600DC0646 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		F71AE1EC18C096A600DC0646 /* tacppd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tacppd; sourceTree = BUILT_PRODUCTS_DIR; };
+		F71AE1F618C0970C00DC0646 /* tacppd.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = tacppd.1; sourceTree = "<group>"; };
 		F7E5C43D18BEF2830032ED2C /* acconfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = acconfig.h; sourceTree = "<group>"; };
 		F7E5C43E18BEF2830032ED2C /* aclocal.m4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = aclocal.m4; sourceTree = "<group>"; };
 		F7E5C43F18BEF2830032ED2C /* AUTHORS */ = {isa = PBXFileReference; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
@@ -307,10 +368,29 @@
 		F7E5C59918BF00F80032ED2C /* save.pl */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; path = save.pl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		F71AE1E918C096A600DC0646 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
+		F71AE1ED18C096A600DC0646 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F71AE1EC18C096A600DC0646 /* tacppd */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F7E5C43618BEF1BE0032ED2C = {
 			isa = PBXGroup;
 			children = (
+				F71AE1F618C0970C00DC0646 /* tacppd.1 */,
 				F7E5C4E818BEF8490032ED2C /* tests */,
 				F7E5C48A18BEF6920032ED2C /* src */,
 				F7E5C48018BEF6460032ED2C /* snmp */,
@@ -353,6 +433,7 @@
 				F7E5C45618BEF2830032ED2C /* THANKS */,
 				F7E5C45718BEF2830032ED2C /* TODO */,
 				F7E5C45818BEF2830032ED2C /* version.h */,
+				F71AE1ED18C096A600DC0646 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -985,6 +1066,26 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXNativeTarget section */
+		F71AE1EB18C096A600DC0646 /* tacppd */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F71AE1F518C096A600DC0646 /* Build configuration list for PBXNativeTarget "tacppd" */;
+			buildPhases = (
+				F71AE1E818C096A600DC0646 /* Sources */,
+				F71AE1E918C096A600DC0646 /* Frameworks */,
+				F71AE1EA18C096A600DC0646 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tacppd;
+			productName = tacppd;
+			productReference = F71AE1EC18C096A600DC0646 /* tacppd */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
 /* Begin PBXProject section */
 		F7E5C43718BEF1BE0032ED2C /* Project object */ = {
 			isa = PBXProject;
@@ -999,29 +1100,166 @@
 				en,
 			);
 			mainGroup = F7E5C43618BEF1BE0032ED2C;
+			productRefGroup = F71AE1ED18C096A600DC0646 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				F71AE1EB18C096A600DC0646 /* tacppd */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXSourcesBuildPhase section */
+		F71AE1E818C096A600DC0646 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F76BC58C18C09E77005725FB /* AModify.cc in Sources */,
+				F76BC5A418C09EE3005725FB /* Listener.cc in Sources */,
+				F76BC5AD18C09EE3005725FB /* Radius.cc in Sources */,
+				F76BC5A018C09EC3005725FB /* DLoad.cc in Sources */,
+				F76BC5A118C09EE3005725FB /* GtpPrime.cc in Sources */,
+				F76BC58E18C09E8D005725FB /* App.cc in Sources */,
+				F76BC5B018C09EE3005725FB /* Tacacs.cc in Sources */,
+				F76BC5AC18C09EE3005725FB /* Packet.cc in Sources */,
+				F76BC59B18C09EC3005725FB /* CorePool.cc in Sources */,
+				F76BC59718C09EB0005725FB /* CoreDevice.cc in Sources */,
+				F76BC59D18C09EC3005725FB /* Daemon.cc in Sources */,
+				F76BC59818C09EBA005725FB /* CoreListener.cc in Sources */,
+				F76BC59A18C09EC3005725FB /* CorePeer.cc in Sources */,
+				F76BC5A618C09EE3005725FB /* Logging.cc in Sources */,
+				F76BC5A818C09EE3005725FB /* LogTerm.cc in Sources */,
+				F76BC5B418C09EE3005725FB /* Tiep.cc in Sources */,
+				F76BC59118C09E9B005725FB /* CoreAccess.cc in Sources */,
+				F76BC59218C09E9E005725FB /* CoreBilling.cc in Sources */,
+				F76BC5A318C09EE3005725FB /* Icmp.cc in Sources */,
+				F76BC5AA18C09EE3005725FB /* myQueue.cc in Sources */,
+				F76BC59F18C09EC3005725FB /* Diameter.cc in Sources */,
+				F76BC59918C09EBA005725FB /* CoreManager.cc in Sources */,
+				F76BC5AF18C09EE3005725FB /* Snmp.cc in Sources */,
+				F76BC59518C09EA9005725FB /* CoreDb.cc in Sources */,
+				F76BC5B118C09EE3005725FB /* TacDb.cc in Sources */,
+				F76BC5B518C09EE3005725FB /* UserTrack.cc in Sources */,
+				F76BC59318C09EA1005725FB /* CoreBundle.cc in Sources */,
+				F76BC5B618C09EE3005725FB /* Utils.cc in Sources */,
+				F76BC5B218C09EE3005725FB /* Tci.cc in Sources */,
+				F76BC5B318C09EE3005725FB /* Terminal.cc in Sources */,
+				F76BC58F18C09E94005725FB /* Cli.cc in Sources */,
+				F76BC5AE18C09EE3005725FB /* ServerTrack.cc in Sources */,
+				F76BC59018C09E97005725FB /* Command.cc in Sources */,
+				F76BC5A518C09EE3005725FB /* LogFile.cc in Sources */,
+				F76BC59618C09EAC005725FB /* CoreDebug.cc in Sources */,
+				F76BC5A918C09EE3005725FB /* main.cc in Sources */,
+				F76BC5B718C09EE3005725FB /* Vty.cc in Sources */,
+				F76BC5A718C09EE3005725FB /* LogSyslog.cc in Sources */,
+				F76BC59E18C09EC3005725FB /* Debug.cc in Sources */,
+				F76BC59418C09EA5005725FB /* CoreData.cc in Sources */,
+				F76BC5AB18C09EE3005725FB /* NetFlow.cc in Sources */,
+				F76BC5B818C09EE3005725FB /* XmlServer.cc in Sources */,
+				F76BC58D18C09E7B005725FB /* AAA.cc in Sources */,
+				F76BC5A218C09EE3005725FB /* Http.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
 /* Begin XCBuildConfiguration section */
+		F71AE1F318C096A600DC0646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		F71AE1F418C096A600DC0646 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		F7E5C43B18BEF1BE0032ED2C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		F7E5C43C18BEF1BE0032ED2C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F71AE1F518C096A600DC0646 /* Build configuration list for PBXNativeTarget "tacppd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F71AE1F318C096A600DC0646 /* Debug */,
+				F71AE1F418C096A600DC0646 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F7E5C43A18BEF1BE0032ED2C /* Build configuration list for PBXProject "tacppd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

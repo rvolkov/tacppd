@@ -604,15 +604,15 @@ TepPacket::sendbuf(ipaddr ip,int port,char *bufx,int len) {
   TheirAddress.sin_addr.s_addr = inet_addr(ip.get().c_str());
 
 // disable SIGPIPE
-//#ifdef SOLARIS
-//  void (*old_sigpipe)(int) = 0;
-//#else
-//  sig_t old_sigpipe = 0;
-//#endif
-//  old_sigpipe = signal (SIGPIPE, SIG_IGN);
+#ifdef SOLARIS
+  void (*old_sigpipe)(int) = 0;
+#else
+  sig_t old_sigpipe = 0;
+#endif
+  old_sigpipe = signal (SIGPIPE, SIG_IGN);
 
   int sz;
-  sz = sendto(socketfd,bufx,len,MSG_NOSIGNAL,
+  sz = sendto(socketfd,bufx,len,0,
         (struct sockaddr*)&TheirAddress,size_sin);
 //  int sz = sendto(socketfd,bufx,len,0x0,
 //        (struct sockaddr*)&TheirAddress,size_sin);
