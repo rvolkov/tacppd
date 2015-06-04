@@ -1,0 +1,298 @@
+bplist00—_WebMainResource’	
+^WebResourceURL_WebResourceData_WebResourceMIMEType_WebResourceTextEncodingName_WebResourceFrameName_0http://tacppd.org/documentation/howto/voip1.htmlO"	<html><head></head><body><h2>Use tacppd for simplest pre-paid card voip system</h2>
+(C) Copyright by Roman Volkov<br>
+21 Nov 2002<br>
+<p>
+In this document i write only about tacppd/cisco part. Not about programmers/
+billing system work and about programming with PostgreSQL functions.
+This is only small part of solution about how to use tacppd
+for VoIP systems. Please note, that tacppd while in development stage, and
+you will use this example on your own risk. If you will have interest
+in develop full desigion, please, contact with http://tacppd.com
+</p><p>
+For use this document, you should have knowledges in Cisco, in CIsco TCL IVR
+scripts, in tacacs+ and tacppd.
+</p><p>
+<b>Available hardware/Software</b>
+<br>
+Linux Slackware on PII server<br>
+Tacppd installed (build 20021120)<br>
+PostgreSQL ver 7.2<br>
+Cisco 3640 with NM-HDV module as VoIP gateway (IOS 12.2.12a IP PLUS)<br>
+</p><p>
+
+The idea is in use tacppd avp modifyers system. The most
+critical part for such system - have known available time
+in authorization phase. 
+
+</p><p>
+<b>Cisco config</b><br>
+in first, we should setup cisco to use tacacs+ for h323 authentication/
+authorization/accounting, and also for use our tacppd for it<br>
+</p><pre>aaa new-model
+aaa group server tacacs+ TACPPD
+ server 192.168.0.1
+!
+aaa authentication login default local
+aaa authentication login h323 group TACPPD
+aaa authorization exec h323 group TACPPD 
+aaa accounting suppress null-username
+aaa accounting update newinfo
+aaa accounting connection h323 start-stop group TACPPD
+aaa nas port voip
+
+tacacs-server host 192.168.0.1 single-connection port 10000 key VoIP
+</pre>
+In this config we setup tacppd on server 192.168.0.1 with port 10000 and
+tacacs+ key VoIP, and use tacacs+ single connection. Also we will use
+tacppd for h323 authentication/authorization/accounting.
+
+<p>
+<b>Cisco TCL IVR script</b><br>
+I will not provide full TCL IVR script. I use TCL IVR 1.0 and
+it highly customised for telephone system in my city. I will provide only
+several examples how to get information from tacppd to your TCL IVR script.
+If you need in more information, please contact Cisco for
+documentation about writing your own TCL IVR scripts.
+</p><li><b>Authentication</b><br>
+The authentication from IVR with tacppd do not has difference from
+common example. This is the example of TCL for it:
+<pre># authenticate
+proc do_authenticate {} {
+  global state
+  global pin
+  global account
+  global numbers
+
+  set event [authenticate $account $pin info]
+  puts "*LOG*: AUTHENTICATION RESULT event=$event acc=$account pin=$pin"
+  if { $event == "authenticated" } {
+    set state say_account
+    return 0
+  }
+  if {$event == "authentication failed"} {
+    set state authen_fail
+    return 0
+  }
+  set state end
+  return 0
+}
+</pre>
+during this process we have simple tacacs+ ASCII authentication,
+as we have in simple login
+
+<p>
+</p></li><li><b>Authorization</b><br>
+From IVR point of view, authorization - process for receive information
+from AAA server. In our example we should receive available money
+and available time
+
+<pre># authorize this connection by AAA engine
+proc do_authorize {} {
+  global state
+  global pin
+  global account
+  global destination
+  global credittime
+  global numbers
+  global digit
+
+  set event [authorize $account $pin $destination [ani] av-send info]
+
+  puts "TCL-AUTHOR: evt=$event act=$account pin=$pin dst=$destination"
+
+  if {$event == "authorized"} {
+    set num [getVariable aaa h323-credit-time creditTime]
+    if {$num != 0} {
+      set credittime $creditTime(0)
+    } else {
+      # technical problem
+      set state techical_problem
+      return 0
+    }
+    puts "TCL-AUTHOR: credittime = $credittime sec"
+    set num [getVariable aaa h323-credit-amount creditAmount]
+    if {$num != 0} {
+      set creditmoney $creditAmount(0)
+    } else {
+      # technocal problem
+      set state technical_problem
+      return 0
+    }
+    if {$creditmoney == 0} {
+    
+    }
+    puts "TCL-AUTHOR: creditmoney = $creditmoney"
+    set digit [expr ($creditmoney*60)/$credittime]
+    puts "*LOG*: minute cost = $digit"
+    do_saymoney
+    set prompt(url) tftp://tftpserver/minute.au
+    set prompt(playComplete) true
+    set event [promptAndCollect prompt info ]
+    set state place_call
+    return 0
+  }
+  if {$event == 0 || $event == "uninitialized"} {
+    set state out_of_time
+    return 0
+  }
+  set state authen_fail
+  return 0
+}
+</pre>
+We provide authorization request and get two av-pairs from tacppd:
+"h323-credit-time" and "h323-credit-amount". You should create TCL script, 
+which will use this information for set user limits, say information and other.
+Please, search in cisco web-site for information about pre-paid cards,
+TCL IVR scripting and other.
+
+<p>
+<b>Tacppd config</b><br>
+We should configure tacppd for accept calls from our gateway.
+Let define that gateway IP is 192.168.0.2.
+</p><pre> access 1
+  permit ^127.0.0
+  permit ^192.168.0
+  exit
+
+ manager admin
+  password 'admpass'
+  type terminal
+  acl 1
+  exit
+
+ listener 2222
+  type terminal
+  maxconnect 2
+  acl 1
+  exit
+ listener 10000
+  type tacacs
+  maxconnect 100
+  acl 1
+  exit
+
+ device 192.168.0.2
+  description 'vgw'
+  tacacskey 'VoIP'
+  snmpcommunity 'public'
+  loginstring 'login++:'
+  pwdstring 'pwd++:'
+  defauthorization no
+  module none.so
+  polldelay 60
+  inttrfcount no
+  snmppolling no
+  icmppolling yes
+  shutdown no
+  exit
+
+ database tacppd@192.168.0.1:5432
+  cryptokey 'none'
+  login tacacs
+  password TacppdP
+  module pgsql.so
+  shutdown no
+  exit
+</pre>
+
+<p>
+<b>Database configuration/data</b><br>
+Database should be configured and working. We should create
+database "tacppd" and create user tacacs/TacppdP which should
+can do selects, inserts, and table create. Please, read tacppd
+documentation about information, how to initialize database, create tables 
+via tacppd CLI.
+</p><p>
+We should create user/password and set some information. Use for it tacppd CLI
+interface. For connect to cli interface, do "telnet localhost 2222"
+(the configuration for use port 2222 for terminal access present upper).
+Use login/password admin/admpass for access.
+</p><p>
+let create user with account number 222 and pin-code 3214. Also
+we should have 2 SQL functions (read PostgreSQL documentation about
+how to use PL/PgSQL for writing SQL functions), one for provide us
+with information about available time, and other for provide information
+about available money. Let create function "tacpp_cred_time" for
+get available time, and "tacpp_cred_money" for available money.
+All this functions should have 4 parameters: 1-username, 2-gateway ip,
+3-gateway port, 4-phone number in form from/where. For fill this values
+we use variables from tacpp AVModifyers system, and use variables
+$name, $nas, $port, $phone into user information. Tacppd will fill
+this variables with actual information during authorization request.
+
+</p><pre>
+s06: {7} % telnet localhost 2222
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+
+
+TACPPD user access verification
+
+Username: admin
+Password: 
+Authentication success
+
+
+Create config object ... Ok
+
+tacppd&gt;database
+tacppd(database)#add user
+user name []:222
+password []:3214
+open date [1970-01-01 10:00:00]:
+close date [1970-01-01 10:00:00]:2003-01-01 10:00:00
+authorization group []:voip
+access group []:voip
+resource group []:
+additional data group []:
+max sessions [1]:1
+Are you shure? [y/n]:y
+
+tacppd(database)#add access
+access group name []:voip
+access by phone []:.*
+from specifyed NAS []:192.168.0.2
+from specifyed port []:.*
+restricted access time []:
+Are you shure? [y/n]:y
+
+tacppd(database)#add avp
+author group id []:voip
+service []:connection
+protocol []:h323
+attribute=value pair
+[]:h323-credit-time=SQL:tacpp_cred_time('$name','$nas','$port','$phone')
+Are you shure? [y/n]:y
+
+tacppd(database)#add avp 
+author group id []:voip
+service []:connection
+protocol []:h323
+attribute=value pair
+[]:h323-credit-amount=SQL:tacpp_cred_money('$name','$nas','$port','$phone')
+Are you shure? [y/n]:y
+
+tacppd(database)#exit
+tacppd&gt;exit
+</pre>
+
+You should write SQL functions with counts about available time and
+money, and also have tables about direction prices, and about user discounts,
+also you can have web-enabled interface for manipulate it. And much much more.
+<p>
+
+<b>Debug</b><br>
+For debug you should enable tacacs, aaa and some other facilities on tacppd
+side (read tacppd documentation). On cisco side, you can use
+<b>debug voice ivr script</b> or for full information
+<b>debug voice ivr</b>, also you can check operation with tacpp by use
+<b>debug tacacs events</b>, <b>debug aaa authentication</b>,
+<b>debug aaa authorization</b>, and also see tacppd log files.
+
+</p><p>
+Enjoy!
+
+
+</p></li></body></html>Ytext/htmlUUTF-8P    ( 7 I _ } î «"‘"ﬁ"‰                           "Â
